@@ -1,0 +1,77 @@
+﻿/**
+	CSS Classes for Dungeoneer%20Interface.html
+*/
+.main-page {
+	display: flex;
+	flex-direction: row;
+	margin: 0;
+	height: calc(100% - 20px);
+}
+
+.border {
+	border: 1px solid purple;
+}
+
+.meta-pane {
+	flex-basis: 300px;
+	flex-grow: 0;
+	border-right: 0;
+}
+
+.game-pane {
+	flex-basis: 900px;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.story-pane {
+	flex-basis: 550px;
+	flex-grow: 1;
+	flex-shrink: 0;
+}
+
+.console-pane {
+	flex-basis: 213px;
+	flex-grow: 0;
+	border-top: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.console-history {
+	margin-top: auto;
+	overflow: auto;
+	flex-grow: 0;
+}
+
+.history-list {
+	list-style-type: none;
+	list-style-position: outside;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	margin-top: 0px;
+	padding: 0;
+}
+
+.console-input-wrapper {
+	padding-left: 5px;
+	display: flex;
+	flex-direction: row;
+}
+
+div.console-input-wrapperl > label {
+	flex-basis: 12px;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+div.console-input-wrapper > input {
+	background-color: black;
+	color: white;
+	border: none;
+	outline: none;
+	flex-grow: 1;
+}
