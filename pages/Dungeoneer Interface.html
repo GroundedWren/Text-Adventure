@@ -27,7 +27,12 @@
 <body>
 	<div id="subveil" class="subveil">
 		<!--<div class="banner fixed-header"></div>-->
-		<div class="banner"><a href="../index.html" style="float: left">Home</a>Dungeoneer Interface</div>
+		<header class="banner fixed-header">
+			<a href="../index.html">Home</a>
+			<a href="#" onclick="Pages.DI.showAboutInfo(); return false;">About</a>
+			Dungeoneer Interface
+		</header>
+		<div class="banner-buffer"></div>
 		<div id="mainPage" class="main-page">
 			<div id="metaPane" class="border meta-pane">
 				<div id="playerForm" class="player-form"></div>
@@ -47,7 +52,6 @@
 				</div>
 			</div>
 		</div>
-		<!--<footer class="banner fixed-footer"></footer>-->
 	</div>
 </body>
 </html>

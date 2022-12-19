@@ -3,7 +3,15 @@
  */
 registerNamespace("Pages.DI", function (ns)
 {
-
+	function showAboutInfo()
+	{
+		Common.Controls.Popups.showModal(
+			"Dungeoneer Interface",
+			"Welcome to the Dungeoneer Interface - a text-based RPG player!"
+			+ "<br />More info to come :)"
+		);
+	};
+	ns.showAboutInfo = showAboutInfo;
 });
 
 /**
@@ -17,4 +25,10 @@ window.onload = () =>
 		document.getElementById("consoleHistory"),
 		document.getElementById("historyList")
 	);
+};
+
+window.onbeforeunload = (event) =>
+{
+	event.preventDefault();
+	return false;
 };
