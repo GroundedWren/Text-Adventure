@@ -1,4 +1,4 @@
-﻿/**
+/**
 	CSS Classes for Common.Controls
 */
 
@@ -77,6 +77,10 @@
 	flex-direction: column;
 }
 
+.popup-content{
+	overflow: auto
+}
+
 .stop-scrolling {
 	height: 100%;
 	overflow: hidden;
@@ -146,7 +150,7 @@
 	overflow: auto;
 }
 
-	.page-control-page.selected {
-		display: block;
-	}
+.page-control-page.selected {
+	display: block;
+}
 /*#endregion */
