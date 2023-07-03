@@ -44,7 +44,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	{
 		ns.__shouldApplySave = true;
 		Common.Controls.Popups.hideModal();
-		
+
 	};
 	ns.__uploadSaveModalRejected = () =>
 	{
@@ -70,6 +70,38 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		).join("");
 		document.getElementById("currentGameMetaCard").classList.remove("hidden");
 	};
+
+	//#region Console Commands
+	ns.onLook = () =>
+	{
+		ns.InputConsole.echo("You look around. Of note is a DOOR, a BROOM, and a TABLE");
+		ns.InputConsole.addContext(new ns.ConsoleContext("LOOK", {
+			"DOOR": new ns.ConsoleCommand(
+				() => { ns.InputConsole.echo("Wow, cool door."); },
+				"Look at the door"
+			),
+			"BROOM": new ns.ConsoleCommand(
+				() => { ns.InputConsole.echo("You could do some serious sweeping with this baby"); },
+				"Look at the broom"
+			),
+			"TABLE": new ns.ConsoleCommand(
+				() =>
+				{
+					ns.InputConsole.echo("There's a card on the table. Pick it up? (Y/N)");
+					ns.InputConsole.addContext(new ns.ConsoleContext("PROMPT", {
+						"Y": new ns.ConsoleCommand(() => { ns.InputConsole.echo("It's the Jack of Hearts"); ns.InputConsole.removeContext(); }, "Pick up the card"),
+						"N": new ns.ConsoleCommand(() => { ns.InputConsole.echo("You walk away"); ns.InputConsole.removeContext(); }, "Leave the card"),
+					}, undefined, true));
+				},
+				"Look at the table"
+			),
+		}, ns.lookAtDefault));
+	};
+	ns.lookAtDefault = (target) =>
+	{
+		ns.InputConsole.echo(`${target}? What ${target}?`);
+	};
+	//#endregion
 });
 
 /**
@@ -77,6 +109,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
  */
 window.onload = () =>
 {
+	const ns = Pages.DungeoneerInterface;
 	//#region Standard setup
 	Common.setUpAccessibility();
 	Common.Components.registerShortcuts({
@@ -92,7 +125,7 @@ window.onload = () =>
 	//#endregion
 
 	//#region Meta Pane
-	Pages.DungeoneerInterface.MetaControl = new Common.Controls.PageControl.PageControl(
+	ns.MetaControl = new Common.Controls.PageControl.PageControl(
 		document.getElementById("metaPane"),
 		document.getElementById("metaPane_ts"),
 		document.getElementById("metaPane_pgc"),
@@ -110,22 +143,24 @@ window.onload = () =>
 	{
 		Common.FileLib.parseJSONFile(
 			changeEv.target.files[0],
-			Common.fcd(Pages.DungeoneerInterface, Pages.DungeoneerInterface.saveUploaded, [changeEv.target.files[0]])
+			Common.fcd(ns, ns.saveUploaded, [changeEv.target.files[0]])
 		);
 	});
 	//#endregion
 
 	//#region Console
-	Pages.DungeoneerInterface.InputConsole = new Pages.DungeoneerInterface.Console(
+	ns.InputConsole = new ns.Console(
 		document.getElementById("consoleForm"),
 		document.getElementById("consoleInput"),
+		document.getElementById("consoleInputLabel"),
 		document.getElementById("consoleOutput")
 	);
+	ns.InputConsole.addCommand("LOOK", new ns.ConsoleCommand(ns.onLook, "Look around the space"));
 	//#endregion
 };
 
-window.onbeforeunload = (event) =>
-{
-	event.preventDefault();
-	return false;
-};
+//window.onbeforeunload = (event) =>
+//{
+//	event.preventDefault();
+//	return false;
+//};

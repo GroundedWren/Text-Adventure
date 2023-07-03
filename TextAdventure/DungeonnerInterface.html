@@ -101,16 +101,18 @@
 					<div class="tab-gutter"></div>
 				</div>
 			</div>
-			<div id="topPane">
-
+			<div id="storyPane" role="region" aria-label="Story">
+				<p>
+					Text here
+				</p>
 			</div>
-			<div id="consolePane">
+			<div id="consolePane" role="region" aria-label="Console">
 				<div id="consoleOutput">
 				</div>
 				<form id="consoleForm" aria-label="Console input" class="transparent-form" autocomplete="off">
 					<fieldset class="input-flex transparent-fieldset">
 						<div class="input-flex-line">
-							<label style="flex-grow: 0;" for="consoleInput">></label>
+							<label id="consoleInputLabel" style="flex-grow: 0;" for="consoleInput">></label>
 							<input style="flex-grow: 1; width: inherit;" id="consoleInput" type="text" />
 							<input id="consoleSubmit" type="submit" value="Submit" />
 						</div>
