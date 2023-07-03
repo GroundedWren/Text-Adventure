@@ -1,1 +1,32 @@
-﻿
+﻿header {
+	word-wrap: break-word;
+}
+
+#content {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	max-width: 1000px;
+}
+
+nav > ul{
+	padding-left: 20px;
+}
+
+h1, h2 {
+	text-align: center;
+	margin: 0px;
+}
+
+#updates {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	grid-gap: 5px;
+}

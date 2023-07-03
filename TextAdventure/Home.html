@@ -24,12 +24,57 @@
 	<script src="../common/scripts/Controls/Modal.js"></script>
 
 	<script src="./scripts/Home.js"></script>
+
+	<script src="https://kit.fontawesome.com/c6b6f471bd.js" crossorigin="anonymous"></script>
 </head>
 <body>
 	<div id="subveil">
-		<main id="mainPage">
-
-		</main>
+		<header>
+			<h1><a href="https://www.textadventure.groundedwren.com/">TextAdventure / GroundedWren.com</a></h1>
+			<div id="bnrTblNetWarning" class="inline-banner center warning">
+				<i class="fa-solid fa-triangle-exclamation" style="color: #FFFFFF;" title="Warning"></i>
+				This is a work in progress
+			</div>
+		</header>
+		<div id="content">
+			<nav class="card">
+				<div class="card-header" role="heading" aria-level="2">Pages</div>
+				<ul>
+					<li><a href="./DungeonnerInterface.html">Dungeoneer Interface</a></li>
+				</ul>
+			</nav>
+			<main>
+				<div id="about" class="card">
+					<div class="card-header" role="heading" aria-level="2">About</div>
+					<p>
+						This subdomain is for a text-based adventure game project.
+					</p>
+					<p>
+						I played a lot of <a href="https://homestarrunner.com/dungeonman" target="_blank">dungeonman</a> on Homestar Runner when I was a kid; I was very bad at it, but I liked the idea enough that once I learned what binary trees were in high school computer science, I immediately implemented a simple text-game with them.
+					</p>
+					<p>
+						It was really simple, but watching my friends stumble their way through a nonsensical zombie-apocalypse scenario in which they were frequently characters was beyond fun. I even made a UI to show images based on the game-state.
+					</p>
+					<p>
+						I've tried a couple times since to make a more sophistocated verison of that game, but I never completed one and I'm not sure where the code is anymore.
+					</p>
+					<p>
+						So this is that; yet another attempt that I hope I'll be able to stick with!
+					</p>
+				</div>
+				<div class="card">
+					<h2>Updates</h2>
+					<div id="updates">
+						<div class="card">
+							<div class="card-header" role="heading" aria-level="3">7/2/23</div>
+							<p>
+								Re-launched! This time I've structured the project directory so that the text adventure can more easily share common code with the main website.
+							</p>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
 		<div id="dialogRegion" role="region" aria-label="dialogs"></div>
 		<div class="banner-buffer"></div>
 		<footer class="banner fixed-footer">
