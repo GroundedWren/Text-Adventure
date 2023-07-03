@@ -59,10 +59,42 @@
 						Equipment
 					</div>
 					<div id="metaPane_page_World" class="page-control-page">
-						World
+						<div class="card">
+							<div class="card-header" role="heading" aria-level="2">Load</div>
+							<div class="input-vertical-line">
+								<label for="saveUpload">Upload Save</label>
+								<input id="saveUpload" type="file" style="width: inherit;" />
+							</div>
+							<h3>Fresh Games</h3>
+							<ul>
+								<li>
+									<button onclick="Pages.DungeoneerInterface.importFreshSave('TestSave','./saves/TestSave.json')">
+										TestSave
+									</button>
+								</li>
+							</ul>
+						</div>
+						<div class="card">
+							<div class="card-header" role="heading" aria-level="2">Save</div>
+							<div class="input-vertical-line">
+								<input id="saveToFile"
+									   type="button"
+									   value="Save to File"
+									   onclick="Pages.DungeoneerInterface.saveToFile()" />
+							</div>
+						</div>
+						<div id="currentGameMetaCard" class="card hidden">
+							<div class="card-header" role="heading" aria-level="2">Current Game</div>
+							<table>
+								<thead class="sr-only"><tr><th>Property</th><th>Value</th></tr></thead>
+								<tbody id="currentGameTableBody">
+
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
-				<div id="metaPane_ts"class="tab-strip">
+				<div id="metaPane_ts" class="tab-strip">
 					<div id="metaPane_tab_Player" class="tab-strip-tab button-like"><span>Player</span></div>
 					<div id="metaPane_tab_Equipment" class="tab-strip-tab button-like"><span>Equip</span></div>
 					<div id="metaPane_tab_World" class="tab-strip-tab button-like"><span>World</span></div>
@@ -79,7 +111,7 @@
 					<fieldset class="input-flex transparent-fieldset">
 						<div class="input-flex-line">
 							<label style="flex-grow: 0;" for="consoleInput">></label>
-							<input style="flex-grow: 1;" id="consoleInput" type="text" />
+							<input style="flex-grow: 1; width: inherit;" id="consoleInput" type="text" />
 							<input id="consoleSubmit" type="submit" value="Submit" />
 						</div>
 					</fieldset>
