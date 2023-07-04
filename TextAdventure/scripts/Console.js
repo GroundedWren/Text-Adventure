@@ -51,14 +51,19 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 		__buildHelpWindow()
 		{
+			const context = this.__getContext();
 			this.__consoleHelpWindow.innerHTML = null;
-			this.dce("h2", this.__consoleHelpWindow).el.innerText = "Console Help"
+			this.dce("h2", this.__consoleHelpWindow).el.innerText = "Console Help";
+			if (context.helpText)
+			{
+				this.dce("p", this.__consoleHelpWindow, ["center-text"]).el.innerText = context.helpText;
+			}
 			const table = this.dce("table", this.__consoleHelpWindow).el;
 			const tHead = this.dce("thead", table).el;
 			tHead.innerHTML = "<tr><th>Command</th><th>Description</th></tr>";
 			const tBody = this.dce("tbody", table).el;
 
-			const commands = this.__getContext().commands;
+			const commands = context.commands;
 
 			for (const command in commands)
 			{
@@ -81,6 +86,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		addContext(consoleContext)
 		{
 			consoleContext.commands["HELP"] = this.__commands.HELP;
+			consoleContext.setUpPromise();
+
 			if (!consoleContext.disableExit)
 			{
 				consoleContext.commands["EXIT"] = new ns.ConsoleCommand(
@@ -90,10 +97,13 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			}
 			this.__contexts.unshift(consoleContext);
 			this.__updateContextLabel();
+
+			return consoleContext.promise;
 		};
 
-		removeContext()
+		removeContext(result)
 		{
+			this.__contexts[0].resolvePromise(result);
 			this.__contexts.shift();
 			this.__updateContextLabel();
 		};
@@ -105,22 +115,35 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		//#endregion
 
 		//#region Commands
-		echo(value)
+		__echoBacklog = "";
+		echo(value, alertBehavior)
 		{
-			this.dce("li", this.__consoleOutputList).el.innerText = `${value}`;
-			Common.axAlertAssertive(value);
+			this.dce("li", this.__consoleOutputList).el.innerHTML = `${value}`;
 
-			this.hideAllOutput();
-			this.__consoleOutputList.classList.remove("hidden");
-			this.__consoleOutputList.scrollIntoView(false);
+			alertBehavior = alertBehavior || {};
+			if (alertBehavior.holdAlert)
+			{
+				this.__echoBacklog = this.__echoBacklog + " " + value;
+			}
+			else if (!alertBehavior.skipAlert)
+			{
+				value = this.__echoBacklog + " " + value;
+				setTimeout(() => { Common.axAlertPolite(value); }, 10);
+				this.__echoBacklog = "";
+			}
+
+			this.__showOutputList();
+		};
+
+		lineFeed()
+		{
+			this.dce("li", this.__consoleOutputList).el.innerText="\n";
 		};
 
 		clear()
 		{
 			this.__consoleOutputList.innerHTML = "";
-
-			this.hideAllOutput();
-			this.__consoleOutputList.classList.remove("hidden");
+			this.__showOutputList();
 		};
 
 		help()
@@ -158,6 +181,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 					this.__consoleInputEl.value = this.__prevCmds[this.__prevCmdIdx];
 				}
 			}
+			else if (event.keyCode === Common.KeyCodes.Esc)
+			{
+				this.__showOutputList();
+				event.preventDefault();
+			}
 			else
 			{
 				if (event.keyCode === Common.KeyCodes.Backspace
@@ -172,8 +200,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 		__onSubmit()
 		{
-			this.hideAllOutput();
-			this.__consoleOutputList.classList.remove("hidden");
+			this.__showOutputList();
 
 			const value = this.__consoleInputEl.value;
 			this.__recordSubmit(value);
@@ -191,14 +218,18 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				args = "";
 			}
 
-			var cmd = this.__getContext().commands[commandStr];
+			var context = this.__getContext();
+
+			var cmd = context.commands[commandStr];
 			if (cmd)
 			{
-				cmd.handler(args);
+				var result = cmd.handler(args);
+				if (commandStr !== "HELP" && context.autoExit) { this.removeContext(result); }
 			}
-			else if (args === "" && this.__getContext().nullary)
+			else if (context.nullary && (value !== "" || context.disableExit === false))
 			{
-				this.__getContext().nullary(commandStr);
+				var result = context.nullary(value);
+				if (context.autoExit) { this.removeContext(result); }
 			}
 			else
 			{
@@ -211,7 +242,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		__recordSubmit(value)
 		{
 			this.__prevCmds.unshift(value);
-			this.dce("li", this.__consoleOutputList, ["user-input"]).el.innerText = `>${value}`;
+			this.dce(
+				"li",
+				this.__consoleOutputList,
+				["user-input"]
+			).el.innerHTML = `${this.__consoleInputLabelEl.innerText}${value}`;
 		}
 
 		__getContext()
@@ -220,7 +255,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			{
 				return this.__contexts[0];
 			}
-			return new ns.ConsoleContext("", this.__commands, null, true);
+			return new ns.ConsoleContext("", this.__commands, null, {disableExit: true});
 		};
 
 		__updateContextLabel()
@@ -229,6 +264,13 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__contexts.reverse();
 
 			this.__consoleInputLabelEl.innerText = path + ">";
+		};
+
+		__showOutputList()
+		{
+			this.hideAllOutput();
+			this.__consoleOutputList.classList.remove("hidden");
+			this.__consoleOutputList.scrollIntoView(false);
 		};
 		//#endregion
 	};
@@ -239,12 +281,33 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		commands = {};
 		nullary = null;
 		disableExit = false;
-		constructor(name, commands, nullary, disableExit)
+		autoExit = false;
+		helpText = "";
+		constructor(name, commands, nullary, exitBehavior, helpText)
 		{
 			this.name = name;
-			this.commands = commands || {};;
+			this.commands = commands || {};
+			Object.keys(commands).forEach(cmdKey =>
+			{
+				if (!this.commands[cmdKey])
+				{
+					delete this.commands[cmdKey];
+				}
+			});
 			this.nullary = nullary;
-			this.disableExit = !!disableExit;
+
+			exitBehavior = exitBehavior || {};
+			this.disableExit = !!exitBehavior.disableExit;
+			this.autoExit = !!exitBehavior.autoExit;
+
+			this.helpText = helpText;
+		};
+
+		promise = null;
+		resovePromise = null;
+		setUpPromise()
+		{
+			this.promise = new Promise((resolve) => { this.resolvePromise = resolve; });
 		};
 	};
 

@@ -63,43 +63,80 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	};
 	//#endregion
 
+	//#region Apply Save Data
 	ns.applySaveData = function ()
+	{
+		applyMetaData();
+		applyCharacterData();
+
+	};
+	function applyMetaData()
 	{
 		document.getElementById("currentGameTableBody").innerHTML = Object.keys(ns.Data.Meta).map(
 			key => `<tr><td>${key}</td><td>${ns.Data.Meta[key]}</td></tr>`
 		).join("");
 		document.getElementById("currentGameMetaCard").classList.remove("hidden");
 	};
+	async function applyCharacterData()
+	{
+		ns.MetaControl.setActiveTab("metaPane_tab_Player");
+		document.getElementById("consoleInput").focus();
+		if (ns.Data.Character.Name === null) //Assume this means character is not loaded
+		{
+			await ns.setupCharacter();
+		}
+		else
+		{
+			setCharacterName(ns.Data.Character.Name);
+			setCharacterPronouns(ns.Data.Character.Pronouns);
+			setCharacterAbilities(ns.Data.Character.Abilities)
+		}
+	};
+	setCharacterName = (name) =>
+	{
+		name = name || "Vera";
+		ns.Data.Character.Name = name;
+		document.getElementById("tdName").innerText = name;
+	};
+	setCharacterPronouns = (pro) =>
+	{
+		pro = pro || {};
+		ns.Data.Character.Pronouns = pro;
+		document.getElementById("tdPronouns").innerText = `${pro.Subjective}/${pro.Objective}/${pro.Possessive}`;
+		document.getElementById("tdPronouns2").innerText = `${pro.Reflexive}/${pro.PossessiveAdjective}`;
+	};
+	setCharacterLevel = (level) =>
+	{
+		ns.Data.Character.Level = level || 1;
+		document.getElementById("tdLevel").innerText = level;
+	};
+	setCharacterAbilities = (abilities) =>
+	{
+		abilities = abilities || {Str: 10, Dex: 10, Con: 10, Int: 10, Wis: 10, Cha: 10};
+		ns.Data.Character.Abilities = abilities;
+		document.getElementById("tdStr").innerText = abilities.Str;
+		document.getElementById("tdDex").innerText = abilities.Dex;
+		document.getElementById("tdCon").innerText = abilities.Con;
+		document.getElementById("tdInt").innerText = abilities.Int;
+		document.getElementById("tdWis").innerText = abilities.Wis;
+		document.getElementById("tdCha").innerText = abilities.Cha;
+
+		document.getElementById("tdStrMod").innerText = calculateMod(abilities.Str);
+		document.getElementById("tdDexMod").innerText = calculateMod(abilities.Dex);
+		document.getElementById("tdConMod").innerText = calculateMod(abilities.Con);
+		document.getElementById("tdIntMod").innerText = calculateMod(abilities.Int);
+		document.getElementById("tdWisMod").innerText = calculateMod(abilities.Wis);
+		document.getElementById("tdChaMod").innerText = calculateMod(abilities.Cha);
+	};
+	function calculateMod(ability)
+	{
+		return Math.floor((ability - 10) / 2);
+	};
+	//#endregion
 
 	//#region Console Commands
 	ns.onLook = () =>
 	{
-		ns.InputConsole.echo("You look around. Of note is a DOOR, a BROOM, and a TABLE");
-		ns.InputConsole.addContext(new ns.ConsoleContext("LOOK", {
-			"DOOR": new ns.ConsoleCommand(
-				() => { ns.InputConsole.echo("Wow, cool door."); },
-				"Look at the door"
-			),
-			"BROOM": new ns.ConsoleCommand(
-				() => { ns.InputConsole.echo("You could do some serious sweeping with this baby"); },
-				"Look at the broom"
-			),
-			"TABLE": new ns.ConsoleCommand(
-				() =>
-				{
-					ns.InputConsole.echo("There's a card on the table. Pick it up? (Y/N)");
-					ns.InputConsole.addContext(new ns.ConsoleContext("PROMPT", {
-						"Y": new ns.ConsoleCommand(() => { ns.InputConsole.echo("It's the Jack of Hearts"); ns.InputConsole.removeContext(); }, "Pick up the card"),
-						"N": new ns.ConsoleCommand(() => { ns.InputConsole.echo("You walk away"); ns.InputConsole.removeContext(); }, "Leave the card"),
-					}, undefined, true));
-				},
-				"Look at the table"
-			),
-		}, ns.lookAtDefault));
-	};
-	ns.lookAtDefault = (target) =>
-	{
-		ns.InputConsole.echo(`${target}? What ${target}?`);
 	};
 	//#endregion
 });
@@ -121,6 +158,19 @@ window.onload = () =>
 			action: () => { document.getElementById("shortcutsButton").click(); },
 			description: "Show shortcut keys"
 		},
+		"ALT+P": {
+			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_Player"); },
+			description: "Show player information"
+		},
+		"ALT+Q": {
+			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_Equipment"); },
+			description: "Show equipment"
+		},
+		"ALT+O": {
+			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_World"); },
+			description: "Show world information"
+		},
+
 	});
 	//#endregion
 

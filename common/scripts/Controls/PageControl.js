@@ -66,7 +66,10 @@ registerNamespace("Common.Controls.PageControl", function (ns)
 
 			this.controlEl.setAttribute("role", "region");
 			this.controlEl.setAttribute("aria-label", (name || "") + " page control");
-			this.__pageContainerEl.setAttribute("aria-live", "polite");
+			if (!this.__pageContainerEl.hasAttribute("aria-live"))
+			{
+				this.__pageContainerEl.setAttribute("aria-live", "polite");
+			}
 
 			this.__tabDict = {};
 			for (var tabId of Object.keys(tabPageMap))

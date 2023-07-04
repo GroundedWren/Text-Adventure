@@ -28,6 +28,7 @@
 	<script src="../common/scripts/Controls/ZeroState.js"></script>
 
 	<script src="./scripts/Console.js"></script>
+	<script src="./scripts/CharacterBuilder.js"></script>
 	<script src="./scripts/DungeoneerInterface.js"></script>
 </head>
 <body>
@@ -51,9 +52,34 @@
 		<div id="BannerBuffer" class="banner-buffer"></div>
 		<main id="mainPage">
 			<div id="metaPane" class="page-control">
-				<div id="metaPane_pgc" class="page-container">
+				<div id="metaPane_pgc" class="page-container" aria-live="off">
 					<div id="metaPane_page_Player" class="page-control-page">
-						Player
+						<table id="BasicInfo">
+							<caption>Basic Information</caption>
+							<thead class="sr-only">
+								<tr><th>Property</th><th>Value</th></tr>
+							</thead>
+							<tbody>
+								<tr><td>Name</td><td id="tdName">-</td></tr>
+								<tr><td>Pronouns (SOP)</td><td id="tdPronouns">-/-/-</td></tr>
+								<tr><td>Pronouns (RPa)</td><td id="tdPronouns2">-/-</td></tr>
+								<tr><td>Level</td><td id="tdLevel">-</td></tr>
+							</tbody>
+						</table>
+						<table id="Abilities">
+							<caption>Abilities</caption>
+							<thead>
+								<tr><th>Ability</th><th>Value</th><th>Modifier</th></tr>
+							</thead>
+							<tbody>
+								<tr><td>STR</td><td id="tdStr">-</td><td id="tdStrMod">-</td></tr>
+								<tr><td>DEX</td><td id="tdDex">-</td><td id="tdDexMod">-</td></tr>
+								<tr><td>CON</td><td id="tdCon">-</td><td id="tdConMod">-</td></tr>
+								<tr><td>INT</td><td id="tdInt">-</td><td id="tdIntMod">-</td></tr>
+								<tr><td>WIS</td><td id="tdWis">-</td><td id="tdWisMod">-</td></tr>
+								<tr><td>CHA</td><td id="tdCha">-</td><td id="tdChaMod">-</td></tr>
+							</tbody>
+						</table>
 					</div>
 					<div id="metaPane_page_Equipment" class="page-control-page">
 						Equipment
@@ -95,9 +121,9 @@
 					</div>
 				</div>
 				<div id="metaPane_ts" class="tab-strip">
-					<div id="metaPane_tab_Player" class="tab-strip-tab button-like"><span>Player</span></div>
-					<div id="metaPane_tab_Equipment" class="tab-strip-tab button-like"><span>Equip</span></div>
-					<div id="metaPane_tab_World" class="tab-strip-tab button-like"><span>World</span></div>
+					<div id="metaPane_tab_Player" class="tab-strip-tab button-like"><span><u>P</u>layer</span></div>
+					<div id="metaPane_tab_Equipment" class="tab-strip-tab button-like"><span>E<u>q</u>uip</span></div>
+					<div id="metaPane_tab_World" class="tab-strip-tab button-like"><span>W<u>o</u>rld</span></div>
 					<div class="tab-gutter"></div>
 				</div>
 			</div>
@@ -113,7 +139,7 @@
 					<fieldset class="input-flex transparent-fieldset">
 						<div class="input-flex-line">
 							<label id="consoleInputLabel" style="flex-grow: 0;" for="consoleInput">></label>
-							<input style="flex-grow: 1; width: inherit;" id="consoleInput" type="text" />
+							<input style="flex-grow: 1;" id="consoleInput" type="text" />
 							<input id="consoleSubmit" type="submit" value="Submit" />
 						</div>
 					</fieldset>

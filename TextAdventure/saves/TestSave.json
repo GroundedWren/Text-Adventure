@@ -1,12 +1,62 @@
 {
 	"Meta": {
 		"Title": "Test Game",
-		"Creator": "Vera"
+		"Creator": "Vera",
+		"Date": "2023"
 	},
 	"Character": {
-		"Name": "Avi"
+		"Name": null,
+		"Level": 1,
+		"Pronouns": {
+			"Subjective": null,
+			"Objective": null,
+			"Possessive": null,
+			"Reflexive": null,
+			"PossessiveAdjective": null
+		},
+		"Abilities": {
+			"Str": null,
+			"Dex": null,
+			"Con": null,
+			"Int": null,
+			"Wis": null,
+			"Cha": null
+		},
+		"MaxHP": null,
+		"HP": null,
+		"Area": null
 	},
 	"World": {
-		
+		"Areas": {
+			"0": {
+				"StoryText": null,
+				"Items": [],
+				"NPCs": [],
+				"Portals": []
+			}
+		},
+		"Items": {
+			"0": {
+				"Name": null,
+				"LookText": null,
+				"Actions": {
+					"LOOK": null,
+					"GET": "0",
+					"USE": null,
+					"DROP": null
+				}
+			}
+		}
+	},
+	"Events": {
+		"0": {
+			"Description": null,
+			"Effect": {
+				"HP": -5
+			}
+		}
+	},
+	"NPCs": {
+		"0": {}
 	}
 }

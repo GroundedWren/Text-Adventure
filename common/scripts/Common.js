@@ -142,7 +142,7 @@ registerNamespace("Common", function (ns)
 		parentEl.innerHTML = "";
 
 		var messageEl = document.createElement("p");
-		messageEl.innerText = message;
+		messageEl.innerText = message.replaceAll("<br />", " ");
 
 		parentEl.appendChild(messageEl);
 	}
