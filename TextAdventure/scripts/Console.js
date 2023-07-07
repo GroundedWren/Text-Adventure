@@ -283,6 +283,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.hideAllOutput();
 			this.__consoleOutputList.classList.remove("hidden");
 			this.__consoleOutputList.scrollIntoView(false);
+			window.scrollTo(0, document.body.scrollHeight);
 		};
 		//#endregion
 	};
