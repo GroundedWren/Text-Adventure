@@ -7,6 +7,27 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	ns.MetaControl = null;
 	ns.InputConsole = null;
 
+	//#region Responsive Layout
+	ns.MINI_THRESHOLD = 600;
+
+	ns.showStory = function ()
+	{
+		document.getElementById("mainPage").classList.remove("meta");
+		document.getElementById("consoleInput").focus();
+	};
+
+	ns.showMeta = function ()
+	{
+		document.getElementById("mainPage").classList.add("meta");
+	};
+
+	ns.isMiniViewport = false;
+	ns.resizeListener = () =>
+	{
+		ns.isMiniViewport = window.innerWidth <= ns.MINI_THRESHOLD;
+	};
+	//#endregion
+
 	//#region File I/O
 	ns.saveToFile = () =>
 	{
@@ -83,6 +104,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		document.getElementById("consoleInput").focus();
 		if (ns.Data.Character.Name === null) //Assume this means character is not loaded
 		{
+			ns.showStory();
 			await ns.setupCharacter();
 		}
 		else
@@ -121,16 +143,13 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		document.getElementById("tdWis").innerText = abilities.Wis;
 		document.getElementById("tdCha").innerText = abilities.Cha;
 
-		document.getElementById("tdStrMod").innerText = calculateMod(abilities.Str);
-		document.getElementById("tdDexMod").innerText = calculateMod(abilities.Dex);
-		document.getElementById("tdConMod").innerText = calculateMod(abilities.Con);
-		document.getElementById("tdIntMod").innerText = calculateMod(abilities.Int);
-		document.getElementById("tdWisMod").innerText = calculateMod(abilities.Wis);
-		document.getElementById("tdChaMod").innerText = calculateMod(abilities.Cha);
-	};
-	function calculateMod(ability)
-	{
-		return Math.floor((ability - 10) / 2);
+		const mcam = ns.Mechanics.calculateAbilityMod;
+		document.getElementById("tdStrMod").innerText = mcam(abilities.Str);
+		document.getElementById("tdDexMod").innerText = mcam(abilities.Dex);
+		document.getElementById("tdConMod").innerText = mcam(abilities.Con);
+		document.getElementById("tdIntMod").innerText = mcam(abilities.Int);
+		document.getElementById("tdWisMod").innerText = mcam(abilities.Wis);
+		document.getElementById("tdChaMod").innerText = mcam(abilities.Cha);
 	};
 	//#endregion
 
@@ -205,8 +224,10 @@ window.onload = () =>
 		document.getElementById("consoleInputLabel"),
 		document.getElementById("consoleOutput")
 	);
-	ns.InputConsole.addCommand("LOOK", new ns.ConsoleCommand(ns.onLook, "Look around the space"));
 	//#endregion
+
+	window.addEventListener("resize", ns.resizeListener);
+	ns.resizeListener();
 };
 
 //window.onbeforeunload = (event) =>

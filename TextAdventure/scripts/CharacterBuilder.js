@@ -62,11 +62,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		);
 		ns.InputConsole.lineFeed();
 		setCharacterPronouns({
-			Subjective: subjective,
-			Objective: objective,
-			Possessive: possessive,
-			Reflexive: reflexive,
-			PossessiveAdjective: possessiveAdj
+			Subjective: subjective.toLowerCase(),
+			Objective: objective.toLowerCase(),
+			Possessive: possessive.toLowerCase(),
+			Reflexive: reflexive.toLowerCase(),
+			PossessiveAdjective: possessiveAdj.toLowerCase()
 		});
 
 		setCharacterLevel(1);
@@ -95,7 +95,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				"12": " People call you to open jars.",
 				"13": " You're thoroughly toned.",
 				"14": " You're a known gym-head.",
-				"15": " You're an arm-wrestlign champion.",
+				"15": " You're an arm-wrestling champion.",
 			}, points);
 			points -= getPointCost(str);
 			dex = await promptAbility("Dexterity (DEX):", "DEX", "Dexterity measures physical agility.", {
@@ -109,7 +109,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				"15": " You do parkour in your spare time.",
 			}, points);
 			points -= getPointCost(dex);
-			con = await promptAbility("Constitution (CON):", "CON", "Measures vital force and overall health.", {
+			con = await promptAbility("Constitution (CON):", "CON", "Constitution measures vital force and overall health.", {
 				"8": " You catch a nasty cold every season.",
 				"9": " When you do get sick, you're out for a few days.",
 				"10": " You shrug off most minor colds.",
@@ -120,7 +120,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				"15": " You have a deep well of youthful energy.",
 			}, points);
 			points -= getPointCost(con);
-			int = await promptAbility("Intelligence (INT):", "INT", "Measures mental acuity and analytical skill.", {
+			int = await promptAbility("Intelligence (INT):", "INT", "Intelligence measures mental acuity and analytical skill.", {
 				"8": " You have a hard time remembering what you had for breakfast.",
 				"9": " You usually have to ask people for their names a few times.",
 				"10": " You use your fingers to do quick sums.",
@@ -131,7 +131,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				"15": " 'Oh, the melting point of steel? 1425C - that's 2597F.'",
 			}, points);
 			points -= getPointCost(int);
-			wis = await promptAbility("Wisdom (WIS):", "WIS", "Measures awareness and insight.", {
+			wis = await promptAbility("Wisdom (WIS):", "WIS", "Wisdom measures awareness, insight, and fortitude.", {
 				"8": " Tomatoes? In your fruit salad? It's more likely than you think.",
 				"9": " You understand tomatoes don't belong anywhere near fruit salad.",
 				"10": " You quote an aphorism from time to time.",
@@ -142,7 +142,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				"15": " You could hold your own against torture.",
 			}, points);
 			points -= getPointCost(wis);
-			cha = await promptAbility("Charisma (CHA):", "CHA", "Strength determines raw physical ability.", {
+			cha = await promptAbility("Charisma (CHA):", "CHA", "Charisma measures force of personality and social skill.", {
 				"8": " You've learned it's better to keep to yourself.",
 				"9": " You're on good terms with most of the people you know.",
 				"10": " You have a few close friends.",

@@ -29,6 +29,7 @@
 
 	<script src="./scripts/Console.js"></script>
 	<script src="./scripts/CharacterBuilder.js"></script>
+	<script src="./scripts/Mechanics.js"></script>
 	<script src="./scripts/DungeoneerInterface.js"></script>
 </head>
 <body>
@@ -53,7 +54,7 @@
 		<main id="mainPage">
 			<div id="metaPane" class="page-control">
 				<div id="metaPane_pgc" class="page-container" aria-live="off">
-					<div id="metaPane_page_Player" class="page-control-page">
+					<div id="metaPane_page_Player" class="page-control-page" tabindex="-1">
 						<table id="BasicInfo">
 							<caption>Basic Information</caption>
 							<thead class="sr-only">
@@ -87,24 +88,27 @@
 					<div id="metaPane_page_World" class="page-control-page">
 						<div class="card">
 							<div class="card-header" role="heading" aria-level="2">Load</div>
-							<div class="input-vertical-line">
-								<label for="saveUpload">Upload Save</label>
-								<input id="saveUpload" type="file" style="width: inherit;" />
+							<div class="bottomSpacing">
+								<h3 id="hUploadSave">Upload Save</h3>
+								<input id="saveUpload" type="file" style="width: 100%;" aria-labelledby="hUploadSave" />
 							</div>
-							<h3>Fresh Games</h3>
-							<ul>
-								<li>
-									<button onclick="Pages.DungeoneerInterface.importFreshSave('TestSave','./saves/TestSave.json')">
-										TestSave
-									</button>
-								</li>
-							</ul>
+							<div class="bottomSpacing">
+								<h3 id="hPrebuiltGames">Prebuilt Games</h3>
+								<ul aria-labelledby="hPrebuiltGames">
+									<li>
+										<button onclick="Pages.DungeoneerInterface.importFreshSave('TestSave','./saves/TestSave.json')">
+											TestSave
+										</button>
+									</li>
+								</ul>
+							</div>
 						</div>
 						<div class="card">
 							<div class="card-header" role="heading" aria-level="2">Save</div>
-							<div class="input-vertical-line">
+							<div class="input-grid">
 								<input id="saveToFile"
 									   type="button"
+									   class="full-line"
 									   value="Save to File"
 									   onclick="Pages.DungeoneerInterface.saveToFile()" />
 							</div>
@@ -114,7 +118,6 @@
 							<table>
 								<thead class="sr-only"><tr><th>Property</th><th>Value</th></tr></thead>
 								<tbody id="currentGameTableBody">
-
 								</tbody>
 							</table>
 						</div>
@@ -124,6 +127,12 @@
 					<div id="metaPane_tab_Player" class="tab-strip-tab button-like"><span><u>P</u>layer</span></div>
 					<div id="metaPane_tab_Equipment" class="tab-strip-tab button-like"><span>E<u>q</u>uip</span></div>
 					<div id="metaPane_tab_World" class="tab-strip-tab button-like"><span>W<u>o</u>rld</span></div>
+					<button id="metaPane_tab_Story"
+						 class="tab-strip-tab button-like"
+						 tabindex="0"
+						 onclick="Pages.DungeoneerInterface.showStory()">
+						<span>Story</span>
+					</button>
 					<div class="tab-gutter"></div>
 				</div>
 			</div>
@@ -133,7 +142,7 @@
 				</p>
 			</div>
 			<div id="consolePane" role="region" aria-label="Console">
-				<div id="consoleOutput">
+				<div id="consoleOutput" tabindex="-1">
 				</div>
 				<form id="consoleForm" aria-label="Console input" class="transparent-form" autocomplete="off">
 					<fieldset class="input-flex transparent-fieldset">

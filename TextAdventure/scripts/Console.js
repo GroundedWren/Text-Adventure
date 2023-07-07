@@ -24,6 +24,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		__commands = {
 			ECHO: new ns.ConsoleCommand(Common.fcd(this, this.echo), "Repeats your input"),
 			CLEAR: new ns.ConsoleCommand(Common.fcd(this, this.clear), "Clears console history"),
+			META: new ns.ConsoleCommand(ns.showMeta, "Shows the metagame panel"),
 			HELP: new ns.ConsoleCommand(Common.fcd(this, this.help), "Shows this window :)"),
 		};
 
@@ -67,6 +68,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 			for (const command in commands)
 			{
+				if (command === "META" && !ns.isMiniViewport) { continue; }
+
 				var tableRow = this.dce("tr", tBody).el;
 				this.dce("td", tableRow, ["row-label"]).el.innerText = command;
 				this.dce("td", tableRow).el.innerText = commands[command].description;
@@ -86,6 +89,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		addContext(consoleContext)
 		{
 			consoleContext.commands["HELP"] = this.__commands.HELP;
+			consoleContext.commands["META"] = this.__commands.META;
 			consoleContext.setUpPromise();
 
 			if (!consoleContext.disableExit)
@@ -149,10 +153,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		help()
 		{
 			this.__buildHelpWindow();
-			Common.axAlertAssertive("Help table populated in console");
 
 			this.hideAllOutput();
 			this.__consoleHelpWindow.classList.remove("hidden");
+
+			this.__consoleOutputEl.focus();
 		};
 		//#endregion
 
@@ -221,10 +226,15 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			var context = this.__getContext();
 
 			var cmd = context.commands[commandStr];
+			if (commandStr === "META" && !ns.isMiniViewport) { cmd = null; }
+
 			if (cmd)
 			{
 				var result = cmd.handler(args);
-				if (commandStr !== "HELP" && context.autoExit) { this.removeContext(result); }
+				if (commandStr !== "HELP" && commandStr !== "META" && context.autoExit)
+				{
+					this.removeContext(result);
+				}
 			}
 			else if (context.nullary && (value !== "" || context.disableExit === false))
 			{
@@ -247,6 +257,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				this.__consoleOutputList,
 				["user-input"]
 			).el.innerHTML = `${this.__consoleInputLabelEl.innerText}${value}`;
+
+			this.__showOutputList();
 		}
 
 		__getContext()
