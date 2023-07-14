@@ -36,12 +36,18 @@
 	<div id="subveil">
 		<header>
 			<div class="banner fixed-header">
-				<div class="header-left">
-					<button id="homeButton"
-							role="link"
-							onclick="Common.navTo('./Home.html')">
+				<div class="banner-left">
+					<a class="banner-button hide-until-focus"
+					   role="link"
+					   href="#mainContent">
+						Skip to content
+					</a>
+					<a id="homeButton"
+					   class="banner-button"
+					   role="link"
+					   href="./Home.html">
 						<u>H</u>ome
-					</button>
+					</a>
 					<button id="shortcutsButton"
 							onclick="Common.Components.displayShortcuts('shortcutsButton')">
 						<u>S</u>hortcuts
@@ -51,7 +57,7 @@
 			</div>
 		</header>
 		<div id="BannerBuffer" class="banner-buffer"></div>
-		<main id="mainPage">
+		<main id="mainContent">
 			<div id="metaPane" class="page-control">
 				<div id="metaPane_pgc" class="page-container" aria-live="off">
 					<div id="metaPane_page_Player" class="page-control-page" tabindex="-1">

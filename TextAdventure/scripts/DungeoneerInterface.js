@@ -12,13 +12,13 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 	ns.showStory = function ()
 	{
-		document.getElementById("mainPage").classList.remove("meta");
+		document.getElementById("mainContent").classList.remove("meta");
 		document.getElementById("consoleInput").focus();
 	};
 
 	ns.showMeta = function ()
 	{
-		document.getElementById("mainPage").classList.add("meta");
+		document.getElementById("mainContent").classList.add("meta");
 	};
 
 	ns.isMiniViewport = false;
