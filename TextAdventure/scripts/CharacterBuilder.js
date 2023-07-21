@@ -3,6 +3,7 @@
  */
 registerNamespace("Pages.DungeoneerInterface", function (ns)
 {
+	//#region Prompt build
 	ns.setupCharacter = async function ()
 	{
 		ns.InputConsole.echo("Welcome, adventurer. What is your name?");
@@ -67,7 +68,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			Possessive: possessive.toLowerCase(),
 			Reflexive: reflexive.toLowerCase(),
 			PossessiveAdjective: possessiveAdj.toLowerCase()
-		});
+		});		
 
 		setCharacterLevel(1);
 
@@ -167,6 +168,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			);
 		}
 		setCharacterAbilities({ Str: str, Dex: dex, Con: con, Int: int, Wis: wis, Cha: cha });
+		setCharacterVitals({});
+		setCharacterSkills({});
 	};
 
 	async function promptAbility(prompt, ability, description, helpDescs, points)
@@ -217,4 +220,99 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				return 0;
 		}
 	};
+	//#endregion
+
+	//#region Setters
+	setCharacterName = (name) =>
+	{
+		name = name || "Vera";
+		ns.Data.Character.Name = name;
+		document.getElementById("tdName").innerText = name;
+	};
+	setCharacterPronouns = (pro) =>
+	{
+		pro = pro || {};
+		ns.Data.Character.Pronouns = pro;
+		document.getElementById("tdPronouns").innerText = `${pro.Subjective}/${pro.Objective}/${pro.Possessive}`;
+		document.getElementById("tdPronouns2").innerText = `${pro.Reflexive}/${pro.PossessiveAdjective}`;
+	};
+	setCharacterLevel = (level) =>
+	{
+		ns.Data.Character.Level = document.getElementById("tdLevel").innerText = level || 1;
+	};
+	setCharacterVitals = (vitals) =>
+	{
+		var dataVitals = ns.Data.Character.Vitals;
+
+		dataVitals.MaxHealth = vitals.MaxHealth
+			|| dataVitals.MaxHealth
+			|| (ns.Mechanics.calcHealthPerLevel(ns.Data.Character.Abilities) * ns.Data.Character.Level);
+
+		dataVitals.Health = vitals.Health
+			|| dataVitals.Health
+			|| dataVitals.MaxHealth;
+
+		dataVitals.MaxEvasion = vitals.MaxEvasion
+			|| dataVitals.MaxEvasion
+			|| (ns.Mechanics.calcEvasionPerLevel(ns.Data.Character.Abilities) * ns.Data.Character.Level);
+
+		dataVitals.Evasion = vitals.Evasion
+			|| dataVitals.Evasion
+			|| dataVitals.MaxEvasion;
+
+		document.getElementById("sMaxHealth").innerText = dataVitals.MaxHealth;
+		document.getElementById("sHealth").innerText = dataVitals.Health;
+		document.getElementById("sMaxEvasion").innerText = dataVitals.MaxEvasion;
+		document.getElementById("sEvasion").innerText = dataVitals.Evasion;
+	};
+
+	setCharacterAbilities = (abilities) =>
+	{
+		setAbility("Str", abilities);
+		setAbility("Dex", abilities);
+		setAbility("Con", abilities);
+		setAbility("Int", abilities);
+		setAbility("Wis", abilities);
+		setAbility("Cha", abilities);
+
+		const mcam = ns.Mechanics.calculateAbilityMod;
+		document.getElementById("tdStrMod").innerText = mcam(abilities.Str);
+		document.getElementById("tdDexMod").innerText = mcam(abilities.Dex);
+		document.getElementById("tdConMod").innerText = mcam(abilities.Con);
+		document.getElementById("tdIntMod").innerText = mcam(abilities.Int);
+		document.getElementById("tdWisMod").innerText = mcam(abilities.Wis);
+		document.getElementById("tdChaMod").innerText = mcam(abilities.Cha);
+	};
+	function setAbility(abbr, abilities)
+	{
+		var extAbility = ns.Data.Character.Abilities[abbr];
+		ns.Data.Character.Abilities[abbr] =
+			document.getElementById(`td${abbr}`).innerText = abilities[abbr] || extAbility || 10;
+	};
+
+	setCharacterSkills = (skills) =>
+	{
+		setSkill("Acrobatics", skills);
+		setSkill("Athletics", skills);
+		setSkill("Deception", skills);
+		setSkill("History", skills);
+		setSkill("Insight", skills);
+		setSkill("Intimidation", skills);
+		setSkill("Investigation", skills);
+		setSkill("Magic", skills);
+		setSkill("Medicine", skills);
+		setSkill("Nature", skills);
+		setSkill("Perception", skills);
+		setSkill("Performance", skills);
+		setSkill("Persuasion", skills);
+		setSkill("Stealth", skills);
+		setSkill("Survival", skills);
+	};
+	function setSkill(name, skills)
+	{
+		var extSkill = ns.Data.Character.Skills[name];
+		ns.Data.Character.Skills[name]
+			= document.getElementById(`td${name}`).innerText = skills.Acrobatics || extSkill || 0;
+	};
+	//#endregion
 });

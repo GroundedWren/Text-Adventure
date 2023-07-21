@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-vera">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,15 +30,19 @@
 <body>
 	<div id="subveil">
 		<header>
-			<h1><a href="https://www.textadventure.groundedwren.com/">TextAdventure / GroundedWren.com</a></h1>
-			<a class="banner-button hide-until-focus"
+			<h1>
+				<a href="https://www.textadventure.groundedwren.com/" class="heading-text">
+					TextAdventure / GroundedWren.com
+				</a>
+			</h1>
+			<a class="banner-link hide-until-focus"
 			   role="link"
 			   href="#mainContent"
 			   style="margin: auto;">
 				Skip to content
 			</a>
 			<div id="bnrTblNetWarning" class="inline-banner center warning">
-				<i class="fa-solid fa-triangle-exclamation" style="color: #FFFFFF;" title="Warning"></i>
+				<i class="fa-solid fa-triangle-exclamation icon" title="Warning"></i>
 				This is a work in progress
 			</div>
 		</header>
@@ -72,6 +76,12 @@
 					<h2>Updates</h2>
 					<div id="updates">
 						<div class="card">
+							<div class="card-header" role="heading" aria-level="3">7/21/23</div>
+							<p>
+								I've added more statistics to the character, still mostly borrowing from 5e but with a little Vera twist. I've also made it so loading/saving from a file works.
+							</p>
+						</div>
+						<div class="card">
 							<div class="card-header" role="heading" aria-level="3">7/13/23</div>
 							<p>
 								Mostly just a face-lift. I'm trying to make the dungeoneer interface console work well on mobile, but some of the issues can't be tested but on a real mobile device, so it's hard.
@@ -103,7 +113,10 @@
 		<div id="dialogRegion" role="region" aria-label="dialogs"></div>
 		<div class="banner-buffer"></div>
 		<footer class="banner fixed-footer">
-			A <a href="https://groundedwren.com" target="_blank">Grounded Wren</a> Project
+			<span></span>
+			<span>
+				A <a href="https://groundedwren.com" target="_blank" class="banner-link">Grounded Wren</a> Project
+			</span>
 		</footer>
 	</div>
 </body>

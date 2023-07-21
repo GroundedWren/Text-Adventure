@@ -2,7 +2,8 @@
 	"Meta": {
 		"Title": "Test Game",
 		"Creator": "Vera",
-		"Date": "2023"
+		"Date": "2023",
+		"Last Save": null
 	},
 	"Character": {
 		"Name": null,
@@ -14,6 +15,12 @@
 			"Reflexive": null,
 			"PossessiveAdjective": null
 		},
+		"Vitals": {
+			"Health": null,
+			"MaxHealth": null,
+			"Evasion": null,
+			"MaxEvasion": null
+		},
 		"Abilities": {
 			"Str": null,
 			"Dex": null,
@@ -22,8 +29,22 @@
 			"Wis": null,
 			"Cha": null
 		},
-		"MaxHP": null,
-		"HP": null,
+		"Skills": {
+			"Acrobatics": null,
+			"Athletics": null,
+			"Deception": null,
+			"History": null,
+			"Insight": null,
+			"Intimidation": null,
+			"Magic": null,
+			"Medicine": null,
+			"Nature": null,
+			"Perception": null,
+			"Performance": null,
+			"Persuasion": null,
+			"Stealth": null,
+			"Survival": null
+		},
 		"Area": null
 	},
 	"World": {

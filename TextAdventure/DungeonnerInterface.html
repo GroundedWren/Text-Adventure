@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-vera">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,13 +37,13 @@
 		<header>
 			<div class="banner fixed-header">
 				<div class="banner-left">
-					<a class="banner-button hide-until-focus"
+					<a class="banner-link hide-until-focus"
 					   role="link"
 					   href="#mainContent">
 						Skip to content
 					</a>
-					<a id="homeButton"
-					   class="banner-button"
+					<a id="homeLink"
+					   class="banner-link"
 					   role="link"
 					   href="./Home.html">
 						<u>H</u>ome
@@ -63,14 +63,28 @@
 					<div id="metaPane_page_Player" class="page-control-page" tabindex="-1">
 						<table id="BasicInfo">
 							<caption>Basic Information</caption>
-							<thead class="sr-only">
-								<tr><th>Property</th><th>Value</th></tr>
-							</thead>
 							<tbody>
-								<tr><td>Name</td><td id="tdName">-</td></tr>
-								<tr><td>Pronouns (SOP)</td><td id="tdPronouns">-/-/-</td></tr>
-								<tr><td>Pronouns (RPa)</td><td id="tdPronouns2">-/-</td></tr>
-								<tr><td>Level</td><td id="tdLevel">-</td></tr>
+								<tr><th scope="row">Name</th><td id="tdName">-</td></tr>
+								<tr><th scope="row">Pronouns (S/O/P)</th><td id="tdPronouns">-/-/-</td></tr>
+								<tr><th scope="row">Pronouns (R/Pa)</th><td id="tdPronouns2">-/-</td></tr>
+								<tr><th scope="row">Level</th><td id="tdLevel">-</td></tr>
+							</tbody>
+						</table>
+						<table id="VitalInfo">
+							<caption>Vitals</caption>
+							<tbody>
+								<tr>
+									<th scope="row">Health</th>
+									<td><span id="sHealth">-</span>/<span id="sMaxHealth">-</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Armor</th>
+									<td><span id="sArmor">-</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Evasion</th>
+									<td><span id="sEvasion">-</span>/<span id="sMaxEvasion">-</span></td>
+								</tr>
 							</tbody>
 						</table>
 						<table id="Abilities">
@@ -87,6 +101,29 @@
 								<tr><td>CHA</td><td id="tdCha">-</td><td id="tdChaMod">-</td></tr>
 							</tbody>
 						</table>
+						<table id="Skills">
+							<caption>Skills</caption>
+							<thead>
+								<tr><th>Skill</th><th>Bonus</th></tr>
+							</thead>
+							<tbody>
+								<tr><td>Acrobatics</td><td id="tdAcrobatics">-</td></tr>
+								<tr><td>Athletics</td><td id="tdAthletics">-</td></tr>
+								<tr><td>Deception</td><td id="tdDeception">-</td></tr>
+								<tr><td>History</td><td id="tdHistory">-</td></tr>
+								<tr><td>Insight</td><td id="tdInsight">-</td></tr>
+								<tr><td>Intimidation</td><td id="tdIntimidation">-</td></tr>
+								<tr><td>Investigation</td><td id="tdInvestigation">-</td></tr>
+								<tr><td>Magic</td><td id="tdMagic">-</td></tr>
+								<tr><td>Medicine</td><td id="tdMedicine">-</td></tr>
+								<tr><td>Nature</td><td id="tdNature">-</td></tr>
+								<tr><td>Perception</td><td id="tdPerception">-</td></tr>
+								<tr><td>Performance</td><td id="tdPerformance">-</td></tr>
+								<tr><td>Persuasion</td><td id="tdPersuasion">-</td></tr>
+								<tr><td>Stealth</td><td id="tdStealth">-</td></tr>
+								<tr><td>Survival</td><td id="tdSurvival">-</td></tr>
+							</tbody>
+						</table>
 					</div>
 					<div id="metaPane_page_Equipment" class="page-control-page">
 						Equipment
@@ -96,7 +133,11 @@
 							<div class="card-header" role="heading" aria-level="2">Load</div>
 							<div class="bottomSpacing">
 								<h3 id="hUploadSave">Upload Save</h3>
-								<input id="saveUpload" type="file" style="width: 100%;" aria-labelledby="hUploadSave" />
+								<input id="saveUpload"
+									   type="file"
+									   accept=".save"
+									   style="width: 100%;"
+									   aria-labelledby="hUploadSave" />
 							</div>
 							<div class="bottomSpacing">
 								<h3 id="hPrebuiltGames">Prebuilt Games</h3>
@@ -122,7 +163,6 @@
 						<div id="currentGameMetaCard" class="card hidden">
 							<div class="card-header" role="heading" aria-level="2">Current Game</div>
 							<table>
-								<thead class="sr-only"><tr><th>Property</th><th>Value</th></tr></thead>
 								<tbody id="currentGameTableBody">
 								</tbody>
 							</table>
@@ -134,9 +174,9 @@
 					<div id="metaPane_tab_Equipment" class="tab-strip-tab button-like"><span>E<u>q</u>uip</span></div>
 					<div id="metaPane_tab_World" class="tab-strip-tab button-like"><span>W<u>o</u>rld</span></div>
 					<button id="metaPane_tab_Story"
-						 class="tab-strip-tab button-like"
-						 tabindex="0"
-						 onclick="Pages.DungeoneerInterface.showStory()">
+							class="tab-strip-tab button-like"
+							tabindex="0"
+							onclick="Pages.DungeoneerInterface.showStory()">
 						<span>Story</span>
 					</button>
 					<div class="tab-gutter"></div>

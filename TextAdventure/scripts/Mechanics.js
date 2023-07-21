@@ -5,6 +5,17 @@ registerNamespace("Pages.DungeoneerInterface.Mechanics", function (ns)
 {
 	ns.calculateAbilityMod = function(ability)
 	{
-		return Math.floor((ability - 10) / 2);
+		var abInt = parseInt(ability);
+		return Math.floor((abInt - 10) / 2);
+	};
+
+	ns.calcHealthPerLevel = function (abilities)
+	{
+		return ns.calculateAbilityMod(abilities.Con) + 8;
+	};
+
+	ns.calcEvasionPerLevel = function (abilities)
+	{
+		return ns.calculateAbilityMod(abilities.Dex) + 8;
 	};
 });

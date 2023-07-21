@@ -1,5 +1,11 @@
 ﻿header {
 	word-wrap: break-word;
+	background-color: var(--accent-color-2);
+	border-bottom: 1px solid var(--accent-color-2);
+}
+
+h1 {
+	background-color: var(--accent-color);
 }
 
 #content {
@@ -32,5 +38,5 @@ h1, h2 {
 }
 
 #updatesCard {
-	background-color: #331A4D;
+	background-color: var(--content-color);
 }

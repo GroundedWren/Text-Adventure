@@ -2,14 +2,17 @@
 	height: calc(100vh - 25px); /* Banner buffer */
 	width: 100%;
 	display: grid;
-	background-color: rebeccapurple;
+	background-color: var(--accent-color);
 	grid-template-columns: 250px 1fr;
 	grid-template-rows: minmax(230px, 1fr) minmax(25%, 250px);
 	grid-gap: 5px;
 }
 
+.z {
+}
+
 main > div {
-	background-color: black;
+	background-color: var(--content-color-2);
 }
 
 /*#region General */
@@ -27,7 +30,7 @@ h1, h2, h3, h4, h5, h6 {
 	text-align: center;
 }
 
-.bottomSpacing{
+.bottomSpacing {
 	margin-bottom: 5px;
 }
 
@@ -51,15 +54,42 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 }
 
-.page-container {
+#metaPane_pgc {
+	border: none;
+	background-color: var(--content-color);
+}
+
+.z {
+}
+
+#metaPane_pgc table {
+	margin-bottom: 10px;
+	background-color: var(--content-color-2);
+}
+
+#metaPane_pgc caption {
+	background-color: var(--accent-color);
+	color: var(--heading-color);
+}
+
+#metaPane_ts .tab-strip-tab {
+	height: auto;
+}
+
+#currentGameMetaCard table {
 	border: none;
 }
 
-.tab-strip-tab {
-	height: auto;
+#currentGameMetaCard th {
+	min-width: 75px
+}
+
+#currentGameTableBody td, #currentGameTableBody th {
+	border-top: none;
+	border-left: none;
+	border-right: none;
 }
 /*#endregion */
-
 /*#region Console */
 #consolePane {
 	display: flex;
@@ -94,6 +124,7 @@ h1, h2, h3, h4, h5, h6 {
 	margin-left: 5px;
 }
 /*#endregion */
+
 /*#region Story */
 #storyPane {
 	padding: 5px;

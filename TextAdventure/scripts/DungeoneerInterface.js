@@ -31,10 +31,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	//#region File I/O
 	ns.saveToFile = () =>
 	{
+		ns.Data.Meta["Last Save"] = new Date();
 		Common.FileLib.saveJSONFile(
-			{ text: "this is text", num: 5 },
+			ns.Data,
 			"New Save",
-			['.save', '.json']
+			['.save']
 		);
 	};
 
@@ -93,9 +94,15 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	};
 	function applyMetaData()
 	{
+		var lastSaveDate = ns.Data.Meta["Last Save"];
+		ns.Data.Meta["Last Save"] = lastSaveDate
+			? new Date(lastSaveDate).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" })
+			: "Never";
+
 		document.getElementById("currentGameTableBody").innerHTML = Object.keys(ns.Data.Meta).map(
-			key => `<tr><td>${key}</td><td>${ns.Data.Meta[key]}</td></tr>`
+			key => `<tr><th scope="row">${key}</th><td>${ns.Data.Meta[key]}</td></tr>`
 		).join("");
+
 		document.getElementById("currentGameMetaCard").classList.remove("hidden");
 	};
 	async function applyCharacterData()
@@ -111,45 +118,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		{
 			setCharacterName(ns.Data.Character.Name);
 			setCharacterPronouns(ns.Data.Character.Pronouns);
-			setCharacterAbilities(ns.Data.Character.Abilities)
+			setCharacterLevel(ns.Data.Character.Level);
+			setCharacterAbilities(ns.Data.Character.Abilities);
+			setCharacterVitals(ns.Data.Character.Vitals);
+			setCharacterSkills(ns.Data.Character.Skills);
 		}
-	};
-	setCharacterName = (name) =>
-	{
-		name = name || "Vera";
-		ns.Data.Character.Name = name;
-		document.getElementById("tdName").innerText = name;
-	};
-	setCharacterPronouns = (pro) =>
-	{
-		pro = pro || {};
-		ns.Data.Character.Pronouns = pro;
-		document.getElementById("tdPronouns").innerText = `${pro.Subjective}/${pro.Objective}/${pro.Possessive}`;
-		document.getElementById("tdPronouns2").innerText = `${pro.Reflexive}/${pro.PossessiveAdjective}`;
-	};
-	setCharacterLevel = (level) =>
-	{
-		ns.Data.Character.Level = level || 1;
-		document.getElementById("tdLevel").innerText = level;
-	};
-	setCharacterAbilities = (abilities) =>
-	{
-		abilities = abilities || {Str: 10, Dex: 10, Con: 10, Int: 10, Wis: 10, Cha: 10};
-		ns.Data.Character.Abilities = abilities;
-		document.getElementById("tdStr").innerText = abilities.Str;
-		document.getElementById("tdDex").innerText = abilities.Dex;
-		document.getElementById("tdCon").innerText = abilities.Con;
-		document.getElementById("tdInt").innerText = abilities.Int;
-		document.getElementById("tdWis").innerText = abilities.Wis;
-		document.getElementById("tdCha").innerText = abilities.Cha;
-
-		const mcam = ns.Mechanics.calculateAbilityMod;
-		document.getElementById("tdStrMod").innerText = mcam(abilities.Str);
-		document.getElementById("tdDexMod").innerText = mcam(abilities.Dex);
-		document.getElementById("tdConMod").innerText = mcam(abilities.Con);
-		document.getElementById("tdIntMod").innerText = mcam(abilities.Int);
-		document.getElementById("tdWisMod").innerText = mcam(abilities.Wis);
-		document.getElementById("tdChaMod").innerText = mcam(abilities.Cha);
 	};
 	//#endregion
 
@@ -167,10 +140,11 @@ window.onload = () =>
 {
 	const ns = Pages.DungeoneerInterface;
 	//#region Standard setup
+	Common.loadTheme();
 	Common.setUpAccessibility();
 	Common.Components.registerShortcuts({
 		"ALT+H": {
-			action: () => { document.getElementById("homeButton").click(); },
+			action: () => { document.getElementById("homeLink").click(); },
 			description: "Return to the home page"
 		},
 		"ALT+S": {
@@ -212,7 +186,7 @@ window.onload = () =>
 	{
 		Common.FileLib.parseJSONFile(
 			changeEv.target.files[0],
-			Common.fcd(ns, ns.saveUploaded, [changeEv.target.files[0]])
+			Common.fcd(ns, ns.saveUploaded, [changeEv.target.files[0].name])
 		);
 	});
 	//#endregion
