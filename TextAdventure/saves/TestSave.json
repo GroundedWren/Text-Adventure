@@ -62,7 +62,7 @@
 				"LookText": null,
 				"Actions": {
 					"LOOK": null,
-					"GET": "0",
+					"GET": 0,
 					"USE": null,
 					"DROP": null
 				}
@@ -74,7 +74,8 @@
 			"Description": null,
 			"Effect": {
 				"HP": -5
-			}
+			},
+			"Occurred": false
 		}
 	},
 	"NPCs": {

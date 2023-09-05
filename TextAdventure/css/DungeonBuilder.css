@@ -1,0 +1,115 @@
+﻿#mainContent {
+	padding-left: 10px;
+	padding-right: 10px;
+	min-height: calc(100vh - 50px);
+	display: grid;
+	grid-template-rows: min-content minmax(0, 1fr);
+	grid-gap: 5px;
+}
+
+h2, h3 {
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+
+h4, h5, h6 {
+	margin: 0px;
+	font-size: unset;
+}
+
+#metaForm {
+	width: auto;
+}
+
+#lowerSections {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+#dataSection {
+	flex-basis: 60%;
+	min-width: 320px;
+	flex-grow: 1;
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
+#pinsSection {
+	background-color: var(--content-color);
+	flex-basis: 40%;
+	min-width: 320px;
+	flex-grow: 1;
+	display: grid;
+	grid-template-columns: 1fr
+}
+
+.lowerSectionContent {
+	padding: 7px;
+	display: grid;
+	grid-template-rows: auto 1fr;
+}
+
+.page-control-page, .page-container {
+	background-color: var(--content-color);
+}
+
+.button-header {
+	display: grid;
+	grid-template-columns: 1fr minmax(auto, 100px);
+	height: 40px;
+	align-items: center;
+}
+
+.button-header > button  {
+	align-self: stretch;
+}
+
+#areaList {
+	display: flex;
+	flex-direction: column;
+}
+
+.data-pin-button {
+	min-width: 100px;
+}
+
+#dataCtrl_pgc {
+	min-height: 200px;
+}
+
+#pinList {
+	overflow: auto;
+}
+
+.card-line {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.input-grid > label {
+	border-bottom: 1px solid var(--accent-color);
+}
+
+.full-width-txa {
+	width: 100%;
+	resize: vertical;
+	min-width: max-content;
+}
+
+.centered {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.maxWidth500 {
+	max-width: 500px;
+}
+
+.backgroundColorContent {
+	background-color: var(--content-color);
+}

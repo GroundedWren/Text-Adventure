@@ -37,6 +37,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			"New Save",
 			['.save']
 		);
+
+		applyMetaData();
 	};
 
 	ns.__shouldApplySave = false;
@@ -116,20 +118,12 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		}
 		else
 		{
-			setCharacterName(ns.Data.Character.Name);
-			setCharacterPronouns(ns.Data.Character.Pronouns);
-			setCharacterLevel(ns.Data.Character.Level);
-			setCharacterAbilities(ns.Data.Character.Abilities);
-			setCharacterVitals(ns.Data.Character.Vitals);
-			setCharacterSkills(ns.Data.Character.Skills);
+			ns.Character.setupFromData();
 		}
 	};
 	//#endregion
 
 	//#region Console Commands
-	ns.onLook = () =>
-	{
-	};
 	//#endregion
 });
 

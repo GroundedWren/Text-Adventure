@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="theme-vera">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Dungeon Builder">
+	<title>Dungeon Builder</title>
+
+	<!-- Styles -->
+	<link rel="stylesheet" href="../common/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="../common/css/Controls.css" type="text/css" />
+
+	<link rel="stylesheet" href="./css/DungeonBuilder.css" type="text/css" />
+
+	<!-- ../scripts -->
+	<script src="../common/scripts/main.js"></script>
+
+	<script src="../common/scripts/Common.js"></script>
+	<script src="../common/scripts/DOMLib.js"></script>
+	<script src="../common/scripts/FileLib.js"></script>
+	<script src="../common/scripts/SVGLib.js"></script>
+	<script src="../common/scripts/Components/Shortcuts.js"></script>
+	<script src="../common/scripts/Components/ElementDragger.js"></script>
+	<script src="../common/scripts/Controls/Dialog.js"></script>
+	<script src="../common/scripts/Controls/Modal.js"></script>
+	<script src="../common/scripts/Controls/PageControl.js"></script>
+	<script src="../common/scripts/Controls/ZeroState.js"></script>
+
+	<script src="./scripts/DungeonBuilder.js"></script>
+</head>
+<body>
+	<div id="subveil">
+		<header>
+			<div class="banner fixed-header">
+				<div class="banner-left">
+					<a class="banner-link hide-until-focus"
+					   role="link"
+					   href="#mainContent">
+						Skip to content
+					</a>
+					<a id="homeLink"
+					   class="banner-link"
+					   role="link"
+					   href="./Home.html">
+						<u>H</u>ome
+					</a>
+					<button id="shortcutsButton"
+							onclick="Common.Components.displayShortcuts('shortcutsButton')">
+						<u>S</u>hortcuts
+					</button>
+				</div>
+				<span role="heading" aria-level="1">Dungeon Builder</span>
+			</div>
+		</header>
+		<div id="BannerBuffer" class="banner-buffer"></div>
+		<main id="mainContent">
+			<form id="metaForm" aria-labelledby="metaHeader" autocomplete="=off">
+				<h2 id="metaHeader">Metadata</h2>
+				<div class="input-horizontal-flex">
+					<div class="input-flex-line">
+						<label for="txtTitle">Title</label>
+						<input id="txtTitle" type="text" />
+					</div>
+					<div class="input-flex-line">
+						<label for="txaDescription">Description</label>
+						<textarea id="txaDescription" rows="1" cols="33"></textarea>
+					</div>
+					<div class="input-flex-line">
+						<label for="txtCreator">Creator</label>
+						<input id="txtCreator" type="text" />
+					</div>
+					<div class="input-flex-line">
+						<label for="txtDate">Date</label>
+						<span id="txtDate">-</span>
+					</div>
+				</div>
+			</form>
+			<div id="lowerSections">
+				<section id="dataSection" aria-labelledby="dataHeader">
+					<div id="dataSectionContent" class="lowerSectionContent">
+						<h2 id="dataHeader">Data</h2>
+						<div id="dataCtrl" class="page-control vertical-tabs">
+							<div id="dataCtrl_ts" class="tab-strip vertical-tabs">
+								<button id="dataCtrl_tab_Areas" class="tab-strip-tab button-like"><span>Areas</span></button>
+								<button id="dataCtrl_tab_Items" class="tab-strip-tab button-like"><span>Items</span></button>
+								<button id="dataCtrl_tab_Events" class="tab-strip-tab button-like"><span>Events</span></button>
+								<button id="dataCtrl_tab_NPCs" class="tab-strip-tab button-like"><span>NPCs</span></button>
+								<button id="dataCtrl_tab_Criteria" class="tab-strip-tab button-like"><span>Criteria</span></button>
+								<button id="dataCtrl_tab_Character" class="tab-strip-tab button-like"><span>Character</span></button>
+								<div class="tab-gutter"></div>
+							</div>
+							<div id="dataCtrl_pgc" class="page-container">
+								<div id="dataCtrl_page_Areas" class="page-control-page">
+									<div class="button-header">
+										<h3>Areas</h3>
+										<button id="newArea" onclick="Pages.DungeonBuilder.newArea()">New Area</button>
+									</div>
+									<div id="areaList">
+										<!-- Prototype card -->
+										<div class="card">
+											<div class="card-header">
+												<span role="heading" aria-level="4">Area 1</span>
+												<button class="data-pin-button">Pin</button>
+											</div>
+											<div class="card-line">
+												<div class="input-grid">
+													<label for="">ID</label>
+													<input id="" type="text" />
+												</div>
+												<fieldset>
+													<legend>Items</legend>
+													<div class="input-grid">
+														<label for="">Item 1 ID</label>
+														<input id="" type="text" />
+														<button class="full-line">Add Item</button>
+													</div>
+												</fieldset>
+											</div>
+											<div class="card-line">
+												<fieldset>
+													<legend>NPCs</legend>
+													<div class="input-grid">
+														<label for="">NPC 1 ID</label>
+														<input id="" type="text" />
+														<button class="full-line">Add NPC</button>
+													</div>
+												</fieldset>
+												<fieldset>
+													<legend>Events On-Visit</legend>
+													<div class="input-grid">
+														<label for="">Event 1 ID</label>
+														<input id="" type="text" />
+														<button class="full-line">Add Event</button>
+													</div>
+												</fieldset>
+											</div>
+											<hr />
+											<div class="button-header">
+												<h5>Story Texts</h5>
+												<button>New Story Text</button>
+											</div>
+											<fieldset class="centered backgroundColorContent">
+												<legend>Story Text 1</legend>
+												<fieldset class="maxWidth500">
+													<legend>Prereqs</legend>
+													<div class="input-grid">
+														<label for="">Prereq 1 ID</label>
+														<input id="" type="text" />
+														<button class="full-line">Add Prereq</button>
+													</div>
+												</fieldset>
+												<div class="input-vertical-line">
+													<label for="">Display Text</label>
+													<textarea id="" class="full-width-txa" rows="4"></textarea>
+												</div>
+											</fieldset>
+											<hr />
+											<div class="button-header">
+												<h5>Portals</h5>
+												<button>New Portal</button>
+											</div>
+											<fieldset class="backgroundColorContent">
+												<legend>Portal 1</legend>
+												<div class="card-line">
+													<div class="input-grid">
+														<label for="">Area ID</label>
+														<input id="" type="text" />
+													</div>
+													<div class="input-grid">
+														<label for="">Description</label>
+														<textarea id ="" class="full-width-txa" rows="2" cols="30"></textarea>
+													</div>
+												</div>
+												<div class="input-vertical-line">
+													<label for="">Access Text</label>
+													<textarea id="" class="full-width-txa" rows="4"></textarea>
+												</div>
+												<div class="card-line">
+													<fieldset>
+														<legend>Visibility Prereqs</legend>
+														<div class="input-grid">
+															<label for="">Visibility Prereq 1 ID</label>
+															<input id="" type="text" />
+															<button class="full-line">Add Visibility Prereq</button>
+														</div>
+													</fieldset>
+													<fieldset>
+														<legend>Access Prereqs</legend>
+														<div class="input-grid">
+															<label for="">Access Prereq 1 ID</label>
+															<input id="" type="text" />
+															<button class="full-line">Add Access Prereq</button>
+														</div>
+													</fieldset>
+												</div>
+											</fieldset>
+										</div>
+									</div>
+								</div>
+								<div id="dataCtrl_page_Items" class="page-control-page">
+									<div class="button-header">
+										<h3>Items</h3>
+										<button id="newItem" onclick="Pages.DungeonBuilder.newItem()">New Item</button>
+									</div>
+									<div id="itemList">
+										<!-- Prototype card -->
+										<div class="card">
+											<div class="card-header">
+												<span role="heading" aria-level="4">Item 1</span>
+												<button class="data-pin-button">Pin</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="dataCtrl_page_Events" class="page-control-page">
+									<div class="button-header">
+										<h3>Events</h3>
+										<button id="newItem" onclick="Pages.DungeonBuilder.newEvent()">New Event</button>
+									</div>
+									<div id="eventList">
+										<!-- Prototype card -->
+										<div class="card">
+											<div class="card-header">
+												<span role="heading" aria-level="4">Event 1</span>
+												<button class="data-pin-button">Pin</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="dataCtrl_page_NPCs" class="page-control-page">
+									<div class="button-header">
+										<h3>NPCs</h3>
+										<button id="newItem" onclick="Pages.DungeonBuilder.newNPC()">New NPC</button>
+									</div>
+									<div id="npcList">
+										<!-- Prototype card -->
+										<div class="card">
+											<div class="card-header">
+												<span role="heading" aria-level="4">NPC 1</span>
+												<button class="data-pin-button">Pin</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="dataCtrl_page_Criteria" class="page-control-page">
+									<div class="button-header">
+										<h3>Criteria</h3>
+										<button id="newCriteria" onclick="Pages.DungeonBuilder.newCriteria()">New Criteria</button>
+									</div>
+									<div id="criteriaList">
+										<!-- Prototype card -->
+										<div class="card">
+											<div class="card-header">
+												<span role="heading" aria-level="4">Criteria 1</span>
+												<button class="data-pin-button">Pin</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="dataCtrl_page_Character" class="page-control-page">
+									<h3>Character</h3>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section id="pinsSection" aria-labelledby="pinsHeader">
+					<div id="pinsSectionContent" class="lowerSectionContent">
+						<h2 id="pinsHeader">Pins</h2>
+						<div id="pinList">
+
+						</div>
+					</div>
+				</section>
+			</div>
+		</main>
+		<div class="banner-buffer"></div>
+		<footer class="banner fixed-footer">
+			<span></span>
+			<div class="banner-center">
+				<button id="shortcutsButton"
+						onclick="Pages.DungeonBuilder.newDungeon()">
+					New
+				</button>
+				<button id="newButton"
+						onclick="Pages.DungeonBuilder.loadDungeon()">
+					Load
+				</button>
+				<button id="saveButton"
+						onclick="Pages.DungeonBuilder.saveDungeon()">
+					Save
+				</button>
+			</div>
+		</footer>
+		<div id="dialogRegion" role="region" aria-label="dialogs"></div>
+	</div>
+</body>
+</html>
