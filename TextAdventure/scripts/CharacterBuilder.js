@@ -10,7 +10,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		await ns.InputConsole.addContext(new ns.ConsoleContext(
 			"NAME",
 			{},
-			setCharacterName,
+			ns.Character.setName,
 			{ disableExit: true, autoExit: true },
 			"Enter a name for yourself.")
 		);

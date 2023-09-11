@@ -97,7 +97,6 @@ h4, h5, h6 {
 .full-width-txa {
 	width: 100%;
 	resize: vertical;
-	min-width: max-content;
 }
 
 .centered {

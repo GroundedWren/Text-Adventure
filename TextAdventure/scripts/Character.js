@@ -3,10 +3,17 @@
  */
 registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 {
-	ns.getData = function ()
-	{
-		return Pages.DungeoneerInterface.Data.Character;
+	//#region Shortcut Properties
+	Object.defineProperty(ns, "Data", {
+		get: function ()
+		{
+			return Pages.DungeoneerInterface.Data.Character;
+		}
+	});
+	const di = {
+		get Mechanics() { return Pages.DungeoneerInterface.Mechanics; }
 	};
+	//#endregion
 
 	//#region Enums
 	ns.Skills = {
@@ -56,27 +63,27 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 	ns.setName = (name) =>
 	{
 		name = name || "Vera";
-		ns.getData().Name = name;
+		ns.Data.Name = name;
 		document.getElementById("tdName").innerText = name;
 	};
 	ns.setPronouns = (pro) =>
 	{
 		pro = pro || {};
-		ns.getData().Pronouns = pro;
+		ns.Data.Pronouns = pro;
 		document.getElementById("tdPronouns").innerText = `${pro.Subjective}/${pro.Objective}/${pro.Possessive}`;
 		document.getElementById("tdPronouns2").innerText = `${pro.Reflexive}/${pro.PossessiveAdjective}`;
 	};
 	ns.setLevel = (level) =>
 	{
-		ns.getData().Level = document.getElementById("tdLevel").innerText = level || 1;
+		ns.Data.Level = document.getElementById("tdLevel").innerText = level || 1;
 	};
 	ns.setVitals = (vitals) =>
 	{
-		var dataVitals = ns.getData().Vitals;
+		var dataVitals = ns.Data.Vitals;
 
 		dataVitals.MaxHealth = vitals.MaxHealth
 			|| dataVitals.MaxHealth
-			|| (ns.Mechanics.calcHealthPerLevel(ns.getData().Abilities) * ns.getData().Level);
+			|| (di.Mechanics.calcHealthPerLevel(ns.Data.Abilities) * ns.Data.Level);
 
 		dataVitals.Health = vitals.Health
 			|| dataVitals.Health
@@ -84,7 +91,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 
 		dataVitals.MaxEvasion = vitals.MaxEvasion
 			|| dataVitals.MaxEvasion
-			|| (ns.Mechanics.calcEvasionPerLevel(ns.getData().Abilities) * ns.getData().Level);
+			|| (di.Mechanics.calcEvasionPerLevel(ns.Data.Abilities) * ns.Data.Level);
 
 		dataVitals.Evasion = vitals.Evasion
 			|| dataVitals.Evasion
@@ -98,29 +105,28 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 
 	ns.setAbilities = (abilities) =>
 	{
-		const mcam = Pages.DungeoneerInterface.Mechanics.calculateAbilityMod;
-		ns.Abilities.forEach(abi =>
+		Object.keys(ns.Data.Abilities).forEach(abi =>
 		{
 			setAbility(abi, abilities);
-			ns.getAbilityModTd(abi).innerText = mcam(abi)
+			ns.getAbilityModTd(abi).innerText = di.Mechanics.calculateAbilityMod(abi)
 		});
 	};
 	function setAbility(abbr, abilities)
 	{
-		var extAbility = ns.getData().Abilities[abbr];
-		ns.getData().Abilities[abbr] = document.getElementById(`td${abbr}`).innerText = abilities[abbr]
+		var extAbility = ns.Data.Abilities[abbr];
+		ns.Data.Abilities[abbr] = document.getElementById(`td${abbr}`).innerText = abilities[abbr]
 			|| extAbility
 			|| 10;
 	};
 
-	nd.setSkills = (skills) =>
+	ns.setSkills = (skills) =>
 	{
-		ns.Skills.forEach(skillNm =>
+		Object.keys(ns.Skills).forEach(skillNm =>
 		{
 			const skillVal = skills[skillNm];
-			var extSkill = ns.getData().Skills[skillNm];
+			var extSkill = ns.Data.Skills[skillNm];
 
-			ns.getData().Skills[skillNm] = document.getElementById(`td${skillNm}`).innerText = skillVal
+			ns.Data.Skills[skillNm] = document.getElementById(`td${skillNm}`).innerText = skillVal
 				|| extSkill
 				|| 0;
 		});
