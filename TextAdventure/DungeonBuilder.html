@@ -26,7 +26,8 @@
 	<script src="../common/scripts/Controls/PageControl.js"></script>
 	<script src="../common/scripts/Controls/ZeroState.js"></script>
 
-	<script src="./scripts/DungeonBuilder.js"></script>
+	<script src="./scripts/builder/DungeonBuilder.js"></script>
+	<script src="./scripts/builder/PinnableWidgets.js"></script>
 </head>
 <body>
 	<div id="subveil">
@@ -81,12 +82,12 @@
 						<h2 id="dataHeader">Data</h2>
 						<div id="dataCtrl" class="page-control vertical-tabs">
 							<div id="dataCtrl_ts" class="tab-strip vertical-tabs">
-								<button id="dataCtrl_tab_Areas" class="tab-strip-tab button-like"><span>Areas</span></button>
-								<button id="dataCtrl_tab_Items" class="tab-strip-tab button-like"><span>Items</span></button>
-								<button id="dataCtrl_tab_Events" class="tab-strip-tab button-like"><span>Events</span></button>
-								<button id="dataCtrl_tab_NPCs" class="tab-strip-tab button-like"><span>NPCs</span></button>
-								<button id="dataCtrl_tab_Criteria" class="tab-strip-tab button-like"><span>Criteria</span></button>
-								<button id="dataCtrl_tab_Character" class="tab-strip-tab button-like"><span>Character</span></button>
+								<button id="dataCtrl_tab_Areas" class="tab-strip-tab button-like"><span><u>A</u>reas</span></button>
+								<button id="dataCtrl_tab_Items" class="tab-strip-tab button-like"><span><u>I</u>tems</span></button>
+								<button id="dataCtrl_tab_Events" class="tab-strip-tab button-like"><span>E<u>v</u>ents</span></button>
+								<button id="dataCtrl_tab_NPCs" class="tab-strip-tab button-like"><span><u>N</u>PCs</span></button>
+								<button id="dataCtrl_tab_Criteria" class="tab-strip-tab button-like"><span><u>C</u>riteria</span></button>
+								<button id="dataCtrl_tab_Character" class="tab-strip-tab button-like"><span>Cha<u>r</u>acter</span></button>
 								<div class="tab-gutter"></div>
 							</div>
 							<div id="dataCtrl_pgc" class="page-container">
@@ -96,105 +97,7 @@
 										<button id="newArea" onclick="Pages.DungeonBuilder.newArea()">New Area</button>
 									</div>
 									<div id="areaList">
-										<!-- Prototype card -->
-										<div class="card">
-											<div class="card-header">
-												<span role="heading" aria-level="4">Area 1</span>
-												<button class="data-pin-button">Pin</button>
-											</div>
-											<div class="card-line">
-												<div class="input-grid">
-													<label for="">ID</label>
-													<input id="" type="text" />
-												</div>
-												<fieldset>
-													<legend>Items</legend>
-													<div class="input-grid">
-														<label for="">Item 1 ID</label>
-														<input id="" type="text" />
-														<button class="full-line">Add Item</button>
-													</div>
-												</fieldset>
-											</div>
-											<div class="card-line">
-												<fieldset>
-													<legend>NPCs</legend>
-													<div class="input-grid">
-														<label for="">NPC 1 ID</label>
-														<input id="" type="text" />
-														<button class="full-line">Add NPC</button>
-													</div>
-												</fieldset>
-												<fieldset>
-													<legend>Events On-Visit</legend>
-													<div class="input-grid">
-														<label for="">Event 1 ID</label>
-														<input id="" type="text" />
-														<button class="full-line">Add Event</button>
-													</div>
-												</fieldset>
-											</div>
-											<hr />
-											<div class="button-header">
-												<h5>Story Texts</h5>
-												<button>New Story Text</button>
-											</div>
-											<fieldset class="centered backgroundColorContent">
-												<legend>Story Text 1</legend>
-												<fieldset class="maxWidth500">
-													<legend>Prereqs</legend>
-													<div class="input-grid">
-														<label for="">Prereq 1 ID</label>
-														<input id="" type="text" />
-														<button class="full-line">Add Prereq</button>
-													</div>
-												</fieldset>
-												<div class="input-vertical-line">
-													<label for="">Display Text</label>
-													<textarea id="" class="full-width-txa" rows="4"></textarea>
-												</div>
-											</fieldset>
-											<hr />
-											<div class="button-header">
-												<h5>Portals</h5>
-												<button>New Portal</button>
-											</div>
-											<fieldset class="backgroundColorContent">
-												<legend>Portal 1</legend>
-												<div class="card-line">
-													<div class="input-grid">
-														<label for="">Area ID</label>
-														<input id="" type="text" />
-													</div>
-													<div class="input-grid">
-														<label for="">Description</label>
-														<textarea id ="" class="full-width-txa" rows="2" cols="25"></textarea>
-													</div>
-												</div>
-												<div class="input-vertical-line">
-													<label for="">Access Text</label>
-													<textarea id="" class="full-width-txa" rows="4"></textarea>
-												</div>
-												<div class="card-line">
-													<fieldset>
-														<legend>Visibility Prereqs</legend>
-														<div class="input-grid">
-															<label for="">Visibility Prereq 1 ID</label>
-															<input id="" type="text" />
-															<button class="full-line">Add Visibility Prereq</button>
-														</div>
-													</fieldset>
-													<fieldset>
-														<legend>Access Prereqs</legend>
-														<div class="input-grid">
-															<label for="">Access Prereq 1 ID</label>
-															<input id="" type="text" />
-															<button class="full-line">Add Access Prereq</button>
-														</div>
-													</fieldset>
-												</div>
-											</fieldset>
-										</div>
+										<!-- AREAS -->
 									</div>
 								</div>
 								<div id="dataCtrl_page_Items" class="page-control-page">
@@ -203,13 +106,7 @@
 										<button id="newItem" onclick="Pages.DungeonBuilder.newItem()">New Item</button>
 									</div>
 									<div id="itemList">
-										<!-- Prototype card -->
-										<div class="card">
-											<div class="card-header">
-												<span role="heading" aria-level="4">Item 1</span>
-												<button class="data-pin-button">Pin</button>
-											</div>
-										</div>
+										<!-- ITEMS -->
 									</div>
 								</div>
 								<div id="dataCtrl_page_Events" class="page-control-page">
@@ -218,13 +115,7 @@
 										<button id="newItem" onclick="Pages.DungeonBuilder.newEvent()">New Event</button>
 									</div>
 									<div id="eventList">
-										<!-- Prototype card -->
-										<div class="card">
-											<div class="card-header">
-												<span role="heading" aria-level="4">Event 1</span>
-												<button class="data-pin-button">Pin</button>
-											</div>
-										</div>
+										<!-- EVENTS -->
 									</div>
 								</div>
 								<div id="dataCtrl_page_NPCs" class="page-control-page">
@@ -233,13 +124,7 @@
 										<button id="newItem" onclick="Pages.DungeonBuilder.newNPC()">New NPC</button>
 									</div>
 									<div id="npcList">
-										<!-- Prototype card -->
-										<div class="card">
-											<div class="card-header">
-												<span role="heading" aria-level="4">NPC 1</span>
-												<button class="data-pin-button">Pin</button>
-											</div>
-										</div>
+										<!-- NPCs -->
 									</div>
 								</div>
 								<div id="dataCtrl_page_Criteria" class="page-control-page">
@@ -248,13 +133,7 @@
 										<button id="newCriteria" onclick="Pages.DungeonBuilder.newCriteria()">New Criteria</button>
 									</div>
 									<div id="criteriaList">
-										<!-- Prototype card -->
-										<div class="card">
-											<div class="card-header">
-												<span role="heading" aria-level="4">Criteria 1</span>
-												<button class="data-pin-button">Pin</button>
-											</div>
-										</div>
+										<!-- CRITERIA -->
 									</div>
 								</div>
 								<div id="dataCtrl_page_Character" class="page-control-page">

@@ -70,8 +70,17 @@ h4, h5, h6 {
 	flex-direction: column;
 }
 
-.data-pin-button {
-	min-width: 100px;
+.card-header-btns {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	width: 175px;
+}
+
+.card-header-btns button{
+	flex-basis: 25px;
+	max-width: 100px;
+	flex-grow: 1;
 }
 
 #dataCtrl_pgc {

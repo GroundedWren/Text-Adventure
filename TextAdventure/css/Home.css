@@ -26,9 +26,26 @@ nav > ul{
 	padding-left: 20px;
 }
 
-h1, h2 {
+h2, h3, h4, h5, h6 {
+	font-weight: initial;
+	margin-top: 2px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 5px;
+}
+
+h1 {
 	text-align: center;
-	margin: 0px;
+}
+
+h2 {
+	font-size: 1.25rem;
+	font-weight: initial;
+}
+
+h1, h2 {
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 #updates {
@@ -39,4 +56,40 @@ h1, h2 {
 
 #updatesCard {
 	background-color: var(--content-color);
+}
+
+#updatesCard h2 {
+	text-align: center;
+}
+
+#leftContent {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+table {
+	border: none;
+}
+
+td, th {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	padding-top: 5px;
+	width: auto;
+}
+
+th {
+	text-align: left;
+	padding-right: 5px;
+}
+
+/* Pages.Home.MINI_THRESHOLD */
+@media (max-width: 1400px) {
+	#leftContent {
+		flex-direction: row;
+	}
 }

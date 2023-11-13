@@ -46,16 +46,19 @@
 			</div>
 		</header>
 		<div id="content">
-			<nav class="card">
-				<div class="card-header" role="heading" aria-level="2">Pages</div>
-				<ul>
-					<li><a href="./DungeonnerInterface.html">Dungeoneer Interface</a></li>
-					<li><a href="./DungeonBuilder.html">Dungeon Builder</a></li>
-				</ul>
-			</nav>
+			<div id="leftContent">
+				<nav class="card">
+					<h2 class="card-header">Pages</h2>
+					<ul>
+						<li><a href="./DungeonnerInterface.html">Dungeoneer Interface</a></li>
+						<li><a href="./DungeonBuilder.html">Dungeon Builder</a></li>
+					</ul>
+				</nav>
+				<gw-themer></gw-themer>
+			</div>
 			<main id="mainContent">
 				<div id="about" class="card">
-					<div class="card-header" role="heading" aria-level="2">About</div>
+					<h2 class="card-header">About</h2>
 					<p>
 						This subdomain is for a text-based adventure game project.
 					</p>
@@ -76,38 +79,44 @@
 					<h2>Updates</h2>
 					<div id="updates">
 						<div class="card">
-							<div class="card-header" role="heading" aria-level="3">9/5/23</div>
+							<h3 class="card-header"><time datetime="2023-11-12T06:00:00.000Z">11/12/23</time></h3>
+							<p>
+								The Dunegon Builder is beginning to come along - basic UI is mocked up and some skeleton functionality exists. Also, I added a theme switcher.
+							</p>
+						</div>
+						<div class="card">
+							<h3 class="card-header"><time datetime="2023-09-05T05:00:00.000Z">9/5/23</time></h3>
 							<p>
 								New page- Dungeon Builder! On a long international flight I mapped out what the structure of the game world might be, and I've created this page to help create save files which conform to that format. It's still a WIP.'
 							</p>
 						</div>
 						<div class="card">
-							<div class="card-header" role="heading" aria-level="3">7/21/23</div>
+							<h3 class="card-header"><time datetime="2023-07-21T05:00:00.000Z">7/21/23</time></h3>
 							<p>
 								I've added more statistics to the character, still mostly borrowing from 5e but with a little Vera twist. I've also made it so loading/saving from a file works.
 							</p>
 						</div>
 						<div class="card">
-							<div class="card-header" role="heading" aria-level="3">7/13/23</div>
+							<h3 class="card-header"><time datetime="2023-07-13T05:00:00.000Z">7/13/23</time></h3>
 							<p>
 								Mostly just a face-lift. I'm trying to make the dungeoneer interface console work well on mobile, but some of the issues can't be tested but on a real mobile device, so it's hard.
 							</p>
 						</div>
 						<div class="card">
-							<div class="card-header" role="heading" aria-level="3">7/6/23</div>
+							<h3 class="card-header"><time datetime="2023-07-06T05:00:00.000Z">7/6/23</time></h3>
 							<p>
 								Responsive layout! The Dungeoneer Interface now meets
 								<a href="https://www.w3.org/TR/WCAG21/#reflow" target="_blank">WCAG 1.4.10</a> so that it works well on mobile :)
 							</p>
 						</div>
 						<div class="card">
-							<div class="card-header" role="heading" aria-level="3">7/3/23</div>
+							<h3 class="card-header"><time datetime="2023-07-03T05:00:00.000Z">7/3/23</time></h3>
 							<p>
 								Created the console framework to handle a configurable set of commands. Created the first part of a caracter builder.
 							</p>
 						</div>
 						<div class="card">
-							<div class="card-header" role="heading" aria-level="3">7/2/23</div>
+							<h3 class="card-header"><time datetime="2023-07-02T05:00:00.000Z">7/2/23</time></h3>
 							<p>
 								Re-launched! This time I've structured the project directory so that the text adventure can more easily share common code with the main website.
 							</p>
@@ -121,7 +130,7 @@
 		<footer class="banner fixed-footer">
 			<span></span>
 			<span>
-				A <a href="https://groundedwren.com" target="_blank" class="banner-link">Grounded Wren</a> Project
+				A <a href="https://groundedwren.com" class="banner-link">Grounded Wren</a> Project
 			</span>
 		</footer>
 	</div>

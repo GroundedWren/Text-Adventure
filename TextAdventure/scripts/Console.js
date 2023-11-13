@@ -36,8 +36,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__consoleInputLabelEl = consoleLabel;
 			this.__consoleOutputEl = consoleOutput;
 
-			this.__consoleOutputList = this.dce("ul", this.__consoleOutputEl, ["hidden"]).el;
-			this.__consoleHelpWindow = this.dce("div", this.__consoleOutputEl, ["hidden"]).el;
+			this.__consoleOutputList = this.dce("ul", this.__consoleOutputEl, undefined, ["hidden"]);
+			this.__consoleHelpWindow = this.dce("div", this.__consoleOutputEl, undefined, ["hidden"]);
 
 			consoleForm.addEventListener('submit', event =>
 			{
@@ -54,15 +54,14 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		{
 			const context = this.__getContext();
 			this.__consoleHelpWindow.innerHTML = null;
-			this.dce("h2", this.__consoleHelpWindow).el.innerText = "Console Help";
+			this.dce("h2", this.__consoleHelpWindow, undefined, undefined, "Console Help");
 			if (context.helpText)
 			{
-				this.dce("p", this.__consoleHelpWindow, ["center-text"]).el.innerText = context.helpText;
+				this.dce("p", this.__consoleHelpWindow, undefined, ["center-text"], context.helpText);
 			}
-			const table = this.dce("table", this.__consoleHelpWindow).el;
-			const tHead = this.dce("thead", table).el;
-			tHead.innerHTML = "<tr><th>Command</th><th>Description</th></tr>";
-			const tBody = this.dce("tbody", table).el;
+			const table = this.dce("table", this.__consoleHelpWindow);
+			this.dce("thead", table, undefined, undefined, "<tr><th>Command</th><th>Description</th></tr>");
+			const tBody = this.dce("tbody", table);
 
 			const commands = context.commands;
 
@@ -70,9 +69,9 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			{
 				if (command === "META" && !ns.isMiniViewport) { continue; }
 
-				var tableRow = this.dce("tr", tBody).el;
-				this.dce("td", tableRow, ["row-label"]).el.innerText = command;
-				this.dce("td", tableRow).el.innerText = commands[command].description;
+				var tableRow = this.dce("tr", tBody);
+				this.dce("td", tableRow, undefined, ["row-label"], command);
+				this.dce("td", tableRow, undefined, undefined, commands[command].description);
 			}
 		};
 		//#endregion
@@ -122,7 +121,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		__echoBacklog = "";
 		echo(value, alertBehavior)
 		{
-			this.dce("li", this.__consoleOutputList).el.innerHTML = `${value}`;
+			this.dce("li", this.__consoleOutputList, undefined, undefined, `${value}`);
 
 			alertBehavior = alertBehavior || {};
 			if (alertBehavior.holdAlert)
@@ -141,7 +140,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 		lineFeed()
 		{
-			this.dce("li", this.__consoleOutputList).el.innerText="\n";
+			this.dce("li", this.__consoleOutputList, undefined, undefined, "\n");
 		};
 
 		clear()
@@ -255,8 +254,10 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.dce(
 				"li",
 				this.__consoleOutputList,
-				["user-input"]
-			).el.innerHTML = `${this.__consoleInputLabelEl.innerText}${value}`;
+				undefined,
+				["user-input"],
+				`${this.__consoleInputLabelEl.innerText}${value}`
+			);
 
 			this.__showOutputList();
 		}
