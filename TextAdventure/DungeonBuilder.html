@@ -60,19 +60,24 @@
 				<div class="input-horizontal-flex">
 					<div class="input-flex-line">
 						<label for="txtTitle">Title</label>
-						<input id="txtTitle" type="text" />
+						<input id="txtTitle" data-saveloc="Meta" data-prop="Title" type="text" />
 					</div>
 					<div class="input-flex-line">
 						<label for="txaDescription">Description</label>
-						<textarea id="txaDescription" rows="1" cols="33"></textarea>
+						<textarea id="txaDescription"
+								  data-saveloc="Meta"
+								  data-prop="Description"
+								  rows="1"
+								  cols="33">
+						</textarea>
 					</div>
 					<div class="input-flex-line">
 						<label for="txtCreator">Creator</label>
-						<input id="txtCreator" type="text" />
+						<input id="txtCreator" data-saveloc="Meta" data-prop="Creator" type="text" />
 					</div>
 					<div class="input-flex-line">
 						<label for="txtDate">Date</label>
-						<span id="txtDate">-</span>
+						<time id="txtDate">-</time>
 					</div>
 				</div>
 			</form>

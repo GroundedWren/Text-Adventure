@@ -5,17 +5,229 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 {
 	ns.newDungeon = () =>
 	{
-
+		if (!!ns.Data)
+		{
+			Common.Controls.Popups.showModal(
+				`New Dungeon`,
+				`<p>Begin a new dungeon? All unsaved chagnes will be lost.</p><br />`
+				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
+				+ `Continue</button>`
+				+ `<button id="abortBtn" style="float: right; height: 25px;">`
+				+ `Go back</button>`
+			);
+			document.getElementById("confirmBtn").onclick = () =>
+			{
+				Common.Controls.Popups.hideModal();
+				clearAllData();
+			};
+			document.getElementById("abortBtn").onclick = () =>
+			{
+				Common.Controls.Popups.hideModal();
+			};
+		}
+		else
+		{
+			clearAllData();
+			fillInBasicData();
+		}
 	};
 
 	ns.loadDungeon = () =>
 	{
+		if (!!ns.Data)
+		{
+			Common.Controls.Popups.showModal(
+				`Load Dungeon`,
+				`<p>Load a new dungeon? All unsaved chagnes will be lost.</p><br />`
+				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
+				+ `Continue</button>`
+				+ `<button id="abortBtn" style="float: right; height: 25px;">`
+				+ `Go back</button>`
+			);
+			document.getElementById("confirmBtn").onclick = () =>
+			{
+				Common.Controls.Popups.hideModal();
 
+				clearAllData();
+				loadDungeonFromFile();
+			};
+			document.getElementById("abortBtn").onclick = () =>
+			{
+				Common.Controls.Popups.hideModal();
+			};
+		}
+		else
+		{
+			clearAllData();
+			loadDungeonFromFile();
+		}
+	};
+
+	function clearAllData()
+	{
+		ns.Data = {};
+
+		for (const widgetEl of getAllPinnableWidgets())
+		{
+			widgetEl.remove();
+		}
+
+		for (const inputUIEl of getAllInputUIEls())
+		{
+			inputUIEl.value = "";
+		}
+
+		setSaveTime();
+	};
+
+	function loadDungeonFromFile()
+	{
+		Common.FileLib.getFileFromUserAsObject(
+			(object) =>
+			{
+				ns.Data = object;
+				renderDungeonFromData();
+			},
+			[{ 'application/json': ['.json', '.save'] }]
+		);
+	};
+
+	function renderDungeonFromData()
+	{
+		fillInBasicData();
+
+		for (const inputUIEl of getAllInputUIEls())
+		{
+			if (inputUIEl.hasAttribute("data-saveloc") && inputUIEl.hasAttribute("data-prop"))
+			{
+				const saveLoc = inputUIEl.getAttribute("data-saveloc");
+				var saveAncestors = saveLoc.split(".");
+
+				var ancestor = ns.Data;
+				for (var i = 0; i < saveAncestors.length; i++)
+				{
+					ancestor[saveAncestors[i]] = ancestor[saveAncestors[i]] || {};
+					ancestor = ancestor[saveAncestors[i]];
+				}
+				inputUIEl.value = ancestor[inputUIEl.getAttribute("data-prop")];
+			}
+		}
+
+		setSaveTime();
+
+		//KJA TODO other pinnable widgets
+		renderAreaWidgets();
+		renderItemWidgets();
+	};
+
+	function fillInBasicData()
+	{
+		ns.Data.World = ns.Data.World || {};
+		ns.Data.World.Areas = ns.Data.World.Areas || {};
+		ns.Data.World.Items = ns.Data.World.Items || {};
+
+		ns.Data.Events = ns.Data.Events || {};
+
+		ns.Data.NPCs = ns.Data.NPCs || {};
+
+		ns.Data.Criteria = ns.Data.Criteria || {};
+
+		ns.Data.Character = ns.Data.Character || {};
+		ns.Data.Character.Equipment = ns.Data.Character.Equipment || [];
+		ns.Data.Character.Party = ns.Data.Character.Party || [];
+	};
+
+	function renderAreaWidgets()
+	{
+		for (var areaId of Object.keys(ns.Data.World.Areas))
+		{
+			Common.DOMLib.createElement(
+				"gw-db-area",
+				document.getElementById("areaList"),
+				{ logicalId: areaId, homeEl: "areaList", pinEl: "pinList" }
+			);
+		}
+	};
+
+	function renderItemWidgets()
+	{
+		for (var itemId of Object.keys(ns.Data.World.Items))
+		{
+			Common.DOMLib.createElement(
+				"gw-db-item",
+				document.getElementById("itemList"),
+				{ logicalId: itemId, homeEl: "itemList", pinEl: "pinList" }
+			);
+		}
 	};
 
 	ns.saveDungeon = () =>
 	{
+		for (const widgetEl of getAllPinnableWidgets())
+		{
+			widgetEl.saveData();
+		}
 
+		for (const inputUIEl of getAllInputUIEls())
+		{
+			if (inputUIEl.hasAttribute("data-saveloc") && inputUIEl.hasAttribute("data-prop"))
+			{
+				const saveLoc = inputUIEl.getAttribute("data-saveloc");
+				var saveAncestors = saveLoc.split(".");
+
+				var ancestor = ns.Data;
+				for (var i = 0; i < saveAncestors.length; i++)
+				{
+					ancestor[saveAncestors[i]] = ancestor[saveAncestors[i]] || {};
+					ancestor = ancestor[saveAncestors[i]];
+				}
+				ancestor[inputUIEl.getAttribute("data-prop")] = inputUIEl.value;
+			}
+		}
+
+		ns.Data.Meta["Last Save"] = new Date();
+		Common.FileLib.saveJSONFile(
+			ns.Data,
+			ns.Data.Meta.Title,
+			['.save']
+		);
+
+		setSaveTime();
+	};
+
+	function setSaveTime()
+	{
+		const timeEl = document.getElementById("txtDate");
+
+		if (!ns.Data || !ns.Data.Meta || !ns.Data.Meta["Last Save"])
+		{
+			timeEl.setAttribute("datetime", "");
+			timeEl.innerText = "-";
+			return;
+		}
+
+		const saveDateTime = new Date(ns.Data.Meta["Last Save"]);
+		
+		timeEl.setAttribute("datetime", saveDateTime.toISOString())
+		timeEl.innerText = saveDateTime.toLocaleString(
+			undefined,
+			{ dateStyle: "short", timeStyle: "short" }
+		);
+	};
+
+	function getAllPinnableWidgets()
+	{
+		return [
+			...document.getElementsByTagName("gw-db-area"),
+			...document.getElementsByTagName("gw-db-item")
+		];
+	};
+	function getAllInputUIEls()
+	{
+		return [
+			...document.getElementsByTagName("input"),
+			...document.getElementsByTagName("textarea")
+		];
 	};
 
 	ns.newArea = () =>
@@ -149,4 +361,6 @@ window.onload = () =>
 	const resizeObserver = new ResizeObserver(Pages.DungeonBuilder.sectionHeightUpdateOnResize);
 	resizeObserver.observe(document.getElementById("metaForm"));
 	Pages.DungeonBuilder.sectionHeightUpdateOnResize();
+
+	Pages.DungeonBuilder.newDungeon();
 };

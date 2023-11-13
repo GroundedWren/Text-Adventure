@@ -171,6 +171,14 @@
 		registerHandlersOpen()
 		{
 			this.btnClose.onclick = this.onClose;
+
+			this.logicalIdInEl.addEventListener("change", () =>
+			{
+				this.discardData();
+
+				this.logicalId = this.logicalIdInEl.value;
+				this.titleEl.innerText = `${this.widgetName} ${this.logicalId}`
+			});
 		}
 
 		registerHandlersClosed()
@@ -249,7 +257,12 @@
 		constructor()
 		{
 			super();
-			this.instanceId = AreaEl.instanceCount++;
+
+			do
+			{
+				this.instanceId = AreaEl.instanceCount++;
+			} while (Pages.DungeonBuilder.Data.World.Areas[this.instanceId] != undefined)
+
 			AreaEl.instanceMap[this.instanceId] = this;
 		}
 
@@ -408,14 +421,16 @@
 
 		saveData()
 		{
+			var data = {};
+
 			// KJA TODO
-			console.log(this.idKey + " saveData()");
+
+			Pages.DungeonBuilder.Data.World.Areas[this.logicalId] = data;
 		}
 
 		discardData()
 		{
-			// KJA TODO
-			console.log(this.idKey + " discardData()");
+			delete Pages.DungeonBuilder.Data.World.Areas[this.logicalId];
 		}
 		//#endregion
 	};
@@ -443,7 +458,12 @@
 		constructor()
 		{
 			super();
-			this.instanceId = ItemEl.instanceCount++;
+
+			do
+			{
+				this.instanceId = ItemEl.instanceCount++;
+			} while (Pages.DungeonBuilder.Data.World.Items[this.instanceId] != undefined)
+
 			ItemEl.instanceMap[this.instanceId] = this;
 		}
 
@@ -513,14 +533,16 @@
 
 		saveData()
 		{
+			var data = {};
+
 			// KJA TODO
-			console.log(this.idKey + " saveData()");
+
+			Pages.DungeonBuilder.Data.World.Items[this.logicalId] = data;
 		}
 
 		discardData()
 		{
-			// KJA TODO
-			console.log(this.idKey + " discardData()");
+			delete Pages.DungeonBuilder.Data.World.Items[this.logicalId];
 		}
 		//#endregion
 	};
