@@ -44,13 +44,18 @@
 			throw new Error("get idKey is not implemented");
 		}
 
+		get data()
+		{
+			throw new Error("get data is not implemented");
+		}
+
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
 			if (this.initialized) { return; }
 
 			this.logicalId = this.getAttribute("logicalId") || this.instanceId;
-			this.isOpen = this.getAttribute("open") || false;
+			this.isOpen = this.hasAttribute("open");
 			this.isPinned = this.getAttribute("pinned") || false;
 			this.homeElId = this.getAttribute("homeEL");
 			this.pinnedElId = this.getAttribute("pinEl");
@@ -225,6 +230,20 @@
 			throw new Error("saveData is not implemented");
 		}
 
+		saveSubWidgets(data)
+		{
+			const subWidgets = [];
+			for (const swTag of ns.SAVEABLE_SUBWIDGET_TAG_NAMES)
+			{
+				subWidgets.push(...this.getElementsByTagName(swTag));
+			}
+
+			for (const subWidget of subWidgets)
+			{
+				data[subWidget.dataProperty] = subWidget.getData();
+			}
+		}
+
 		discardData()
 		{
 			throw new Error("discardData is not implemented");
@@ -244,7 +263,6 @@
 		//#endregion
 
 		//#region instance properties
-		
 
 		//#region element properties
 		btnAddItem;
@@ -276,12 +294,17 @@
 			return `gw-db-area-${this.instanceId}`;
 		}
 
+		get data()
+		{
+			return Pages.DungeonBuilder.Data.World.Areas[this.logicalId]
+		}
+
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
-			super.connectedCallback();
 			if (this.initialized) { return; }
 
+			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -310,32 +333,26 @@
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
 					</div>
-					<fieldset>
-						<legend>Items</legend>
-						<div class="input-grid">
-							<!--<label for="">Item 1 ID</label> KJA TODO
-							<input id="" type="text" />-->
-							<button id="${this.idKey}-btnAddItem" class="full-line">Add Item</button>
-						</div>
-					</fieldset>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Items"
+										addName="Item"
+										linePrefix="ID "
+										dataProperty="Items"
+					></gw-db-string-array>
 				</div>
 				<div class="card-line">
-					<fieldset>
-						<legend>NPCs</legend>
-						<div class="input-grid">
-							<!--<label for="">NPC 1 ID</label> KJA TODO
-							<input id="" type="text" />-->
-							<button id="${this.idKey}-btnAddNPC" class="full-line">Add NPC</button>
-						</div>
-					</fieldset>
-					<fieldset>
-						<legend>Events On-Visit</legend>
-						<div class="input-grid">
-							<!--<label for="">Event 1 ID</label> KJA TODO
-							<input id="" type="text" />-->
-							<button id="${this.idKey}-btnAddEvent" class="full-line">Add Event</button>
-						</div>
-					</fieldset>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="NPCs"
+										addName="NPC"
+										linePrefix="ID "
+										dataProperty="NPCs"
+					></gw-db-string-array>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Events On-Visit"
+										addName="Event"
+										linePrefix="ID "
+										dataProperty="OnVisit"
+					></gw-db-string-array>
 				</div>
 				<hr />
 				<div class="button-header">
@@ -423,7 +440,7 @@
 		{
 			var data = {};
 
-			// KJA TODO
+			this.saveSubWidgets(data);
 
 			Pages.DungeonBuilder.Data.World.Areas[this.logicalId] = data;
 		}
@@ -477,12 +494,17 @@
 			return `gw-db-item-${this.instanceId}`;
 		}
 
+		get data()
+		{
+			return Pages.DungeonBuilder.Data.World.Items[this.logicalId]
+		}
+
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
-			super.connectedCallback();
 			if (this.initialized) { return; }
 
+			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -535,7 +557,7 @@
 		{
 			var data = {};
 
-			// KJA TODO
+			this.saveSubWidgets(data);
 
 			Pages.DungeonBuilder.Data.World.Items[this.logicalId] = data;
 		}

@@ -121,3 +121,18 @@ h4, h5, h6 {
 .backgroundColorContent {
 	background-color: var(--content-color);
 }
+
+.string-array .input-grid {
+	align-items: center;
+	grid-row-gap: 5px;
+	grid-template-columns: minmax(75px, 1fr) minmax(75px, auto) 30px;
+}
+
+.string-array-line {
+	display: contents;
+}
+
+.string-array-line-delbtn {
+	display: flex;
+	align-items: center;
+}

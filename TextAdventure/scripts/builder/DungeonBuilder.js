@@ -165,7 +165,10 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 	{
 		for (const widgetEl of getAllPinnableWidgets())
 		{
-			widgetEl.saveData();
+			if (widgetEl.isOpen)
+			{
+				widgetEl.saveData();
+			}
 		}
 
 		for (const inputUIEl of getAllInputUIEls())
@@ -235,8 +238,10 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		Common.DOMLib.createElement(
 			"gw-db-area",
 			document.getElementById("areaList"),
-			{ homeEl: "areaList", pinEl: "pinList" }
+			{ homeEl: "areaList", pinEl: "pinList", open: "" }
 		);
+
+		Common.axAlertPolite("Area created");
 	};
 
 	ns.newItem = () =>
@@ -244,8 +249,10 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		Common.DOMLib.createElement(
 			"gw-db-item",
 			document.getElementById("itemList"),
-			{ homeEl: "itemList", pinEl: "pinList" }
+			{ homeEl: "itemList", pinEl: "pinList", open: "" }
 		);
+
+		Common.axAlertPolite("Item created");
 	};
 
 	ns.newEvent = () =>
