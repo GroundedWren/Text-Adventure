@@ -652,7 +652,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 				</div>
 				<div class="card-line center-align">
 					<div class="input-grid id-single widget-grid-input">
-						<label for="${this.idKey}-logicalIdInEl">Destination</label>
+						<label for="${this.idKey}-destination">Destination</label>
 						<input id="${this.idKey}-destination" type="text" data-owner=${this.idKey} data-prop="Destination" />
 						<gw-db-widget-link
 							id=${this.idKey}-linkBtn
