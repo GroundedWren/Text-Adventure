@@ -55,6 +55,7 @@
 			if (this.initialized) { return; }
 
 			this.logicalId = this.getAttribute("logicalId") || this.instanceId;
+			this.setAttribute("logicalId", this.logicalId);
 			this.isOpen = this.hasAttribute("open");
 			this.isPinned = this.getAttribute("pinned") || false;
 			this.homeElId = this.getAttribute("homeEL");
@@ -154,14 +155,7 @@
 				document.getElementById("abortBtn").onclick = this.onAbortDelete;
 			};
 
-			this.btnPin.onclick = () =>
-			{
-				document.getElementById(this.isPinned ? this.homeElId : this.pinnedElId).appendChild(this);
-				this.isPinned = !this.isPinned;
-				this.btnPin.innerText = this.isPinned ? "Unpin" : "Pin";
-
-				this.btnPin.focus();
-			};
+			this.btnPin.onclick = this.pinWidget;
 
 			if (this.isOpen)
 			{
@@ -182,6 +176,7 @@
 				this.discardData();
 
 				this.logicalId = this.logicalIdInEl.value;
+				this.setAttribute("logicalId", this.logicalId);
 				this.titleEl.innerText = `${this.widgetName} ${this.logicalId}`
 			});
 		}
@@ -195,6 +190,7 @@
 		{
 			this.isOpen = true;
 			this.renderContent();
+			this.setBasicInputData();
 			this.registerHandlers();
 
 			this.btnClose.focus();
@@ -227,7 +223,10 @@
 
 		saveData()
 		{
-			throw new Error("saveData is not implemented");
+			const data = {};
+			this.saveBasicInputData(data);
+			this.saveSubWidgets(data);
+			return data;
 		}
 
 		saveSubWidgets(data)
@@ -240,13 +239,55 @@
 
 			for (const subWidget of subWidgets)
 			{
-				data[subWidget.dataProperty] = subWidget.getData();
+				if (subWidget.dataProperty && !subWidget.hasAttribute("data-owner"))
+				{
+					data[subWidget.dataProperty] = subWidget.getData();
+				}
 			}
 		}
+
+		saveBasicInputData(data)
+		{
+			for (let inputEl of this.getAllInputUIEls())
+			{
+				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
+				{
+					data[inputEl.getAttribute("data-prop")] = inputEl.value;
+				}
+			}
+		}
+
+		setBasicInputData()
+		{
+			for (let inputEl of this.getAllInputUIEls())
+			{
+				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
+				{
+					inputEl.value = this.data[inputEl.getAttribute("data-prop")] || null;
+				}
+			}
+		}
+
+		getAllInputUIEls()
+		{
+			return [
+				...this.getElementsByTagName("input"),
+				...this.getElementsByTagName("textarea")
+			];
+		};
 
 		discardData()
 		{
 			throw new Error("discardData is not implemented");
+		}
+
+		pinWidget = () =>
+		{
+			document.getElementById(this.isPinned ? this.homeElId : this.pinnedElId).prepend(this);
+			this.isPinned = !this.isPinned;
+			this.btnPin.innerText = this.isPinned ? "Unpin" : "Pin";
+
+			this.btnPin.focus();
 		}
 		//#endregion
 	}
@@ -329,14 +370,22 @@
 			<div class="card">
 				${this.getOpenHeaderHTML()}
 				<div class="card-line">
-					<div class="input-grid">
+					<div class="input-grid widget-grid-input">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+					</div>
+					<div class="input-vertical-line" style="width: auto">
+						<label for="${this.idKey}-inernalNotes">Internal Notes</label>
+						<textarea	id="${this.idKey}-inernalNotes"
+									data-owner="${this.idKey}"
+									data-prop="InternalNotes"
+									rows="3"></textarea>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Items"
 										addName="Item"
 										linePrefix="ID "
+										networkedWidget="gw-db-item"
 										dataProperty="Items"
 					></gw-db-string-array>
 				</div>
@@ -354,66 +403,18 @@
 										dataProperty="OnVisit"
 					></gw-db-string-array>
 				</div>
-				<hr />
-				<div class="button-header">
-					<h5>Story Texts</h5>
-					<button id="${this.idKey}-btnAddStoryText">New Story Text</button>
-				</div>
-				<!--<fieldset class="centered backgroundColorContent"> KJA TODO
-					<legend>Story Text 1</legend>
-					<fieldset class="maxWidth500">
-						<legend>Prereqs</legend>
-						<div class="input-grid">
-							<label for="">Prereq 1 ID</label>
-							<input id="" type="text" />
-							<button class="full-line">Add Prereq</button>
-						</div>
-					</fieldset>
-					<div class="input-vertical-line">
-						<label for="">Display Text</label>
-						<textarea id="" class="full-width-txa" rows="4"></textarea>
-					</div>
-				</fieldset>-->
-				<hr />
-				<div class="button-header">
-					<h5>Portals</h5>
-					<button id="${this.idKey}-btnAddPortal">New Portal</button>
-				</div>
-				<!--<fieldset class="backgroundColorContent"> KJA TODO
-					<legend>Portal 1</legend>
-					<div class="card-line">
-						<div class="input-grid">
-							<label for="">Area ID</label>
-							<input id="" type="text" />
-						</div>
-						<div class="input-grid">
-							<label for="">Description</label>
-							<textarea id ="" class="full-width-txa" rows="2" cols="25"></textarea>
-						</div>
-					</div>
-					<div class="input-vertical-line">
-						<label for="">Access Text</label>
-						<textarea id="" class="full-width-txa" rows="4"></textarea>
-					</div>
-					<div class="card-line">
-						<fieldset>
-							<legend>Visibility Prereqs</legend>
-							<div class="input-grid">
-								<label for="">Visibility Prereq 1 ID</label>
-								<input id="" type="text" />
-								<button class="full-line">Add Visibility Prereq</button>
-							</div>
-						</fieldset>
-						<fieldset>
-							<legend>Access Prereqs</legend>
-							<div class="input-grid">
-								<label for="">Access Prereq 1 ID</label>
-								<input id="" type="text" />
-								<button class="full-line">Add Access Prereq</button>
-							</div>
-						</fieldset>
-					</div>
-				</fieldset>-->
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Story Texts"
+									addName="Story Text"
+									dataProperty="StoryTexts"
+									objectTag="gw-db-story-text-object"
+				></gw-db-object-array>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Portals"
+									addName="Portal"
+									dataProperty="Portals"
+									objectTag="gw-db-portal-object"
+				></gw-db-object-array>
 			</div>
 			`;
 
@@ -438,9 +439,7 @@
 
 		saveData()
 		{
-			var data = {};
-
-			this.saveSubWidgets(data);
+			let data = super.saveData();
 
 			Pages.DungeonBuilder.Data.World.Areas[this.logicalId] = data;
 		}
@@ -529,7 +528,7 @@
 			<div class="card">
 				${this.getOpenHeaderHTML()}
 				<div class="card-line">
-					<div class="input-grid">
+					<div class="input-grid widget-grid-input">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
 					</div>
@@ -555,9 +554,7 @@
 
 		saveData()
 		{
-			var data = {};
-
-			this.saveSubWidgets(data);
+			let data = super.saveData();
 
 			Pages.DungeonBuilder.Data.World.Items[this.logicalId] = data;
 		}
