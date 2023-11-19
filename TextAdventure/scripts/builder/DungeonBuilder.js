@@ -265,6 +265,11 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 	};
 
+	ns.newDialog = () =>
+	{
+
+	};
+
 	ns.newCriteria = () =>
 	{
 
@@ -339,6 +344,10 @@ window.onload = () =>
 			action: () => { document.getElementById("dataCtrl_tab_NPCs").click(); },
 			description: "Show NPC list"
 		},
+		"ALT+L": {
+			action: () => { document.getElementById("dataCtrl_tab_Dialogs").click(); },
+			description: "Show Dialogs"
+		},
 		"ALT+C": {
 			action: () => { document.getElementById("dataCtrl_tab_Criteria").click(); },
 			description: "Show Criteria list"
@@ -358,6 +367,7 @@ window.onload = () =>
 			"dataCtrl_tab_Items": document.getElementById("dataCtrl_page_Items"),
 			"dataCtrl_tab_Events": document.getElementById("dataCtrl_page_Events"),
 			"dataCtrl_tab_NPCs": document.getElementById("dataCtrl_page_NPCs"),
+			"dataCtrl_tab_Dialogs": document.getElementById("dataCtrl_page_Dialogs"),
 			"dataCtrl_tab_Criteria": document.getElementById("dataCtrl_page_Criteria"),
 			"dataCtrl_tab_Character": document.getElementById("dataCtrl_page_Character"),
 		},

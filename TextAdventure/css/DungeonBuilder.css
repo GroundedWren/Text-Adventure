@@ -136,6 +136,7 @@ hr {
 .card-line > .input-vertical-line {
 	width: auto;
 	align-self: flex-start;
+	margin: 5px;
 }
 
 .input-grid > label {

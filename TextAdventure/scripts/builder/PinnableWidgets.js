@@ -272,7 +272,8 @@
 		{
 			return [
 				...this.getElementsByTagName("input"),
-				...this.getElementsByTagName("textarea")
+				...this.getElementsByTagName("textarea"),
+				...this.getElementsByTagName("select")
 			];
 		};
 

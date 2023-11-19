@@ -159,7 +159,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		{
 			return [
 				...this.getElementsByTagName("input"),
-				...this.getElementsByTagName("textarea")
+				...this.getElementsByTagName("textarea"),
+				...this.getElementsByTagName("select")
 			];
 		};
 	};
@@ -181,6 +182,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region element properties
 		btnAdd;
 		lineAry;
+		gridEl;
 		//#endregion
 		//#endregion
 
@@ -289,6 +291,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.btnAdd = document.getElementById(`${this.idKey}-btnAddLine`);
+			this.gridEl = document.getElementById(`${this.idKey}-input-grid`);
 		}
 
 		renderData(data)
@@ -575,6 +578,15 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
 			this.legendEl = document.getElementById(`${this.idKey}-legend`);
 
+			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqOperator">Operator</label>
+			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+				<option>OR</option>
+				<option>AND</option>
+			</select>
+			<div></div><div></div>
+			`);
+
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 
@@ -699,6 +711,23 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
 			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+
+			document.getElementById(`${this.idKey}-gateVis`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-gateVisOperator">Operator</label>
+			<select id="${this.idKey}-gateVisOperator" data-owner=${this.idKey} data-prop="GateVisibilityOp">
+				<option>OR</option>
+				<option>AND</option>
+			</select>
+			<div></div><div></div>
+			`);
+			document.getElementById(`${this.idKey}-gateAccess`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-gateAccessOperator">Operator</label>
+			<select id="${this.idKey}-gateAccessOperator" data-owner=${this.idKey} data-prop="GateAccessOp">
+				<option>OR</option>
+				<option>AND</option>
+			</select>
+			<div></div><div></div>
+			`);
 
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
