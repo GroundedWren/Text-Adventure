@@ -695,7 +695,7 @@
 
 		get data()
 		{
-			return Pages.DungeonBuilder.Data.World.Items[this.logicalId];
+			return Pages.DungeonBuilder.Data.Events[this.logicalId];
 		}
 
 		//#endregion

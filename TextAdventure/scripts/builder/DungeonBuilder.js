@@ -119,6 +119,10 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		//KJA TODO other pinnable widgets
 		renderAreaWidgets();
 		renderItemWidgets();
+		renderEventWidgets();
+		renderNPCWidgets();
+		renderDialogWidgets();
+		renderCriteriaWidgets();
 	};
 
 	function fillInBasicData()
@@ -160,6 +164,54 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 				"gw-db-item",
 				document.getElementById("itemList"),
 				{ logicalId: itemId, homeEl: "itemList", pinEl: "pinList" }
+			);
+		}
+	};
+
+	function renderEventWidgets()
+	{
+		for (var itemId of Object.keys(ns.Data.Events))
+		{
+			Common.DOMLib.createElement(
+				"gw-db-event",
+				document.getElementById("eventList"),
+				{ logicalId: itemId, homeEl: "eventList", pinEl: "pinList" }
+			);
+		}
+	};
+
+	function renderNPCWidgets()
+	{
+		for (var itemId of Object.keys(ns.Data.NPCs))
+		{
+			Common.DOMLib.createElement(
+				"gw-db-npc",
+				document.getElementById("npcList"),
+				{ logicalId: itemId, homeEl: "npcList", pinEl: "pinList" }
+			);
+		}
+	};
+
+	function renderDialogWidgets()
+	{
+		for (var itemId of Object.keys(ns.Data.Dialogs))
+		{
+			Common.DOMLib.createElement(
+				"gw-db-dialog",
+				document.getElementById("dialogList"),
+				{ logicalId: itemId, homeEl: "dialogList", pinEl: "pinList" }
+			);
+		}
+	};
+
+	function renderCriteriaWidgets()
+	{
+		for (var itemId of Object.keys(ns.Data.Criteria))
+		{
+			Common.DOMLib.createElement(
+				"gw-db-criteria",
+				document.getElementById("criteriaList"),
+				{ logicalId: itemId, homeEl: "criteriaList", pinEl: "pinList" }
 			);
 		}
 	};
@@ -225,7 +277,11 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 	{
 		return [
 			...document.getElementsByTagName("gw-db-area"),
-			...document.getElementsByTagName("gw-db-item")
+			...document.getElementsByTagName("gw-db-item"),
+			...document.getElementsByTagName("gw-db-event"),
+			...document.getElementsByTagName("gw-db-npc"),
+			...document.getElementsByTagName("gw-db-dialog"),
+			...document.getElementsByTagName("gw-db-criteria"),
 		];
 	};
 	function getAllInputUIEls()
