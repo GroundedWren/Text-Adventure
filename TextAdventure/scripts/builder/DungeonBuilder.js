@@ -19,6 +19,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 			{
 				Common.Controls.Popups.hideModal();
 				clearAllData();
+				fillInBasicData();
 			};
 			document.getElementById("abortBtn").onclick = () =>
 			{
@@ -130,6 +131,8 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		ns.Data.NPCs = ns.Data.NPCs || {};
 
+		ns.Data.Dialogs = ns.Data.Dialogs || {};
+
 		ns.Data.Criteria = ns.Data.Criteria || {};
 
 		ns.Data.Character = ns.Data.Character || {};
@@ -235,44 +238,68 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 	ns.newArea = () =>
 	{
-		Common.DOMLib.createElement(
+		const areaEl = Common.DOMLib.createElement(
 			"gw-db-area",
 			document.getElementById("areaList"),
 			{ homeEl: "areaList", pinEl: "pinList", open: "" }
 		);
 
-		Common.axAlertPolite("Area created");
+		areaEl.logicalIdInEl.focus();
 	};
 
 	ns.newItem = () =>
 	{
-		Common.DOMLib.createElement(
+		const itemEl = Common.DOMLib.createElement(
 			"gw-db-item",
 			document.getElementById("itemList"),
 			{ homeEl: "itemList", pinEl: "pinList", open: "" }
 		);
 
-		Common.axAlertPolite("Item created");
+		itemEl.logicalIdInEl.focus();
 	};
 
 	ns.newEvent = () =>
 	{
+		const eventEl = Common.DOMLib.createElement(
+			"gw-db-event",
+			document.getElementById("eventList"),
+			{ homeEl: "eventList", pinEl: "pinList", open: "" }
+		);
 
+		eventEl.logicalIdInEl.focus();
 	};
 
 	ns.newNPC = () =>
 	{
+		const npcEl = Common.DOMLib.createElement(
+			"gw-db-npc",
+			document.getElementById("npcList"),
+			{ homeEl: "npcList", pinEl: "pinList", open: "" }
+		);
 
+		npcEl.logicalIdInEl.focus();
 	};
 
 	ns.newDialog = () =>
 	{
+		const dialogEl = Common.DOMLib.createElement(
+			"gw-db-dialog",
+			document.getElementById("dialogList"),
+			{ homeEl: "dialogList", pinEl: "pinList", open: "" }
+		);
 
+		dialogEl.logicalIdInEl.focus();
 	};
 
 	ns.newCriteria = () =>
 	{
+		const criteriaEl = Common.DOMLib.createElement(
+			"gw-db-criteria",
+			document.getElementById("criteriaList"),
+			{ homeEl: "criteriaList", pinEl: "pinList", open: "" }
+		);
 
+		criteriaEl.logicalIdInEl.focus();
 	};
 
 	ns.sectionHeightUpdateOnResize = () =>

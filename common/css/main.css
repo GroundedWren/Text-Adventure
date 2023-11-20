@@ -352,7 +352,7 @@ form > h1, form > h2, form > h3, form > h4, form > h5, form > h6 {
 .z {
 }
 
-.input-horizontal-flex > .input-flex-line {
+.input-horizontal-flex > .input-flex-line, .input-horizontal-flex > .input-vertical-line {
 	width: auto;
 	margin-right: 10px;
 }

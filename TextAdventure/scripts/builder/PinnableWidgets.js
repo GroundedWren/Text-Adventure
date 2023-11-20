@@ -239,7 +239,7 @@
 
 			for (const subWidget of subWidgets)
 			{
-				if (subWidget.dataProperty && !subWidget.hasAttribute("data-owner"))
+				if (subWidget.dataProperty && !subWidget.hasAttribute("dataOwner"))
 				{
 					data[subWidget.dataProperty] = subWidget.getData();
 				}
@@ -252,7 +252,15 @@
 			{
 				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
 				{
-					data[inputEl.getAttribute("data-prop")] = inputEl.value;
+					switch (inputEl.type)
+					{
+						case "checkbox":
+							data[inputEl.getAttribute("data-prop")] = inputEl.checked || false;
+							break;
+						default:
+							data[inputEl.getAttribute("data-prop")] = inputEl.value || null;
+							break;
+					}
 				}
 			}
 		}
@@ -263,7 +271,15 @@
 			{
 				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
 				{
-					inputEl.value = this.data[inputEl.getAttribute("data-prop")] || null;
+					switch (inputEl.type)
+					{
+						case "checkbox":
+							inputEl.checked = this.data[inputEl.getAttribute("data-prop")] || false;
+							break;
+						default:
+							inputEl.value = this.data[inputEl.getAttribute("data-prop")] || null;
+							break;
+					}
 				}
 			}
 		}
@@ -314,6 +330,8 @@
 		//#endregion
 		//#endregion
 
+		//#region Basic Implementation
+
 		constructor()
 		{
 			super();
@@ -340,6 +358,8 @@
 		{
 			return Pages.DungeonBuilder.Data.World.Areas[this.logicalId]
 		}
+
+		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
@@ -375,7 +395,7 @@
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
 					</div>
-					<div class="input-vertical-line" style="width: auto">
+					<div class="input-vertical-line">
 						<label for="${this.idKey}-inernalNotes">Internal Notes</label>
 						<textarea	id="${this.idKey}-inernalNotes"
 									data-owner="${this.idKey}"
@@ -395,12 +415,14 @@
 										displayName="NPCs"
 										addName="NPC"
 										linePrefix="ID "
+										networkedWidget="gw-db-npc"
 										dataProperty="NPCs"
 					></gw-db-string-array>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Events On-Visit"
 										addName="Event"
 										linePrefix="ID "
+										networkedWidget="gw-db-event"
 										dataProperty="OnVisit"
 					></gw-db-string-array>
 				</div>
@@ -468,9 +490,11 @@
 
 
 		//#region element properties
-		
+
 		//#endregion
 		//#endregion
+
+		//#region Basic Implementation
 
 		constructor()
 		{
@@ -498,6 +522,182 @@
 		{
 			return Pages.DungeonBuilder.Data.World.Items[this.logicalId]
 		}
+
+		//#endregion
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Render
+		renderContentClosed()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getClosedHeaderHTML()}
+			</div>
+			`;
+
+			//element properties
+		}
+
+		renderContentOpen()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getOpenHeaderHTML()}
+				<div class="card-line">
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-logicalIdInEl">ID</label>
+						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+						<label for="${this.idKey}-displayNameEl">Display Name</label>
+						<input id="${this.idKey}-displayNameEl"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="DisplayName"
+						/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									rows="3"></textarea>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-internalNotes">Internal Notes</label>
+						<textarea	id="${this.idKey}-internalNotes"
+									data-owner="${this.idKey}"
+									data-prop="InternalNotes"
+									rows="3"></textarea>
+					</div>
+				</div>
+				<div class="card-line">
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-health">Health</label>
+						<input	id="${this.idKey}-health"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="Health"
+						/>
+						<label for="${this.idKey}-maxHealth">Max Health</label>
+						<input	id="${this.idKey}-maxHealth"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="MaxHealth"
+						/>
+						<label for="${this.idKey}-armor">Armor</label>
+						<input	id="${this.idKey}-armor"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="Armor"
+						/>
+					</div>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="On-Break"
+										addName="Event"
+										linePrefix="ID "
+										networkedWidget="gw-db-event"
+										dataProperty="OnBreak"
+					></gw-db-string-array>
+				</div>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Actions"
+									addName="Action"
+									dataProperty="Actions"
+									objectTag="gw-db-action-object"
+				></gw-db-object-array>
+			</div>
+			`;
+
+			//element properties
+			
+		}
+		//#endregion
+
+		//#region Handlers
+		registerHandlersOpen()
+		{
+			super.registerHandlersOpen();
+		}
+
+		registerHandlersClosed()
+		{
+			super.registerHandlersClosed();
+		}
+
+		saveData()
+		{
+			let data = super.saveData();
+
+			Pages.DungeonBuilder.Data.World.Items[this.logicalId] = data;
+		}
+
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.World.Items[this.logicalId];
+		}
+		//#endregion
+	};
+	customElements.define("gw-db-item", ns.ItemEl);
+
+	/**
+	 * A pinnable widget for "Event"s.
+	 */
+	ns.EventEl = class EventEl extends ns.PinnableWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		//#region Basic Implementation
+
+		constructor()
+		{
+			super();
+
+			do
+			{
+				this.instanceId = EventEl.instanceCount++;
+			} while (Pages.DungeonBuilder.Data.Events[this.instanceId] != undefined);
+
+			EventEl.instanceMap[this.instanceId] = this;
+		}
+
+		get widgetName()
+		{
+			return "Event";
+		}
+
+		get idKey()
+		{
+			return `gw-db-event-${this.instanceId}`;
+		}
+
+		get data()
+		{
+			return Pages.DungeonBuilder.Data.World.Items[this.logicalId];
+		}
+
+		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
@@ -538,7 +738,7 @@
 			`;
 
 			//element properties
-			
+
 		}
 		//#endregion
 
@@ -557,14 +757,371 @@
 		{
 			let data = super.saveData();
 
-			Pages.DungeonBuilder.Data.World.Items[this.logicalId] = data;
+			Pages.DungeonBuilder.Data.Events[this.logicalId] = data;
 		}
 
 		discardData()
 		{
-			delete Pages.DungeonBuilder.Data.World.Items[this.logicalId];
+			delete Pages.DungeonBuilder.Data.Events[this.logicalId];
 		}
 		//#endregion
 	};
-	customElements.define("gw-db-item", ns.ItemEl);
+	customElements.define("gw-db-event", ns.EventEl);
+
+	/**
+	 * A pinnable widget for "NPC"s.
+	 */
+	ns.NPCEl = class NPCEl extends ns.PinnableWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		//#region Basic Implementation
+
+		constructor()
+		{
+			super();
+
+			do
+			{
+				this.instanceId = NPCEl.instanceCount++;
+			} while (Pages.DungeonBuilder.Data.NPCs[this.instanceId] != undefined);
+
+			NPCEl.instanceMap[this.instanceId] = this;
+		}
+
+		get widgetName()
+		{
+			return "NPC";
+		}
+
+		get idKey()
+		{
+			return `gw-db-npc-${this.instanceId}`;
+		}
+
+		get data()
+		{
+			return Pages.DungeonBuilder.Data.NPCs[this.logicalId];
+		}
+
+		//#endregion
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Render
+		renderContentClosed()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getClosedHeaderHTML()}
+			</div>
+			`;
+
+			//element properties
+		}
+
+		renderContentOpen()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getOpenHeaderHTML()}
+				<div class="card-line">
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-logicalIdInEl">ID</label>
+						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+					</div>
+				</div>
+			</div>
+			`;
+
+			//element properties
+
+		}
+		//#endregion
+
+		//#region Handlers
+		registerHandlersOpen()
+		{
+			super.registerHandlersOpen();
+		}
+
+		registerHandlersClosed()
+		{
+			super.registerHandlersClosed();
+		}
+
+		saveData()
+		{
+			let data = super.saveData();
+
+			Pages.DungeonBuilder.Data.NPCs[this.logicalId] = data;
+		}
+
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.NPCs[this.logicalId];
+		}
+		//#endregion
+	};
+	customElements.define("gw-db-npc", ns.NPCEl);
+
+	/**
+	 * A pinnable widget for "Dialog"s.
+	 */
+	ns.DialogEl = class DialogEl extends ns.PinnableWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		//#region Basic Implementation
+
+		constructor()
+		{
+			super();
+
+			do
+			{
+				this.instanceId = DialogEl.instanceCount++;
+			} while (Pages.DungeonBuilder.Data.Dialogs[this.instanceId] != undefined);
+
+			DialogEl.instanceMap[this.instanceId] = this;
+		}
+
+		get widgetName()
+		{
+			return "Dialog";
+		}
+
+		get idKey()
+		{
+			return `gw-db-dialog-${this.instanceId}`;
+		}
+
+		get data()
+		{
+			return Pages.DungeonBuilder.Data.Dialogs[this.logicalId];
+		}
+
+		//#endregion
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Render
+		renderContentClosed()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getClosedHeaderHTML()}
+			</div>
+			`;
+
+			//element properties
+		}
+
+		renderContentOpen()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getOpenHeaderHTML()}
+				<div class="card-line">
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-logicalIdInEl">ID</label>
+						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+					</div>
+				</div>
+			</div>
+			`;
+
+			//element properties
+
+		}
+		//#endregion
+
+		//#region Handlers
+		registerHandlersOpen()
+		{
+			super.registerHandlersOpen();
+		}
+
+		registerHandlersClosed()
+		{
+			super.registerHandlersClosed();
+		}
+
+		saveData()
+		{
+			let data = super.saveData();
+
+			Pages.DungeonBuilder.Data.Dialogs[this.logicalId] = data;
+		}
+
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.Dialogs[this.logicalId];
+		}
+		//#endregion
+	};
+	customElements.define("gw-db-dialog", ns.DialogEl);
+
+	/**
+	 * A pinnable widget for "Criteria"s.
+	 */
+	ns.CriteriaEl = class CriteriaEl extends ns.PinnableWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		//#region Basic Implementation
+
+		constructor()
+		{
+			super();
+
+			do
+			{
+				this.instanceId = CriteriaEl.instanceCount++;
+			} while (Pages.DungeonBuilder.Data.Criteria[this.instanceId] != undefined);
+
+			CriteriaEl.instanceMap[this.instanceId] = this;
+		}
+
+		get widgetName()
+		{
+			return "Criteria";
+		}
+
+		get idKey()
+		{
+			return `gw-db-criteria-${this.instanceId}`;
+		}
+
+		get data()
+		{
+			return Pages.DungeonBuilder.Data.Criteria[this.logicalId];
+		}
+
+		//#endregion
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Render
+		renderContentClosed()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getClosedHeaderHTML()}
+			</div>
+			`;
+
+			//element properties
+		}
+
+		renderContentOpen()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getOpenHeaderHTML()}
+				<div class="card-line">
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-logicalIdInEl">ID</label>
+						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+					</div>
+				</div>
+			</div>
+			`;
+
+			//element properties
+
+		}
+		//#endregion
+
+		//#region Handlers
+		registerHandlersOpen()
+		{
+			super.registerHandlersOpen();
+		}
+
+		registerHandlersClosed()
+		{
+			super.registerHandlersClosed();
+		}
+
+		saveData()
+		{
+			let data = super.saveData();
+
+			Pages.DungeonBuilder.Data.Criteria[this.logicalId] = data;
+		}
+
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.Criteria[this.logicalId];
+		}
+		//#endregion
+	};
+	customElements.define("gw-db-criteria", ns.CriteriaEl);
 });

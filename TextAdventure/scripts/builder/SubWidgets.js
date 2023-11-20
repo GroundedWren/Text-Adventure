@@ -4,7 +4,7 @@
 registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 {
 	//#region Saveable Subwidgets
-	ns.SAVEABLE_SUBWIDGET_TAG_NAMES = ["gw-db-string-array", "gw-db-object-array"];
+	ns.SAVEABLE_SUBWIDGET_TAG_NAMES = ["gw-db-string-array", "gw-db-object-array", "gw-db-attack"];
 
 	ns.SaveableSubWidget = class SaveableSubWidget extends HTMLElement
 	{
@@ -75,6 +75,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		renderData(data)
 		{
+			data = data || {};
 			this.setBasicInputData(data);
 			this.setSubWidgetData(data);
 		}
@@ -89,7 +90,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			const data = {};
 			this.getSubWidgetData(data);
 			this.getBasicInputData(data);
-			return data
+			return data;
 		}
 
 		getSubWidgetData(data)
@@ -119,7 +120,15 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			{
 				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
 				{
-					data[inputEl.getAttribute("data-prop")] = inputEl.value || null;
+					switch (inputEl.type)
+					{
+						case "checkbox":
+							data[inputEl.getAttribute("data-prop")] = inputEl.checked || false;
+							break;
+						default:
+							data[inputEl.getAttribute("data-prop")] = inputEl.value || null;
+							break;
+					}
 				}
 			}
 			return data;
@@ -131,7 +140,15 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			{
 				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
 				{
-					inputEl.value = data[inputEl.getAttribute("data-prop")] || null;
+					switch (inputEl.type)
+					{
+						case "checkbox":
+							inputEl.checked = data[inputEl.getAttribute("data-prop")] || false;
+							break;
+						default:
+							inputEl.value = data[inputEl.getAttribute("data-prop")] || null;
+							break;
+					}
 				}
 			}
 		}
@@ -443,6 +460,164 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		}
 	};
 	customElements.define("gw-db-object-array", ns.ObjectArraySubWidgetEl);
+
+	ns.AttackEl = class AttackEl extends ns.SaveableSubWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		saveEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = AttackEl.instanceCount++;
+			this.lineIdx = 0;
+			this.lineAry = [];
+
+			AttackEl.instanceMap[this.instanceId] = this;
+		}
+
+		get subWidgetName()
+		{
+			return "attack";
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Handlers
+
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="attack-fieldset">
+				<legend>Attack</legend>
+				<div class="attack-fieldset-line" style="justify-content: center;">
+					<fieldset class="input-horizontal-flex">
+						<legend>Valid targets</legend>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-optPlayer">Player</label>
+							<input id="${this.idKey}-optPlayer" type="checkbox" data-owner=${this.idKey} data-prop="TargetPlayer"/>
+						</div>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-optNPC">NPC</label>
+							<input id="${this.idKey}-optNPC" type="checkbox" data-owner=${this.idKey} data-prop="TargetNPC"/>
+						</div>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-optArea">Area</label>
+							<input id="${this.idKey}-optArea" type="checkbox" data-owner=${this.idKey} data-prop="TargetArea"/>
+						</div>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-optItem">Item</label>
+							<input id="${this.idKey}-optItem" type="checkbox" data-owner=${this.idKey} data-prop="TargetItem"/>
+						</div>
+					</fieldset>
+				</div>
+				<div class="attack-fieldset-line">
+					<gw-db-ability-select	id=${this.idKey}-save
+											labelText="Save"
+											dataOwner=${this.idKey}
+											dataProperty="Save">
+					</gw-db-ability-select>
+					<gw-db-ability-select dataOwner=${this.idKey} dataProperty="Ability"></gw-db-ability-select>
+					<gw-db-skill-select id="${this.idKey}-skill" dataOwner=${this.idKey} dataProperty="Skill">
+					</gw-db-skill-select>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-bonus">Bonus to Hit</label>
+						<input id="${this.idKey}-bonus" type="number" data-owner=${this.idKey} data-prop="Bonus"/>
+					</div>
+				</div>
+				<div class="attack-fieldset-line">
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-rolls">Number of Rolls</label>
+						<input id="${this.idKey}-rolls" type="number" data-owner=${this.idKey} data-prop="DmgNumRolls"/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-diceNum">Dice Per Roll</label>
+						<div>
+							<span>(</span>
+							<input id="${this.idKey}-diceNum" type="number" data-owner=${this.idKey} data-prop="DmgDiceNum"/>
+						</div>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-diceSides">Sides Per Die</label>
+						<div>
+							<span>d</span>
+							<input id="${this.idKey}-diceSides" type="number" data-owner=${this.idKey} data-prop="DmgDiceSides"/>
+						</div>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-diceBonus">Bonus Per Roll</label>
+						<div>
+							<span>+</span>
+							<input id="${this.idKey}-diceBonus" type="number" data-owner=${this.idKey} data-prop="DmgRollBonus"/>
+							<span>)</span>
+						</div>
+					</div>
+				</div>
+				<div class="attack-fieldset-line">
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-txtOnAtk">Text for Attack</label>
+						<textarea	id="${this.idKey}-txtOnAtk"
+									data-owner="${this.idKey}"
+									data-prop="TextOnAttack"
+									rows="3"
+						></textarea>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-txtOnMiss">Text for Miss or Save</label>
+						<textarea	id="${this.idKey}-txtOnMiss"
+									data-owner="${this.idKey}"
+									data-prop="TextOnSaveMiss"
+									rows="3"
+						></textarea>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-txtOnHit">Text for Fail or Hit</label>
+						<textarea	id="${this.idKey}-txtOnHit"
+									data-owner="${this.idKey}"
+									data-prop="TextOnFailHit"
+									rows="3"
+						></textarea>
+					</div>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.saveEl = document.getElementById(`${this.idKey}-save`);
+			this.saveEl.selectEl.insertAdjacentHTML("afterbegin", `<option>None</option>`);
+
+			this.skillEl = document.getElementById(`${this.idKey}-skill`);
+			this.skillEl.selectEl.insertAdjacentHTML("afterbegin", `<option>None</option>`);
+		}
+
+		registerHandlers()
+		{
+		}
+	};
+	customElements.define("gw-db-attack", ns.AttackEl);
 	//#endregion
 
 	//#region SubWidget Objects
@@ -672,14 +847,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 							idInputElId="${this.idKey}-destination">
 						</gw-db-widget-link>
 					</div>
-					<div class="input-vertical-line" style="width: auto">
+					<div class="input-vertical-line">
 						<label for="${this.idKey}-description">Description</label>
 						<textarea	id="${this.idKey}-description"
 									data-owner="${this.idKey}"
 									data-prop="Description"
 									rows="3"></textarea>
 					</div>
-					<div class="input-vertical-line" style="width: auto">
+					<div class="input-vertical-line">
 						<label for="${this.idKey}-accessText">Access Text</label>
 						<textarea	id="${this.idKey}-accessText"
 									data-owner="${this.idKey}"
@@ -737,6 +912,187 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		}
 	};
 	customElements.define("gw-db-portal-object", ns.PortalObjEl);
+
+	ns.ActionObjEl = class ActionObjEl extends ns.SubWidgetObject
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		modeSelectEl;
+		attackEl;
+		bodyLocEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = ActionObjEl.instanceCount++;
+
+			ActionObjEl.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "action-obj";
+		}
+
+		get removeButton()
+		{
+			return this.rmBtnEl;
+		}
+
+		setListIndex(idx)
+		{
+			this.listIdx = idx;
+			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
+		}
+
+		setFirstFocus()
+		{
+			this.rmBtnEl.focus();
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
+				<div class="obj-el-header">
+					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
+				</div>
+				<div class="card-line">
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-dispName">Display Name</label>
+						<input	id="${this.idKey}-dispName"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="DisplayName"
+						/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									rows="3"
+						></textarea>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-textOnAct">Text On-Act</label>
+						<textarea	id="${this.idKey}-textOnAct"
+									data-owner="${this.idKey}"
+									data-prop="TextOnAct"
+									rows="3"
+						></textarea>
+					</div>
+				</div>
+				<div class="card-line">
+					<gw-db-string-array id="${this.idKey}-prereqs"
+										dataProperty="Prereqs"
+										dataOwner="${this.idKey}"
+										displayName="Prereqs"
+										addName="Prereq"
+										linePrefix="Criteria ID "
+										networkedWidget="gw-db-criteria"
+					></gw-db-string-array>
+					<gw-db-string-array id="${this.idKey}-events"
+										dataProperty="Events"
+										dataOwner="${this.idKey}"
+										displayName="Events"
+										addName="Event"
+										linePrefix="Event ID "
+										networkedWidget="gw-db-event"
+					></gw-db-string-array>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-mode">Mode</label>
+						<select id="${this.idKey}-mode" data-owner=${this.idKey} data-prop="Mode">
+							<option>None</option>
+							<option>Don</option>
+							<option>Put Down</option>
+							<option>Attack</option>
+						</select>
+					</div>
+				</div>
+				<div id="${this.idKey}-modeLine" class="card-line centered">
+					<gw-db-attack	id="${this.idKey}-attack"
+									class="hidden"
+									dataOwner="${this.idKey}"
+									dataProperty="Attack">
+					</gw-db-attack>
+					<gw-db-bodyloc-select	id="${this.idKey}-bodyLocSelect"
+											class="hidden"
+											dataOwner=${this.idKey}
+											dataProperty="DonBodyLocation">
+					</gw-db-bodyloc-select>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
+			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+			this.modeSelectEl = document.getElementById(`${this.idKey}-mode`);
+			this.attackEl = document.getElementById(`${this.idKey}-attack`);
+			this.bodyLocEl = document.getElementById(`${this.idKey}-bodyLocSelect`);
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+
+		renderData(data)
+		{
+			super.renderData(data);
+			this.onModeChange();
+		}
+
+		registerHandlers()
+		{
+			this.modeSelectEl.addEventListener("change", this.onModeChange);
+		}
+
+		onModeChange = () =>
+		{
+			switch (this.modeSelectEl.value)
+			{
+				case "Attack":
+					this.attackEl.classList.remove("hidden");
+					this.bodyLocEl.classList.add("hidden");
+					break;
+				case "Don":
+					this.attackEl.classList.add("hidden");
+					this.bodyLocEl.classList.remove("hidden");
+					break;
+				case "None":
+				case "Put Down":
+				default:
+					this.attackEl.classList.add("hidden");
+					this.bodyLocEl.classList.add("hidden");
+					break;
+			}
+		};
+	};
+	customElements.define("gw-db-action-object", ns.ActionObjEl);
 	//#endregion
 
 	//#region Other Components
@@ -821,5 +1177,272 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#endregion
 	};
 	customElements.define("gw-db-widget-link", ns.WidgetLinkEl);
+
+	ns.BodyLocSelectEl = class BodyLocSelectEl extends HTMLElement
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+		instanceId;
+		dataOwner;
+		propName;
+
+		//#region element properties
+		
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+			this.instanceId = BodyLocSelectEl.instanceCount++;
+			BodyLocSelectEl.instanceMap[this.instanceId] = this;
+		}
+
+		get idKey()
+		{
+			return `gw-db-bodyloc-select-${this.instanceId}`;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			this.dataOwner = this.getAttribute("dataOwner");
+			this.dataProperty = this.getAttribute("dataProperty")
+
+			this.renderContent();
+			this.registerHandlers();
+		}
+
+		disconnectedCallback()
+		{
+		}
+
+		adoptedCallback()
+		{
+		}
+
+		attributeChangedCallback(name, oldValue, newValue)
+		{
+		}
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="input-vertical-line">
+				<label for="${this.idKey}-select">Body Location</label>
+				<select id="${this.idKey}-select" data-owner=${this.dataOwner} data-prop="${this.dataProperty}">
+					<option>Head</option>
+					<option>Neck</option>
+					<option>Torso</option>
+					<option>Belt</option>
+					<option>Legs</option>
+					<option>Knees</option>
+					<option>Feet</option>
+					<option>Left Wrist</option>
+					<option>Right Wrist</option>
+					<option>Left Hand</option>
+					<option>Right Hand</option>
+					<option>Finger</option>
+				</select>
+			</div>
+			`;
+
+			//element properties
+			
+		}
+
+		//#region Handlers
+		registerHandlers()
+		{
+		}
+		//#endregion
+	};
+	customElements.define("gw-db-bodyloc-select", ns.BodyLocSelectEl);
+
+	ns.AbilitySelectEl = class AbilitySelectEl extends HTMLElement
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+		instanceId;
+		dataOwner;
+		propName;
+		labelText;
+		selectEl;
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+			this.instanceId = AbilitySelectEl.instanceCount++;
+			AbilitySelectEl.instanceMap[this.instanceId] = this;
+		}
+
+		get idKey()
+		{
+			return `gw-db-ability-select-${this.instanceId}`;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			this.dataOwner = this.getAttribute("dataOwner");
+			this.dataProperty = this.getAttribute("dataProperty");
+			this.labelText = this.getAttribute("labelText") || "Ability";
+
+			this.renderContent();
+			this.registerHandlers();
+		}
+
+		disconnectedCallback()
+		{
+		}
+
+		adoptedCallback()
+		{
+		}
+
+		attributeChangedCallback(name, oldValue, newValue)
+		{
+		}
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="input-vertical-line">
+				<label for="${this.idKey}-select">${this.labelText}</label>
+				<select id="${this.idKey}-select" data-owner=${this.dataOwner} data-prop="${this.dataProperty}">
+					<option>STR</option>
+					<option>DEX</option>
+					<option>CON</option>
+					<option>INT</option>
+					<option>WIS</option>
+					<option>CHA</option>
+				</select>
+			</div>
+			`;
+
+			//element properties
+			this.selectEl = document.getElementById(`${this.idKey}-select`);
+		}
+
+		//#region Handlers
+		registerHandlers()
+		{
+		}
+		//#endregion
+	};
+	customElements.define("gw-db-ability-select", ns.AbilitySelectEl);
+
+	ns.SkillSelectEl = class SkillSelectEl extends HTMLElement
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+		instanceId;
+		dataOwner;
+		propName;
+		labelText;
+		selectEl;
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+			this.instanceId = SkillSelectEl.instanceCount++;
+			SkillSelectEl.instanceMap[this.instanceId] = this;
+		}
+
+		get idKey()
+		{
+			return `gw-db-skill-select-${this.instanceId}`;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			this.dataOwner = this.getAttribute("dataOwner");
+			this.dataProperty = this.getAttribute("dataProperty");
+			this.labelText = this.getAttribute("labelText") || "Skill";
+
+			this.renderContent();
+			this.registerHandlers();
+		}
+
+		disconnectedCallback()
+		{
+		}
+
+		adoptedCallback()
+		{
+		}
+
+		attributeChangedCallback(name, oldValue, newValue)
+		{
+		}
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<div class="input-vertical-line">
+				<label for="${this.idKey}-select">${this.labelText}</label>
+				<select id="${this.idKey}-select" data-owner=${this.dataOwner} data-prop="${this.dataProperty}">
+					<option>Acrobatics</option>
+					<option>Athletics</option>
+					<option>Deception</option>
+					<option>History</option>
+					<option>Insight</option>
+					<option>Intimidation</option>
+					<option>Investigation</option>
+					<option>Magic</option>
+					<option>Medicine</option>
+					<option>Nature</option>
+					<option>Perception</option>
+					<option>Performance</option>
+					<option>Persuasion</option>
+					<option>Stealth</option>
+					<option>Survival</option>
+				</select>
+			</div>
+			`;
+
+			//element properties
+			this.selectEl = document.getElementById(`${this.idKey}-select`);
+		}
+
+		//#region Handlers
+		registerHandlers()
+		{
+		}
+		//#endregion
+	};
+	customElements.define("gw-db-skill-select", ns.SkillSelectEl);
 	//#endregion
 });
