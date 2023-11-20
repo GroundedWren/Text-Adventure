@@ -6,6 +6,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 	//#region Saveable Subwidgets
 	ns.SAVEABLE_SUBWIDGET_TAG_NAMES = ["gw-db-string-array", "gw-db-object-array", "gw-db-attack"];
 
+	/**
+	 * "Abstract" class for any widget component bound to a single property
+	 */
 	ns.SaveableSubWidget = class SaveableSubWidget extends HTMLElement
 	{
 		//#region staticProperties
@@ -182,6 +185,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		};
 	};
 
+	/**
+	 * A representation of an array of strings bound to a single property.
+	 * Optionally IDs of pinnable widgets.
+	 */
 	ns.StringArraySubWidgetEl = class StringArraySubWidgetEl extends ns.SaveableSubWidget
 	{
 		//#region staticProperties
@@ -326,6 +333,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 	};
 	customElements.define("gw-db-string-array", ns.StringArraySubWidgetEl);
 
+	/**
+	 * A representation of an array of complex objects bound to a single property.
+	 * These are "SubWidget Repeated Objects"
+	 */
 	ns.ObjectArraySubWidgetEl = class ObjectArraySubWidgetEl extends ns.SaveableSubWidget
 	{
 		//#region staticProperties
@@ -461,6 +472,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 	};
 	customElements.define("gw-db-object-array", ns.ObjectArraySubWidgetEl);
 
+	/**
+	 * A group of properties to describe an "Attack" action.
+	 */
 	ns.AttackEl = class AttackEl extends ns.SaveableSubWidget
 	{
 		//#region staticProperties
@@ -620,8 +634,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 	customElements.define("gw-db-attack", ns.AttackEl);
 	//#endregion
 
-	//#region SubWidget Objects
-	ns.SubWidgetObject = class SubWidgetObject extends ns.SaveableSubWidget
+	//#region SubWidget Repeated Objects
+	ns.SubWidgetRepeatedObj = class SubWidgetRepeatedObj extends ns.SaveableSubWidget
 	{
 		//#region staticProperties
 		//#endregion
@@ -662,7 +676,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		}
 	};
 
-	ns.StoryTextObjEl = class StoryTextObjEl extends ns.SubWidgetObject
+	//#region Areas
+	ns.StoryTextObjEl = class StoryTextObjEl extends ns.SubWidgetRepeatedObj
 	{
 		//#region staticProperties
 		static observedAttributes = [];
@@ -771,7 +786,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 	};
 	customElements.define("gw-db-story-text-object", ns.StoryTextObjEl);
 
-	ns.PortalObjEl = class PortalObjEl extends ns.SubWidgetObject
+	ns.PortalObjEl = class PortalObjEl extends ns.SubWidgetRepeatedObj
 	{
 		//#region staticProperties
 		static observedAttributes = [];
@@ -912,8 +927,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		}
 	};
 	customElements.define("gw-db-portal-object", ns.PortalObjEl);
+	//#endregion
 
-	ns.ActionObjEl = class ActionObjEl extends ns.SubWidgetObject
+	//#region Items
+	ns.ActionObjEl = class ActionObjEl extends ns.SubWidgetRepeatedObj
 	{
 		//#region staticProperties
 		static observedAttributes = [];
@@ -1057,6 +1074,15 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.attackEl = document.getElementById(`${this.idKey}-attack`);
 			this.bodyLocEl = document.getElementById(`${this.idKey}-bodyLocSelect`);
 
+			document.getElementById(`${this.idKey}-prereqs`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqOperator">Operator</label>
+			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+				<option>OR</option>
+				<option>AND</option>
+			</select>
+			<div></div><div></div>
+			`);
+
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 
@@ -1093,6 +1119,244 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		};
 	};
 	customElements.define("gw-db-action-object", ns.ActionObjEl);
+	//#endregion
+
+	//#region Events
+	ns.PlaceItmsObj = class PlaceItmsObj extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = PlaceItmsObj.instanceCount++;
+
+			PlaceItmsObj.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "place-items-obj";
+		}
+
+		get removeButton()
+		{
+			return this.rmBtnEl;
+		}
+
+		setListIndex(idx)
+		{
+			this.listIdx = idx;
+			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
+		}
+
+		setFirstFocus()
+		{
+			this.rmBtnEl.focus();
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
+				<div class="obj-el-header">
+					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
+				</div>
+				<div class="card-line">
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-toLoc">In Location</label>
+						<input	id="${this.idKey}-toLoc"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="Area"
+						/>
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-area" 
+							idInputElId="${this.idKey}-toLoc">
+						</gw-db-widget-link>
+					</div>
+					<gw-db-string-array id="${this.idKey}-placedItems"
+										dataProperty="Items"
+										dataOwner="${this.idKey}"
+										displayName="Placed Items"
+										addName="Item"
+										linePrefix="ID "
+										networkedWidget="gw-db-item"
+					></gw-db-string-array>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
+			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+
+		registerHandlers()
+		{
+		}
+	};
+	customElements.define("gw-db-place-items-object", ns.PlaceItmsObj);
+
+	ns.MoveNPCObj = class MoveNPCObj extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = MoveNPCObj.instanceCount++;
+
+			MoveNPCObj.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "move-npc-object";
+		}
+
+		get removeButton()
+		{
+			return this.rmBtnEl;
+		}
+
+		setListIndex(idx)
+		{
+			this.listIdx = idx;
+			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
+		}
+
+		setFirstFocus()
+		{
+			this.rmBtnEl.focus();
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
+				<div class="obj-el-header">
+					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
+				</div>
+				<div class="card-line">
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-npc">NPC</label>
+						<input	id="${this.idKey}-npc"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="NPC"
+						/>
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-NPC" 
+							idInputElId="${this.idKey}-npc">
+						</gw-db-widget-link>
+						<label for="${this.idKey}-toArea">To Area</label>
+						<input	id="${this.idKey}-toArea"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="ToArea"
+						/>
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-Area" 
+							idInputElId="${this.idKey}-toArea">
+						</gw-db-widget-link>
+						<label for="${this.idKey}-toParty">To Party</label>
+						<input	id="${this.idKey}-toParty"
+								type="checkbox"
+								data-owner="${this.idKey}"
+								data-prop="ToParty"
+						/>
+						<div></div>
+					</div>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
+			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+			this.toAreaEl = document.getElementById(`${this.idKey}-toArea`);
+			this.toPartyEl = document.getElementById(`${this.idKey}-toParty`);
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+
+		registerHandlers()
+		{
+			this.toPartyEl.addEventListener("change", () =>
+			{
+				if (this.toPartyEl.checked)
+				{
+					this.toAreaEl.value = "";
+					this.toAreaEl.disabled = true;
+				}
+				else
+				{
+					this.toAreaEl.disabled = false;
+				}
+			});
+		}
+	};
+	customElements.define("gw-db-move-npc-object", ns.MoveNPCObj);
+	//#endregion
+
 	//#endregion
 
 	//#region Other Components

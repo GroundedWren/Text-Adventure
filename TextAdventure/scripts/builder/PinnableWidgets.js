@@ -577,7 +577,8 @@
 						<textarea	id="${this.idKey}-internalNotes"
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
-									rows="3"></textarea>
+									rows="3"
+						></textarea>
 					</div>
 				</div>
 				<div class="card-line">
@@ -732,8 +733,77 @@
 					<div class="input-grid widget-grid-input">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+						<label for="${this.idKey}-occurrences">Occurrences</label>
+						<input	id="${this.idKey}-occurrences"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="Occurrences"
+						/>
+						<label for="${this.idKey}-singleton">Is Singleton?</label>
+						<input	id="${this.idKey}-singleton"
+								type="checkbox"
+								data-owner="${this.idKey}"
+								data-prop="IsSingleton"
+						/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									rows="3"
+						></textarea>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-internalNotes">Internal Notes</label>
+						<textarea	id="${this.idKey}-internalNotes"
+									data-owner="${this.idKey}"
+									data-prop="InternalNotes"
+									rows="3"
+						></textarea>
 					</div>
 				</div>
+				<div class="card-line">
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-setLoc">Set Location</label>
+						<input	id="${this.idKey}-setLoc"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="SetLocation"
+						/>
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-area" 
+							idInputElId="${this.idKey}-setLoc">
+						</gw-db-widget-link>
+					</div>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Remove Items"
+										addName="Item"
+										linePrefix="Item ID "
+										networkedWidget="gw-db-item"
+										dataProperty="RemoveItems"
+					></gw-db-string-array>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Get Items"
+										addName="Item"
+										linePrefix="Item ID "
+										networkedWidget="gw-db-item"
+										dataProperty="GetItems"
+					></gw-db-string-array>
+				</div>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Place Items"
+									addName="Item Set"
+									dataProperty="PlaceItems"
+									objectTag="gw-db-place-items-object"
+				></gw-db-object-array>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Move NPCs"
+									addName="NPC Move"
+									dataProperty="MoveNPC"
+									objectTag="gw-db-move-npc-object"
+				></gw-db-object-array>
 			</div>
 			`;
 
