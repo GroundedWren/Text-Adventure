@@ -251,7 +251,7 @@
 
 		setBasicInputData()
 		{
-			for (let inputEl of this.getAllInputUIEls())
+			for (let inputEl of ns.getAllInputUIEls(this))
 			{
 				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
 				{
@@ -267,15 +267,6 @@
 				}
 			}
 		}
-
-		getAllInputUIEls()
-		{
-			return [
-				...this.getElementsByTagName("input"),
-				...this.getElementsByTagName("textarea"),
-				...this.getElementsByTagName("select")
-			];
-		};
 
 		pinWidget = () =>
 		{
@@ -1104,7 +1095,7 @@
 
 	ns.getBasicInputData = function getBasicInputData(data, owner)
 	{
-		for (let inputEl of owner.getAllInputUIEls())
+		for (let inputEl of ns.getAllInputUIEls(owner))
 		{
 			if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === owner.idKey)
 			{
@@ -1138,5 +1129,15 @@
 			}
 		}
 		return data;
+	}
+
+	ns.getAllInputUIEls = function (owner)
+	{
+		owner = owner || document;
+		return [
+			...owner.getElementsByTagName("input"),
+			...owner.getElementsByTagName("textarea"),
+			...owner.getElementsByTagName("select")
+		];
 	}
 });

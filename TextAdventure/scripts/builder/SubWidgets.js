@@ -103,7 +103,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		setBasicInputData(data)
 		{
-			for (let inputEl of this.getAllInputUIEls())
+			for (let inputEl of ns.getAllInputUIEls(this))
 			{
 				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
 				{
@@ -131,22 +131,13 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			for (const subWidget of subWidgets)
 			{
-				if (subWidget.dataProperty && subWidget.getAttribute("dataOwner") === this.idKey)
+				if (subWidget.dataProperty && this.ownsSubWidget(subWidget))
 				{
 					subWidget.renderData(data[subWidget.dataProperty]);
 				}
 			}
 			return data;
 		}
-
-		getAllInputUIEls()
-		{
-			return [
-				...this.getElementsByTagName("input"),
-				...this.getElementsByTagName("textarea"),
-				...this.getElementsByTagName("select")
-			];
-		};
 	};
 
 	/**
