@@ -85,57 +85,21 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		registerHandlers()
 		{
-			throw new Error("registerHandlers is not implemented");
+			//To be optionally implemented in derived classes
 		}
 
 		getData()
 		{
 			const data = {};
-			this.getSubWidgetData(data);
-			this.getBasicInputData(data);
+			ns.getSubWidgetData(data, this);
+			ns.getBasicInputData(data, this);
 			return data;
 		}
 
-		getSubWidgetData(data)
+		ownsSubWidget = (subWidget) =>
 		{
-			data = data || {};
-			const subWidgets = [];
-			for (const swTag of ns.SAVEABLE_SUBWIDGET_TAG_NAMES)
-			{
-				subWidgets.push(...this.getElementsByTagName(swTag));
-			}
-
-			for (const subWidget of subWidgets)
-			{
-				if (subWidget.dataProperty && subWidget.getAttribute("dataOwner") === this.idKey)
-				{
-					data[subWidget.dataProperty] = subWidget.getData();
-				}
-			}
-			return data;
-		}
-
-		getBasicInputData(data)
-		{
-			data = data || {};
-
-			for (let inputEl of this.getAllInputUIEls())
-			{
-				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
-				{
-					switch (inputEl.type)
-					{
-						case "checkbox":
-							data[inputEl.getAttribute("data-prop")] = inputEl.checked || false;
-							break;
-						default:
-							data[inputEl.getAttribute("data-prop")] = inputEl.value || null;
-							break;
-					}
-				}
-			}
-			return data;
-		}
+			return subWidget.getAttribute("dataOwner") === this.idKey;
+		};
 
 		setBasicInputData(data)
 		{
@@ -252,11 +216,13 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			const lineId = `${this.idKey}-line-${lineNum}`;
 			const labelId = `${this.idKey}-line-label-${lineNum}`;
 			const inputId = `${this.idKey}-line-input-${lineNum}`;
-			const linkBtnMarkup = `<gw-db-widget-link
+			const linkBtnMarkup = `
+			<gw-db-widget-link
 				id=${this.idKey}-line-linkBtn-${lineNum} 
 				networkedWidget=${this.networkedWidget} 
 				idInputElId=${inputId}>
-			</gw-db-widget-link>`;
+			</gw-db-widget-link>
+			`;
 			const rmBtnId = `${this.idKey}-line-rmBtn-${lineNum}`;
 
 			this.btnAdd.insertAdjacentHTML(
@@ -409,7 +375,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			);
 
 			const lineEl = document.getElementById(lineId);
-			const rmBtnEl = lineEl.removeButton;
+			const rmBtnEl = lineEl.rmBtnEl;
 
 			this.lineAry.push({
 				"lineNum": lineNum,
@@ -510,15 +476,15 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
 
 		//#region Handlers
-
 		//#endregion
 
 		renderContent()
@@ -626,10 +592,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.skillEl = document.getElementById(`${this.idKey}-skill`);
 			this.skillEl.selectEl.insertAdjacentHTML("afterbegin", `<option>None</option>`);
 		}
-
-		registerHandlers()
-		{
-		}
 	};
 	customElements.define("gw-db-attack", ns.AttackEl);
 	//#endregion
@@ -644,6 +606,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		listIdx;
 
 		//#region element properties
+		legendEl;
+		rmBtnEl;
 		//#endregion
 		//#endregion
 
@@ -660,19 +624,38 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			super.connectedCallback();
 		}
 
-		get removeButton()
+		setListIndex(idx)
 		{
-			throw new Error("get removeButton is not implemented");
-		}
-
-		setListIndex()
-		{
-			throw new Error("setListIndex is not implemented");
+			this.listIdx = idx;
+			if (this.legendEl)
+			{
+				this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
+			}
 		}
 
 		setFirstFocus()
 		{
-			throw new Error("setFirstFocus is not implemented");
+			this.rmBtnEl?.focus();
+		}
+
+		get standardHeader()
+		{
+			return `
+			<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
+			<div class="obj-el-header">
+				<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
+			</div>
+			`;
+		};
+
+		get standardRemoveBtn()
+		{
+			return document.getElementById(`${this.idKey}-btnRemove`);
+		}
+
+		get standardLegend()
+		{
+			return document.getElementById(`${this.idKey}-legend`);
 		}
 	};
 
@@ -706,9 +689,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -718,31 +702,12 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return "story-text-obj";
 		}
 
-		get removeButton()
-		{
-			return this.rmBtnEl;
-		}
-
-		setListIndex(idx)
-		{
-			this.listIdx = idx;
-			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
-		}
-
-		setFirstFocus()
-		{
-			this.rmBtnEl.focus();
-		}
-
 		renderContent()
 		{
 			//Markup
 			this.innerHTML = `
 			<fieldset class="background-color-content">
-				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
-				<div class="obj-el-header">
-					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
-				</div>
+				${this.standardHeader}
 				<div class="card-line centered">
 					<gw-db-string-array id="${this.idKey}-prereqAry"
 										dataProperty="Prereqs"
@@ -765,8 +730,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
-			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
 
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-prereqOperator">Operator</label>
@@ -778,10 +743,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`);
 
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
-		}
-
-		registerHandlers()
-		{
 		}
 	};
 	customElements.define("gw-db-story-text-object", ns.StoryTextObjEl);
@@ -815,9 +776,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -827,31 +789,12 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return "portal-obj";
 		}
 
-		get removeButton()
-		{
-			return this.rmBtnEl;
-		}
-
-		setListIndex(idx)
-		{
-			this.listIdx = idx;
-			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
-		}
-
-		setFirstFocus()
-		{
-			this.rmBtnEl.focus();
-		}
-
 		renderContent()
 		{
 			//Markup
 			this.innerHTML = `
 			<fieldset class="background-color-content">
-				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
-				<div class="obj-el-header">
-					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
-				</div>
+				${this.standardHeader}
 				<div class="card-line center-align">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-destination">Destination</label>
@@ -899,8 +842,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
-			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
 
 			document.getElementById(`${this.idKey}-gateVis`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-gateVisOperator">Operator</label>
@@ -920,10 +863,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`);
 
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
-		}
-
-		registerHandlers()
-		{
 		}
 	};
 	customElements.define("gw-db-portal-object", ns.PortalObjEl);
@@ -962,9 +901,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -974,31 +914,12 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return "action-obj";
 		}
 
-		get removeButton()
-		{
-			return this.rmBtnEl;
-		}
-
-		setListIndex(idx)
-		{
-			this.listIdx = idx;
-			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
-		}
-
-		setFirstFocus()
-		{
-			this.rmBtnEl.focus();
-		}
-
 		renderContent()
 		{
 			//Markup
 			this.innerHTML = `
 			<fieldset class="background-color-content">
-				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
-				<div class="obj-el-header">
-					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
-				</div>
+				${this.standardHeader}
 				<div class="card-line">
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-dispName">Display Name</label>
@@ -1068,8 +989,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
-			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
 			this.modeSelectEl = document.getElementById(`${this.idKey}-mode`);
 			this.attackEl = document.getElementById(`${this.idKey}-attack`);
 			this.bodyLocEl = document.getElementById(`${this.idKey}-bodyLocSelect`);
@@ -1151,9 +1072,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -1163,31 +1085,12 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return "place-items-obj";
 		}
 
-		get removeButton()
-		{
-			return this.rmBtnEl;
-		}
-
-		setListIndex(idx)
-		{
-			this.listIdx = idx;
-			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
-		}
-
-		setFirstFocus()
-		{
-			this.rmBtnEl.focus();
-		}
-
 		renderContent()
 		{
 			//Markup
 			this.innerHTML = `
 			<fieldset class="background-color-content">
-				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
-				<div class="obj-el-header">
-					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
-				</div>
+				${this.standardHeader}
 				<div class="card-line">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-toLoc">In Location</label>
@@ -1215,14 +1118,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
-			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
 
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
-		}
-
-		registerHandlers()
-		{
 		}
 	};
 	customElements.define("gw-db-place-items-object", ns.PlaceItmsObj);
@@ -1256,9 +1155,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -1268,31 +1168,12 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return "move-npc-object";
 		}
 
-		get removeButton()
-		{
-			return this.rmBtnEl;
-		}
-
-		setListIndex(idx)
-		{
-			this.listIdx = idx;
-			this.legendEl.innerText = `${this.displayName} ${this.listIdx}`;
-		}
-
-		setFirstFocus()
-		{
-			this.rmBtnEl.focus();
-		}
-
 		renderContent()
 		{
 			//Markup
 			this.innerHTML = `
 			<fieldset class="background-color-content">
-				<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
-				<div class="obj-el-header">
-					<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
-				</div>
+				${this.standardHeader}
 				<div class="card-line">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-npc">NPC</label>
@@ -1330,8 +1211,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = document.getElementById(`${this.idKey}-btnRemove`);
-			this.legendEl = document.getElementById(`${this.idKey}-legend`);
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
 			this.toAreaEl = document.getElementById(`${this.idKey}-toArea`);
 			this.toPartyEl = document.getElementById(`${this.idKey}-toParty`);
 
@@ -1456,7 +1337,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		propName;
 
 		//#region element properties
-		
+
 		//#endregion
 		//#endregion
 
@@ -1476,7 +1357,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		connectedCallback()
 		{
 			this.dataOwner = this.getAttribute("dataOwner");
-			this.dataProperty = this.getAttribute("dataProperty")
+			this.dataProperty = this.getAttribute("dataProperty");
 
 			this.renderContent();
 			this.registerHandlers();
@@ -1519,7 +1400,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			
+
 		}
 
 		//#region Handlers

@@ -28,6 +28,7 @@
 		//#endregion
 		//#endregion
 
+		//#region Basic Implementation
 		constructor()
 		{
 			super();
@@ -48,6 +49,15 @@
 		{
 			throw new Error("get data is not implemented");
 		}
+		set data(value)
+		{
+			throw new Error("set data is not implemented");
+		}
+		discardData()
+		{
+			throw new Error("discardData is not implemented");
+		}
+		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
@@ -223,47 +233,21 @@
 
 		saveData()
 		{
+			this.data = this.getSaveData();
+		}
+
+		getSaveData()
+		{
 			const data = {};
-			this.saveBasicInputData(data);
-			this.saveSubWidgets(data);
+			ns.getBasicInputData(data, this);
+			ns.getSubWidgetData(data, this);
 			return data;
 		}
 
-		saveSubWidgets(data)
+		ownsSubWidget = (subWidget) =>
 		{
-			const subWidgets = [];
-			for (const swTag of ns.SAVEABLE_SUBWIDGET_TAG_NAMES)
-			{
-				subWidgets.push(...this.getElementsByTagName(swTag));
-			}
-
-			for (const subWidget of subWidgets)
-			{
-				if (subWidget.dataProperty && !subWidget.hasAttribute("dataOwner"))
-				{
-					data[subWidget.dataProperty] = subWidget.getData();
-				}
-			}
-		}
-
-		saveBasicInputData(data)
-		{
-			for (let inputEl of this.getAllInputUIEls())
-			{
-				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
-				{
-					switch (inputEl.type)
-					{
-						case "checkbox":
-							data[inputEl.getAttribute("data-prop")] = inputEl.checked || false;
-							break;
-						default:
-							data[inputEl.getAttribute("data-prop")] = inputEl.value || null;
-							break;
-					}
-				}
-			}
-		}
+			return !subWidget.hasAttribute("dataOwner");
+		};
 
 		setBasicInputData()
 		{
@@ -292,11 +276,6 @@
 				...this.getElementsByTagName("select")
 			];
 		};
-
-		discardData()
-		{
-			throw new Error("discardData is not implemented");
-		}
 
 		pinWidget = () =>
 		{
@@ -358,15 +337,24 @@
 		{
 			return Pages.DungeonBuilder.Data.World.Areas[this.logicalId]
 		}
+		set data(value)
+		{
+			Pages.DungeonBuilder.Data.World.Areas[this.logicalId] = value;
+		}
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.World.Areas[this.logicalId];
+		}
 
 		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -450,27 +438,6 @@
 		//#endregion
 
 		//#region Handlers
-		registerHandlersOpen()
-		{
-			super.registerHandlersOpen();
-		}
-
-		registerHandlersClosed()
-		{
-			super.registerHandlersClosed();
-		}
-
-		saveData()
-		{
-			let data = super.saveData();
-
-			Pages.DungeonBuilder.Data.World.Areas[this.logicalId] = data;
-		}
-
-		discardData()
-		{
-			delete Pages.DungeonBuilder.Data.World.Areas[this.logicalId];
-		}
 		//#endregion
 	};
 	customElements.define("gw-db-area", ns.AreaEl);
@@ -522,15 +489,24 @@
 		{
 			return Pages.DungeonBuilder.Data.World.Items[this.logicalId]
 		}
+		set data(value)
+		{
+			Pages.DungeonBuilder.Data.World.Items[this.logicalId] = value;
+		}
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.World.Items[this.logicalId];
+		}
 
 		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -625,27 +601,6 @@
 		//#endregion
 
 		//#region Handlers
-		registerHandlersOpen()
-		{
-			super.registerHandlersOpen();
-		}
-
-		registerHandlersClosed()
-		{
-			super.registerHandlersClosed();
-		}
-
-		saveData()
-		{
-			let data = super.saveData();
-
-			Pages.DungeonBuilder.Data.World.Items[this.logicalId] = data;
-		}
-
-		discardData()
-		{
-			delete Pages.DungeonBuilder.Data.World.Items[this.logicalId];
-		}
 		//#endregion
 	};
 	customElements.define("gw-db-item", ns.ItemEl);
@@ -697,15 +652,24 @@
 		{
 			return Pages.DungeonBuilder.Data.Events[this.logicalId];
 		}
+		set data(value)
+		{
+			Pages.DungeonBuilder.Data.Events[this.logicalId] = value;
+		}
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.Events[this.logicalId];
+		}
 
 		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -813,27 +777,6 @@
 		//#endregion
 
 		//#region Handlers
-		registerHandlersOpen()
-		{
-			super.registerHandlersOpen();
-		}
-
-		registerHandlersClosed()
-		{
-			super.registerHandlersClosed();
-		}
-
-		saveData()
-		{
-			let data = super.saveData();
-
-			Pages.DungeonBuilder.Data.Events[this.logicalId] = data;
-		}
-
-		discardData()
-		{
-			delete Pages.DungeonBuilder.Data.Events[this.logicalId];
-		}
 		//#endregion
 	};
 	customElements.define("gw-db-event", ns.EventEl);
@@ -885,15 +828,24 @@
 		{
 			return Pages.DungeonBuilder.Data.NPCs[this.logicalId];
 		}
+		set data(value)
+		{
+			Pages.DungeonBuilder.Data.NPCs[this.logicalId] = value;
+		}
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.NPCs[this.logicalId];
+		}
 
 		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -932,27 +884,6 @@
 		//#endregion
 
 		//#region Handlers
-		registerHandlersOpen()
-		{
-			super.registerHandlersOpen();
-		}
-
-		registerHandlersClosed()
-		{
-			super.registerHandlersClosed();
-		}
-
-		saveData()
-		{
-			let data = super.saveData();
-
-			Pages.DungeonBuilder.Data.NPCs[this.logicalId] = data;
-		}
-
-		discardData()
-		{
-			delete Pages.DungeonBuilder.Data.NPCs[this.logicalId];
-		}
 		//#endregion
 	};
 	customElements.define("gw-db-npc", ns.NPCEl);
@@ -1004,15 +935,24 @@
 		{
 			return Pages.DungeonBuilder.Data.Dialogs[this.logicalId];
 		}
+		set data(value)
+		{
+			Pages.DungeonBuilder.Data.Dialogs[this.logicalId] = value;
+		}
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.Dialogs[this.logicalId];
+		}
 
 		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -1051,27 +991,6 @@
 		//#endregion
 
 		//#region Handlers
-		registerHandlersOpen()
-		{
-			super.registerHandlersOpen();
-		}
-
-		registerHandlersClosed()
-		{
-			super.registerHandlersClosed();
-		}
-
-		saveData()
-		{
-			let data = super.saveData();
-
-			Pages.DungeonBuilder.Data.Dialogs[this.logicalId] = data;
-		}
-
-		discardData()
-		{
-			delete Pages.DungeonBuilder.Data.Dialogs[this.logicalId];
-		}
 		//#endregion
 	};
 	customElements.define("gw-db-dialog", ns.DialogEl);
@@ -1123,15 +1042,24 @@
 		{
 			return Pages.DungeonBuilder.Data.Criteria[this.logicalId];
 		}
+		set data(value)
+		{
+			Pages.DungeonBuilder.Data.Criteria[this.logicalId] = value;
+		}
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.Criteria[this.logicalId];
+		}
 
 		//#endregion
 
 		//#region HTMLElement implementation
 		connectedCallback()
 		{
+			super.connectedCallback();
+
 			if (this.initialized) { return; }
 
-			super.connectedCallback();
 			this.initialized = true;
 		}
 		//#endregion
@@ -1170,28 +1098,45 @@
 		//#endregion
 
 		//#region Handlers
-		registerHandlersOpen()
-		{
-			super.registerHandlersOpen();
-		}
-
-		registerHandlersClosed()
-		{
-			super.registerHandlersClosed();
-		}
-
-		saveData()
-		{
-			let data = super.saveData();
-
-			Pages.DungeonBuilder.Data.Criteria[this.logicalId] = data;
-		}
-
-		discardData()
-		{
-			delete Pages.DungeonBuilder.Data.Criteria[this.logicalId];
-		}
 		//#endregion
 	};
 	customElements.define("gw-db-criteria", ns.CriteriaEl);
+
+	ns.getBasicInputData = function getBasicInputData(data, owner)
+	{
+		for (let inputEl of owner.getAllInputUIEls())
+		{
+			if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === owner.idKey)
+			{
+				switch (inputEl.type)
+				{
+					case "checkbox":
+						data[inputEl.getAttribute("data-prop")] = inputEl.checked || false;
+						break;
+					default:
+						data[inputEl.getAttribute("data-prop")] = inputEl.value || null;
+						break;
+				}
+			}
+		}
+		return data;
+	}
+
+	ns.getSubWidgetData = function getSubWidgetData(data, owner)
+	{
+		const subWidgets = [];
+		for (const swTag of ns.SAVEABLE_SUBWIDGET_TAG_NAMES)
+		{
+			subWidgets.push(...owner.getElementsByTagName(swTag));
+		}
+
+		for (const subWidget of subWidgets)
+		{
+			if (subWidget.dataProperty && owner.ownsSubWidget(subWidget))
+			{
+				data[subWidget.dataProperty] = subWidget.getData();
+			}
+		}
+		return data;
+	}
 });
