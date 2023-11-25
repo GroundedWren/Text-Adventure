@@ -826,7 +826,7 @@
 		{
 			super.registerHandlers();
 
-			this.hasAttackCbx.addEventListener("change", this.onHasAttackSet);
+			this.hasAttackCbx?.addEventListener("change", this.onHasAttackSet);
 		}
 
 		onHasAttackSet = () =>
