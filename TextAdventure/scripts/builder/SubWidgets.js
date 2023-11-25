@@ -4,7 +4,15 @@
 registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 {
 	//#region Saveable Subwidgets
-	ns.SAVEABLE_SUBWIDGET_TAG_NAMES = ["gw-db-string-array", "gw-db-object-array", "gw-db-attack"];
+	ns.SAVEABLE_SUBWIDGET_TAG_NAMES = [
+		"gw-db-string-array",
+		"gw-db-object-array",
+		"gw-db-attack",
+		"gw-db-vitals",
+		"gw-db-pronouns",
+		"gw-db-abilities",
+		"gw-db-skills",
+	];
 
 	/**
 	 * "Abstract" class for any widget component bound to a single property
@@ -549,14 +557,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 				</div>
 				<div class="attack-fieldset-line">
 					<div class="input-vertical-line">
-						<label for="${this.idKey}-txtOnAtk">Text for Attack</label>
-						<textarea	id="${this.idKey}-txtOnAtk"
-									data-owner="${this.idKey}"
-									data-prop="TextOnAttack"
-									rows="3"
-						></textarea>
-					</div>
-					<div class="input-vertical-line">
 						<label for="${this.idKey}-txtOnMiss">Text for Miss or Save</label>
 						<textarea	id="${this.idKey}-txtOnMiss"
 									data-owner="${this.idKey}"
@@ -585,6 +585,586 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		}
 	};
 	customElements.define("gw-db-attack", ns.AttackEl);
+
+	/**
+	 * A group of properties to describe a character's vitals.
+	 */
+	ns.VitalsEl = class VitalsEl extends ns.SaveableSubWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = VitalsEl.instanceCount++;
+			this.lineIdx = 0;
+			this.lineAry = [];
+
+			VitalsEl.instanceMap[this.instanceId] = this;
+		}
+
+		get subWidgetName()
+		{
+			return "vitals";
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Handlers
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="vitals-fieldset">
+				<legend>Vitals</legend>
+				<div class="input-grid widget-grid-input">
+					<label for="${this.idKey}-health">Health</label>
+					<input	id="${this.idKey}-health"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Health"
+					/>
+					<label for="${this.idKey}-max-health">Max Health</label>
+					<input	id="${this.idKey}-max-health"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="MaxHealth"
+					/>
+				</div>
+				<div class="input-grid widget-grid-input">
+					<label for="${this.idKey}-evasion">Evasion</label>
+					<input	id="${this.idKey}-evasion"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Evasion"
+					/>
+					<label for="${this.idKey}-max-evasion">Max Evasion</label>
+					<input	id="${this.idKey}-max-evasion"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="MaxEvasion"
+					/>
+				</div>
+				<div class="input-grid widget-grid-input">
+					<label for="${this.idKey}-armor">Armor</label>
+					<input	id="${this.idKey}-armor"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Armor"
+					/>
+					<label for="${this.idKey}-max-armor">Max Armor</label>
+					<input	id="${this.idKey}-max-armor"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="MaxArmor"
+					/>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+
+		}
+	};
+	customElements.define("gw-db-vitals", ns.VitalsEl);
+
+	/**
+	 * A group of properties to describe a character's vitals.
+	 */
+	ns.PronounsEl = class PronounsEl extends ns.SaveableSubWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = PronounsEl.instanceCount++;
+			this.lineIdx = 0;
+			this.lineAry = [];
+
+			PronounsEl.instanceMap[this.instanceId] = this;
+		}
+
+		get subWidgetName()
+		{
+			return "pronouns";
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Handlers
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="input-horizontal-flex">
+				<legend>Pronouns</legend>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-subjective">Subjective</label>
+					<input	id="${this.idKey}-subjective"
+							type="text"
+							data-owner="${this.idKey}"
+							placeholder="She bought a donut."
+							data-prop="Subjective"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-objective">Objective</label>
+					<input	id="${this.idKey}-objective"
+							type="text"
+							data-owner="${this.idKey}"
+							placeholder="That's her!"
+							data-prop="Objective"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-possessive">Possessive</label>
+					<input	id="${this.idKey}-possessive"
+							type="text"
+							data-owner="${this.idKey}"
+							placeholder="The donut is hers."
+							data-prop="Possessive"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-reflexive">Reflexive</label>
+					<input	id="${this.idKey}-reflexive"
+							type="text"
+							data-owner="${this.idKey}"
+							placeholder="She ate it herself."
+							data-prop="Reflexive"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-posadj">Possessive Adjective</label>
+					<input	id="${this.idKey}-posadj"
+							type="text"
+							data-owner="${this.idKey}"
+							placeholder="That's her donut!"
+							data-prop="PossessiveAdjective"
+					/>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+
+		}
+	};
+	customElements.define("gw-db-pronouns", ns.PronounsEl);
+
+	/**
+	 * A group of properties to describe a character's abilities.
+	 */
+	ns.AbilitiesEl = class AbilitiesEl extends ns.SaveableSubWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		strEl;
+		strmodEl;
+		chaEl;
+		chamodEl;
+		dexEl;
+		dexmodEl;
+		conEl;
+		conmodEl;
+		intEl;
+		intmodEl;
+		wisEl;
+		wismodEl;
+		chaEl;
+		chamodEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = AbilitiesEl.instanceCount++;
+			this.lineIdx = 0;
+			this.lineAry = [];
+
+			AbilitiesEl.instanceMap[this.instanceId] = this;
+		}
+
+		get subWidgetName()
+		{
+			return "abilities";
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Handlers
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="abilities-fieldset input-horizontal-flex">
+				<legend>Abilities</legend>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-str">Str</label>
+					<input	id="${this.idKey}-str"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Str"
+					/>
+					<output id="${this.idKey}-strmod" for="${this.idKey}-str"></output>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-dex">Dex</label>
+					<input	id="${this.idKey}-dex"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Dex"
+					/>
+					<output id="${this.idKey}-dexmod" for="${this.idKey}-dex"></output>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-con">Con</label>
+					<input	id="${this.idKey}-con"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Con"
+					/>
+					<output id="${this.idKey}-conmod" for="${this.idKey}-con"></output>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-int">Int</label>
+					<input	id="${this.idKey}-int"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Int"
+					/>
+					<output id="${this.idKey}-intmod" for="${this.idKey}-int"></output>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-wis">Wis</label>
+					<input	id="${this.idKey}-wis"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Wis"
+					/>
+					<output id="${this.idKey}-wismod" for="${this.idKey}-wis"></output>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-cha">Cha</label>
+					<input	id="${this.idKey}-cha"
+							type="number"
+							data-owner="${this.idKey}"
+							data-prop="Cha"
+					/>
+					<output id="${this.idKey}-chamod" for="${this.idKey}-cha"></output>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.strEl = document.getElementById(`${this.idKey}-str`);
+			this.strmodEl = document.getElementById(`${this.idKey}-strmod`);
+			this.dexEl = document.getElementById(`${this.idKey}-dex`);
+			this.dexmodEl = document.getElementById(`${this.idKey}-dexmod`);
+			this.conEl = document.getElementById(`${this.idKey}-con`);
+			this.conmodEl = document.getElementById(`${this.idKey}-conmod`);
+			this.intEl = document.getElementById(`${this.idKey}-int`);
+			this.intmodEl = document.getElementById(`${this.idKey}-intmod`);
+			this.wisEl = document.getElementById(`${this.idKey}-wis`);
+			this.wismodEl = document.getElementById(`${this.idKey}-wismod`);
+			this.chaEl = document.getElementById(`${this.idKey}-cha`);
+			this.chamodEl = document.getElementById(`${this.idKey}-chamod`);
+		}
+
+		registerHandlers()
+		{
+			this.strEl.addEventListener("change", Common.fcd(this, this.onAbilityChange, [this.strmodEl]));
+			this.dexEl.addEventListener("change", Common.fcd(this, this.onAbilityChange, [this.dexmodEl]));
+			this.conEl.addEventListener("change", Common.fcd(this, this.onAbilityChange, [this.conmodEl]));
+			this.intEl.addEventListener("change", Common.fcd(this, this.onAbilityChange, [this.intmodEl]));
+			this.wisEl.addEventListener("change", Common.fcd(this, this.onAbilityChange, [this.wismodEl]));
+			this.chaEl.addEventListener("change", Common.fcd(this, this.onAbilityChange, [this.chamodEl]));
+		}
+
+		renderData(data)
+		{
+			super.renderData(data);
+
+			this.updateModVal(this.strmodEl, this.strEl.value);
+			this.updateModVal(this.dexmodEl, this.dexEl.value);
+			this.updateModVal(this.conmodEl, this.conEl.value);
+			this.updateModVal(this.intmodEl, this.intEl.value);
+			this.updateModVal(this.wismodEl, this.wisEl.value);
+			this.updateModVal(this.chamodEl, this.chaEl.value);
+		}
+
+		onAbilityChange(modEl, event)
+		{	
+			this.updateModVal(modEl, event.target.value);
+		}
+
+		updateModVal(modEl, value)
+		{
+			if (value === "")
+			{
+				modEl.innerText = "";
+				return;
+			}
+
+			const modVal = Pages.DungeoneerInterface.Mechanics.calculateAbilityMod(value);
+			modEl.innerText = `(${modVal < 0 ? "-" : "+"}${Math.abs(modVal)})`;
+		}
+	};
+	customElements.define("gw-db-abilities", ns.AbilitiesEl);
+
+	/**
+	 * A group of properties to describe a character's skills.
+	 */
+	ns.SkillsEl = class SkillsEl extends ns.SaveableSubWidget
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = SkillsEl.instanceCount++;
+			this.lineIdx = 0;
+			this.lineAry = [];
+
+			SkillsEl.instanceMap[this.instanceId] = this;
+		}
+
+		get subWidgetName()
+		{
+			return "skills";
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		//#region Handlers
+		//#endregion
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="skills-fieldset input-horizontal-flex">
+				<legend>Skills</legend>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-acrobatics">Acrobatics</label>
+					<input	id="${this.idKey}-acrobatics"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Acrobatics"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-athletics">Athletics</label>
+					<input	id="${this.idKey}-athletics"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Athletics"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-deception">Deception</label>
+					<input	id="${this.idKey}-deception"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Deception"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-history">History</label>
+					<input	id="${this.idKey}-history"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="History"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-insight">Insight</label>
+					<input	id="${this.idKey}-insight"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Insight"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-intimidation">Intimidation</label>
+					<input	id="${this.idKey}-intimidation"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Intimidation"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-magic">Magic</label>
+					<input	id="${this.idKey}-magic"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Magic"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-medicine">Medicine</label>
+					<input	id="${this.idKey}-medicine"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Medicine"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-nature">Nature</label>
+					<input	id="${this.idKey}-nature"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Nature"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-perception">Perception</label>
+					<input	id="${this.idKey}-perception"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Perception"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-performance">Performance</label>
+					<input	id="${this.idKey}-performance"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Performance"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-persuasion">Persuasion</label>
+					<input	id="${this.idKey}-persuasion"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Persuasion"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-stealth">Stealth</label>
+					<input	id="${this.idKey}-stealth"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Stealth"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-survival">Survival</label>
+					<input	id="${this.idKey}-survival"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Survival"
+					/>
+				</div>
+				<div class="input-flex-line">
+					<label for="${this.idKey}-investigation">Investigation</label>
+					<input	id="${this.idKey}-investigation"
+							type="text"
+							data-owner="${this.idKey}"
+							data-prop="Investigation"
+					/>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+
+		}
+	};
+	customElements.define("gw-db-skills", ns.SkillsEl);
 	//#endregion
 
 	//#region SubWidget Repeated Objects
@@ -801,14 +1381,19 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 						<textarea	id="${this.idKey}-description"
 									data-owner="${this.idKey}"
 									data-prop="Description"
-									rows="3"></textarea>
+									rows="3"
+						></textarea>
 					</div>
-					<div class="input-vertical-line">
+					<div></div>
+				</div>
+				<div class="card-line centered">
+					<div class="input-block">
 						<label for="${this.idKey}-accessText">Access Text</label>
 						<textarea	id="${this.idKey}-accessText"
 									data-owner="${this.idKey}"
 									data-prop="AccessText"
-									rows="3"></textarea>
+									class="full-width"
+									rows="4"></textarea>
 					</div>
 				</div>
 				<div class="card-line">
@@ -936,6 +1521,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 									rows="3"
 						></textarea>
 					</div>
+					<div></div>
 				</div>
 				<div class="card-line">
 					<gw-db-string-array id="${this.idKey}-prereqs"
@@ -956,9 +1542,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					></gw-db-string-array>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-mode">Mode</label>
-						<select id="${this.idKey}-mode" data-owner=${this.idKey} data-prop="Mode">
+						<select id="${this.idKey}-mode"
+								data-owner=${this.idKey}
+								data-prop="Mode"
+								aria-controls="${this.idKey}-attack ${this.idKey}-bodyLocSelect"
+						>
 							<option>None</option>
 							<option>Don</option>
+							<option>Doff</option>
 							<option>Put Down</option>
 							<option>Attack</option>
 						</select>
@@ -1023,6 +1614,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					break;
 				case "None":
 				case "Put Down":
+				case "Doff":
 				default:
 					this.attackEl.classList.add("hidden");
 					this.bodyLocEl.classList.add("hidden");
@@ -1131,6 +1723,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region element properties
 		rmBtnEl;
 		legendEl;
+		toAreaEl;
+		toAreaLinkEl;
+		toPartyEl;
 		//#endregion
 		//#endregion
 
@@ -1174,7 +1769,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 								data-prop="NPC"
 						/>
 						<gw-db-widget-link
-							id=${this.idKey}-linkBtn
+							id=${this.idKey}-npc-linkBtn
 							networkedWidget="gw-db-NPC" 
 							idInputElId="${this.idKey}-npc">
 						</gw-db-widget-link>
@@ -1185,7 +1780,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 								data-prop="ToArea"
 						/>
 						<gw-db-widget-link
-							id=${this.idKey}-linkBtn
+							id="${this.idKey}-area-linkBtn"
 							networkedWidget="gw-db-Area" 
 							idInputElId="${this.idKey}-toArea">
 						</gw-db-widget-link>
@@ -1205,6 +1800,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
 			this.toAreaEl = document.getElementById(`${this.idKey}-toArea`);
+			this.toAreaLinkEl = document.getElementById(`${this.idKey}-area-linkBtn`);
 			this.toPartyEl = document.getElementById(`${this.idKey}-toParty`);
 
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
@@ -1216,17 +1812,207 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			{
 				if (this.toPartyEl.checked)
 				{
-					this.toAreaEl.value = "";
-					this.toAreaEl.disabled = true;
+					this.toAreaEl.value = "";	
 				}
-				else
-				{
-					this.toAreaEl.disabled = false;
-				}
+				this.toAreaEl.disabled = this.toPartyEl.checked;
+				this.toAreaLinkEl.buttonElement.disabled = this.toPartyEl.checked;
 			});
 		}
 	};
 	customElements.define("gw-db-move-npc-object", ns.MoveNPCObj);
+	//#endregion
+
+	//#region NPCs
+	ns.SalutationObjEl = class SalutationObjEl extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = SalutationObjEl.instanceCount++;
+
+			SalutationObjEl.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "salutation-obj";
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				${this.standardHeader}
+				<div class="card-line centered">
+					<gw-db-string-array id="${this.idKey}-prereqAry"
+										dataProperty="Prereqs"
+										dataOwner="${this.idKey}"
+										displayName="Prereqs"
+										addName="Prereq"
+										linePrefix="Criteria ID "
+										networkedWidget="gw-db-criteria"
+					></gw-db-string-array>
+					<div class="input-block">
+						<label for="${this.idKey}-salutationText">Salutation Text</label>
+						<textarea	id="${this.idKey}-salutationText"
+									data-owner="${this.idKey}"
+									data-prop="Text"
+									class="full-width"
+									rows="4"></textarea>
+					</div>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
+
+			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqOperator">Operator</label>
+			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+				<option>OR</option>
+				<option>AND</option>
+			</select>
+			<div></div><div></div>
+			`);
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+	};
+	customElements.define("gw-db-salutation-object", ns.SalutationObjEl);
+
+	ns.DialogTreeEl = class DialogTreeEl extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = DialogTreeEl.instanceCount++;
+
+			DialogTreeEl.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "dialog-tree-obj";
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				${this.standardHeader}
+				<div class="card-line">
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-dispName">Display Name</label>
+						<input	id="${this.idKey}-dispName"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="DisplayName"
+						/>
+						<div></div>
+						<label for="${this.idKey}-start">Dialog Start ID</label>
+						<input id="${this.idKey}-start" type="text" data-owner=${this.idKey} data-prop="StartID" />
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-dialog" 
+							idInputElId="${this.idKey}-start">
+						</gw-db-widget-link>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									rows="3"
+						></textarea>
+					</div>
+					<gw-db-string-array id="${this.idKey}-prereqAry"
+										dataProperty="Prereqs"
+										dataOwner="${this.idKey}"
+										displayName="Prereqs"
+										addName="Prereq"
+										linePrefix="Criteria ID "
+										networkedWidget="gw-db-criteria"
+					></gw-db-string-array>
+					
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
+
+			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqOperator">Operator</label>
+			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+				<option>OR</option>
+				<option>AND</option>
+			</select>
+			<div></div><div></div>
+			`);
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+	};
+	customElements.define("gw-db-dialog-tree-object", ns.DialogTreeEl);
 	//#endregion
 
 	//#endregion

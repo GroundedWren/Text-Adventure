@@ -1,5 +1,5 @@
 ﻿main {
-	min-height: calc(100vh - 1.25em - 5px); /*Header*/
+	height: calc(100vh - 1.25em - 5px); /*Header*/
 	width: 100%;
 	display: grid;
 	background-color: var(--accent-color);
@@ -134,7 +134,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Pages.DungeoneerInterface.MINI_THRESHOLD */
 @media (max-width: 600px) {
 	main {
-		min-height: calc(100vh - 1.25em - 75px); /*Header, bottom offset for mobile*/
+		height: calc(100vh - 1.25em - 75px); /*Header, bottom offset for mobile*/
 		grid-template-columns: 0px 1fr;
 	}
 

@@ -126,7 +126,7 @@ hr {
 }
 
 .widget-grid-input > input[type="checkbox"] {
-	margin-bottom: 4px;
+	align-self: center;
 }
 
 .card-line {
@@ -152,7 +152,7 @@ hr {
 	margin: 5px;
 }
 
-.input-grid > label {
+.input-grid > label, .input-flex-line > label, .string-array-line > label {
 	border-bottom: 1px solid var(--accent-color);
 }
 
@@ -220,6 +220,7 @@ textarea.full-width {
 	flex-direction: row;
 	flex-wrap: wrap;
 	gap: 20px;
+	justify-content: center;
 }
 
 .attack-fieldset-line > .input-vertical-line {
@@ -228,4 +229,19 @@ textarea.full-width {
 
 .attack-fieldset-line input {
 	max-width: 40px;
+}
+
+.vitals-fieldset {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	flex-wrap: wrap;
+}
+
+.input-flex-line output {
+	padding: 2px;
+}
+
+.abilities-fieldset input, .skills-fieldset input {
+	width: 40px;
 }

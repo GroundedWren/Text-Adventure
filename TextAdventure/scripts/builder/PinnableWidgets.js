@@ -246,7 +246,7 @@
 
 		ownsSubWidget = (subWidget) =>
 		{
-			return !subWidget.hasAttribute("dataOwner");
+			return !subWidget.hasAttribute("dataOwner") || subWidget.getAttribute("dataOwner") === this.idKey;
 		};
 
 		setBasicInputData()
@@ -521,7 +521,7 @@
 			this.innerHTML = `
 			<div class="card">
 				${this.getOpenHeaderHTML()}
-				<div class="card-line">
+				<div class="card-line center-align">
 					<div class="input-grid widget-grid-input">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
@@ -533,19 +533,23 @@
 						/>
 					</div>
 					<div class="input-vertical-line">
-						<label for="${this.idKey}-description">Description</label>
-						<textarea	id="${this.idKey}-description"
-									data-owner="${this.idKey}"
-									data-prop="Description"
-									rows="3"></textarea>
-					</div>
-					<div class="input-vertical-line">
 						<label for="${this.idKey}-internalNotes">Internal Notes</label>
 						<textarea	id="${this.idKey}-internalNotes"
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
 									rows="3"
 						></textarea>
+					</div>
+					<div></div>
+				</div>
+				<div class="card-line centered">
+					<div class="input-block">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									class="full-width"
+									rows="4"></textarea>
 					</div>
 				</div>
 				<div class="card-line">
@@ -562,11 +566,19 @@
 								data-owner="${this.idKey}"
 								data-prop="MaxHealth"
 						/>
-						<label for="${this.idKey}-armor">Armor</label>
+					</div>
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-armor">Armor Bonus</label>
 						<input	id="${this.idKey}-armor"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Armor"
+						/>
+						<label for="${this.idKey}-evasion">Evasion Bonus</label>
+						<input	id="${this.idKey}-evasion"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="Evasion"
 						/>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
@@ -702,20 +714,23 @@
 						/>
 					</div>
 					<div class="input-vertical-line">
-						<label for="${this.idKey}-description">Description</label>
-						<textarea	id="${this.idKey}-description"
-									data-owner="${this.idKey}"
-									data-prop="Description"
-									rows="3"
-						></textarea>
-					</div>
-					<div class="input-vertical-line">
 						<label for="${this.idKey}-internalNotes">Internal Notes</label>
 						<textarea	id="${this.idKey}-internalNotes"
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
 									rows="3"
 						></textarea>
+					</div>
+					<div></div>
+				</div>
+				<div class="card-line centered">
+					<div class="input-block">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									class="full-width"
+									rows="4"></textarea>
 					</div>
 				</div>
 				<div class="card-line">
@@ -747,6 +762,38 @@
 										dataProperty="GetItems"
 					></gw-db-string-array>
 				</div>
+				<div class="card-line">
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Mark NPCs Hostile"
+										addName="NPC"
+										linePrefix="NPC ID "
+										networkedWidget="gw-db-npc"
+										dataProperty="MarkNPCsHostile"
+					></gw-db-string-array>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Mark NPCs Not Hostile"
+										addName="NPC"
+										linePrefix="NPC ID "
+										networkedWidget="gw-db-npc"
+										dataProperty="MarkNPCsNotHostile"
+					></gw-db-string-array>
+				</div>
+				<div class="card-line">
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-hasattack">Has Attack?</label>
+							<input	id="${this.idKey}-hasattack"
+									type="checkbox"
+									aria-controls="${this.idKey}-attack"
+									data-owner="${this.idKey}"
+									data-prop="HasAttack"
+							/>
+					</div>
+					<gw-db-attack	id="${this.idKey}-attack"
+									class="hidden"
+									dataOwner="${this.idKey}"
+									dataProperty="Attack">
+					</gw-db-attack>
+				</div>
 				<gw-db-object-array parentWidgetId="${this.id}"
 									displayName="Place Items"
 									addName="Item Set"
@@ -763,11 +810,36 @@
 			`;
 
 			//element properties
-
+			this.hasAttackCbx = document.getElementById(`${this.idKey}-hasattack`);
+			this.attackEl = document.getElementById(`${this.idKey}-attack`);
 		}
 		//#endregion
 
+		renderData(data)
+		{
+			super.renderData(data);
+			this.onHasAttackSet();
+		}
+
 		//#region Handlers
+		registerHandlers()
+		{
+			super.registerHandlers();
+
+			this.hasAttackCbx.addEventListener("change", this.onHasAttackSet);
+		}
+
+		onHasAttackSet = () =>
+		{
+			if (this.hasAttackCbx.checked)
+			{
+				this.attackEl.classList.remove("hidden");
+			}
+			else
+			{
+				this.attackEl.classList.add("hidden");
+			}
+		};
 		//#endregion
 	};
 	customElements.define("gw-db-event", ns.EventEl);
@@ -864,8 +936,88 @@
 					<div class="input-grid widget-grid-input">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+						<label for="${this.idKey}-displayNameEl">Display Name</label>
+						<input id="${this.idKey}-displayNameEl"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="DisplayName"
+						/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-InternalNotes">Internal Notes</label>
+						<textarea	id="${this.idKey}-InternalNotes"
+									data-owner="${this.idKey}"
+									data-prop="InternalNotes"
+									rows="3"
+						></textarea>
+					</div>
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-location">Location</label>
+						<input	id="${this.idKey}-location"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="Location"
+						/>
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-area" 
+							idInputElId="${this.idKey}-setLoc">
+						</gw-db-widget-link>
+						<label for="${this.idKey}-hostile">Is Hostile?</label>
+						<input	id="${this.idKey}-hostile"
+								type="checkbox"
+								data-owner="${this.idKey}"
+								data-prop="IsHostile"
+						/>
+						<div></div>
 					</div>
 				</div>
+				<div class="card-line centered">
+					<div class="input-block">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									class="full-width"
+									rows="4"></textarea>
+					</div>
+				</div>
+				<div class="card-line centered">
+					<gw-db-pronouns	id="${this.idKey}-pronouns"
+									parentWidgetId="${this.id}"
+									dataProperty="Pronouns"
+					></gw-db-pronouns>
+				</div>
+				<div class="card-line centered">
+					<gw-db-vitals	id="${this.idKey}-vitals"
+									parentWidgetId="${this.id}"
+									dataProperty="Vitals"
+					></gw-db-vitals>
+				</div>
+				<div class="card-line centered">
+					<gw-db-abilities	id="${this.idKey}-abilities"
+										parentWidgetId="${this.id}"
+										dataProperty="Abilities"
+					></gw-db-abilities>
+				</div>
+				<div class="card-line centered">
+					<gw-db-skills	id="${this.idKey}-skills"
+									parentWidgetId="${this.id}"
+									dataProperty="Skills"
+					></gw-db-skills>
+				</div>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Salutations"
+									addName="Salutation"
+									dataProperty="Salutations"
+									objectTag="gw-db-salutation-object"
+				></gw-db-object-array>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Dialog Trees"
+									addName="Tree"
+									dataProperty="DialogTrees"
+									objectTag="gw-db-dialog-tree-object"
+				></gw-db-object-array>
 			</div>
 			`;
 
@@ -1093,6 +1245,7 @@
 	};
 	customElements.define("gw-db-criteria", ns.CriteriaEl);
 
+	//#region Helpers
 	ns.getBasicInputData = function getBasicInputData(data, owner)
 	{
 		for (let inputEl of ns.getAllInputUIEls(owner))
@@ -1140,4 +1293,5 @@
 			...owner.getElementsByTagName("select")
 		];
 	}
+	//#endregion
 });

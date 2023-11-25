@@ -301,6 +301,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		);
 
 		areaEl.logicalIdInEl.focus();
+		areaEl.logicalIdInEl.select();
 	};
 
 	ns.newItem = () =>
@@ -312,6 +313,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		);
 
 		itemEl.logicalIdInEl.focus();
+		itemEl.logicalIdInEl.select();
 	};
 
 	ns.newEvent = () =>
@@ -323,6 +325,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		);
 
 		eventEl.logicalIdInEl.focus();
+		eventEl.logicalIdInEl.select();
 	};
 
 	ns.newNPC = () =>
@@ -334,6 +337,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		);
 
 		npcEl.logicalIdInEl.focus();
+		npcEl.logicalIdInEl.select();
 	};
 
 	ns.newDialog = () =>
@@ -345,6 +349,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		);
 
 		dialogEl.logicalIdInEl.focus();
+		dialogEl.logicalIdInEl.select();
 	};
 
 	ns.newCriteria = () =>
@@ -356,6 +361,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		);
 
 		criteriaEl.logicalIdInEl.focus();
+		criteriaEl.logicalIdInEl.select();
 	};
 
 	ns.sectionHeightUpdateOnResize = () =>
