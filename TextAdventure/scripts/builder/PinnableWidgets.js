@@ -961,7 +961,7 @@
 						<gw-db-widget-link
 							id=${this.idKey}-linkBtn
 							networkedWidget="gw-db-area" 
-							idInputElId="${this.idKey}-setLoc">
+							idInputElId="${this.idKey}-location">
 						</gw-db-widget-link>
 						<label for="${this.idKey}-hostile">Is Hostile?</label>
 						<input	id="${this.idKey}-hostile"
