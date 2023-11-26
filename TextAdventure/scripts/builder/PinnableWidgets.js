@@ -1512,17 +1512,17 @@
 						/>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
-										displayName="Or Event"
-										addName="Event"
-										linePrefix="Event ID "
-										networkedWidget="gw-db-event"
+										displayName="Or Criteria"
+										addName="Criteria"
+										linePrefix="Criteria ID "
+										networkedWidget="gw-db-criteria"
 										dataProperty="OR"
 					></gw-db-string-array>
 					<gw-db-string-array parentWidgetId="${this.id}"
-										displayName="And Event"
-										addName="Event"
-										linePrefix="Event ID "
-										networkedWidget="gw-db-event"
+										displayName="And Criteria"
+										addName="Criteria"
+										linePrefix="Criteria ID "
+										networkedWidget="gw-db-criteria"
 										dataProperty="AND"
 					></gw-db-string-array>
 				</div>
