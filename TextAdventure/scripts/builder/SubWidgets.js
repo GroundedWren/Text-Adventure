@@ -1380,6 +1380,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 							networkedWidget="gw-db-area" 
 							idInputElId="${this.idKey}-destination">
 						</gw-db-widget-link>
+						<label for="${this.idKey}-destination">Display Name</label>
+						<input id="${this.idKey}-destination" type="text" data-owner=${this.idKey} data-prop="DisplayName" />
+						<div></div>
 					</div>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-description">Description</label>
@@ -1410,6 +1413,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 										linePrefix="Criteria ID "
 										networkedWidget="gw-db-criteria"
 					></gw-db-string-array>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-denied">Access Denied Text</label>
+						<textarea	id="${this.idKey}-denied"
+									data-owner="${this.idKey}"
+									data-prop="AccessDeniedText"
+									rows="3"
+						></textarea>
+					</div>
 					<gw-db-string-array id="${this.idKey}-gateAccess"
 										dataProperty="GateAccess"
 										dataOwner="${this.idKey}"
@@ -1428,7 +1439,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			document.getElementById(`${this.idKey}-gateVis`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-gateVisOperator">Operator</label>
-			<select id="${this.idKey}-gateVisOperator" data-owner=${this.idKey} data-prop="GateVisibilityOp">
+			<select id="${this.idKey}-gateVisOperator"
+					data-owner=${this.idKey}
+					data-prop="GateVisibilityOp"
+					data-skipParent="true"
+			>
 				<option>OR</option>
 				<option>AND</option>
 			</select>
@@ -1436,7 +1451,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`);
 			document.getElementById(`${this.idKey}-gateAccess`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-gateAccessOperator">Operator</label>
-			<select id="${this.idKey}-gateAccessOperator" data-owner=${this.idKey} data-prop="GateAccessOp">
+			<select id="${this.idKey}-gateAccessOperator"
+					data-owner=${this.idKey}
+					data-prop="GateAccessOp"
+					data-skipParent="true"
+			>
 				<option>OR</option>
 				<option>AND</option>
 			</select>
@@ -1555,6 +1574,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 							<option>None</option>
 							<option>Don</option>
 							<option>Doff</option>
+							<option>Pick Up</option>
 							<option>Put Down</option>
 							<option>Attack</option>
 						</select>
@@ -1622,6 +1642,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					this.bodyLocEl.classList.remove("hidden");
 					break;
 				case "None":
+				case "Pick Up":
 				case "Put Down":
 				case "Doff":
 				default:

@@ -22,8 +22,32 @@ main {
 	max-width: 1000px;
 }
 
-nav > ul{
-	padding-left: 20px;
+nav > ul {
+	padding-left: 0px;
+}
+
+.z {
+}
+
+nav > ul > li {
+	display: block;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-color: var(--accent-color);
+	border-radius: 25px;
+	width: 100%;
+	text-align: center;
+	min-height: 44px;
+	line-height: 22px;
+}
+
+nav a {
+	display: inline-block;
+	width: 100%;
+	color: var(--heading-color);
+	padding-top: 10px;
 }
 
 h2, h3, h4, h5, h6 {
@@ -58,9 +82,9 @@ h1, h2 {
 	background-color: var(--content-color);
 }
 
-#updatesCard h2 {
-	text-align: center;
-}
+	#updatesCard h2 {
+		text-align: center;
+	}
 
 #leftContent {
 	display: flex;

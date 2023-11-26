@@ -32,6 +32,7 @@
 	<script src="./scripts/Character.js"></script>
 	<script src="./scripts/CharacterBuilder.js"></script>
 	<script src="./scripts/DungeoneerInterface.js"></script>
+	<script src="./scripts/Logic.js"></script>
 </head>
 <body>
 	<div id="subveil">
@@ -142,10 +143,15 @@
 							</div>
 							<div class="bottomSpacing">
 								<h3 id="hPrebuiltGames">Prebuilt Games</h3>
-								<ul aria-labelledby="hPrebuiltGames">
+								<ul id="prebuiltGamesList" aria-labelledby="hPrebuiltGames">
 									<li>
-										<button onclick="Pages.DungeoneerInterface.importFreshSave('TestSave','./saves/TestSave.json')">
-											TestSave
+										<button onclick="Pages.DungeoneerInterface.importFreshSave('Character Build Test','./saves/CharacterBuildTest.json')">
+											Character Build Test
+										</button>
+									</li>
+									<li>
+										<button onclick="Pages.DungeoneerInterface.importFreshSave('The Construct','./saves/TheConstruct.json')">
+											The Construct
 										</button>
 									</li>
 								</ul>
@@ -183,10 +189,7 @@
 					<div class="tab-gutter"></div>
 				</div>
 			</div>
-			<div id="storyPane" role="region" aria-label="Story">
-				<p>
-					Text here
-				</p>
+			<div id="storyPane" role="region" aria-label="Story" tabindex="-1">
 			</div>
 			<div id="consolePane" role="region" aria-label="Console">
 				<div id="consoleOutput" tabindex="-1">

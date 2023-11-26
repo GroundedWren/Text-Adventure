@@ -93,7 +93,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 				ns.Data = object;
 				renderDungeonFromData();
 			},
-			[{ 'application/json': ['.json', '.save'] }]
+			[{ 'application/json': ['.json'] }]
 		);
 	};
 
@@ -262,7 +262,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		Common.FileLib.saveJSONFile(
 			ns.Data,
 			ns.Data.Meta.Title,
-			['.save']
+			['.json']
 		);
 
 		setSaveTime();

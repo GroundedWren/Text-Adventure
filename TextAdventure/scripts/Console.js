@@ -111,6 +111,16 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__updateContextLabel();
 		};
 
+		removeAllContexts()
+		{
+			while (this.__contexts.length)
+			{
+				//We're not resolving the promises, so some things are potentially left hanging.
+				this.__contexts.shift();
+				this.__updateContextLabel();
+			}
+		}
+
 		addCommand(key, command)
 		{
 			this.__getContext().commands[key] = command;

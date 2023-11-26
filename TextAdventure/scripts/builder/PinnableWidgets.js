@@ -572,6 +572,12 @@
 					<div class="input-grid widget-grid-input">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+						<label for="${this.idKey}-displayNameEl">Display Name</label>
+						<input id="${this.idKey}-displayNameEl"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="DisplayName"
+						/>
 					</div>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-inernalNotes">Internal Notes</label>
@@ -596,6 +602,13 @@
 										networkedWidget="gw-db-npc"
 										dataProperty="NPCs"
 					></gw-db-string-array>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									rows="3"></textarea>
+					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Events On-Visit"
 										addName="Event"

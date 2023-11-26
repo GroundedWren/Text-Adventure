@@ -8,7 +8,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	ns.InputConsole = null;
 
 	//#region Responsive Layout
-	ns.MINI_THRESHOLD = 600;
+	ns.MINI_THRESHOLD = 800;
 
 	ns.showStory = function ()
 	{
@@ -44,9 +44,13 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	ns.__shouldApplySave = false;
 	ns.saveUploaded = (filename, saveObj) =>
 	{
+		const timestamp = new Date(saveObj.Meta["Last Save"]).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" });
 		Common.Controls.Popups.showModal(
 			"Import Save",
 			`<h2>${filename}</h2>`
+			+ `<p>${saveObj.Meta.Description || "No description"}<br />`
+			+ `Created by: ${saveObj.Meta.Creator}<br />`
+			+ `Timestamp: <time datetime=${saveObj.Meta["Last Save"]}>${timestamp}</time></p>`
 			+ `<p>If you continue, any current data will be overwritten. Continue?</p>`
 			+ `<button style="float: right; height: 25px; margin-left: 5px;" onclick="Pages.DungeoneerInterface.__uploadSaveModalAccepted()">`
 			+ `Yes</button>`
@@ -91,7 +95,13 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	ns.applySaveData = function ()
 	{
 		applyMetaData();
-		applyCharacterData();
+		applyCharacterData().then(() =>
+		{
+			document.getElementById("storyPane").innerHTML = "";
+			ns.InputConsole.clear();
+			ns.InputConsole.removeAllContexts();
+			ns.Logic.enterArea(ns.Data.Character.Location || "0");
+		});
 
 	};
 	function applyMetaData()
@@ -102,7 +112,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			: "Never";
 
 		document.getElementById("currentGameTableBody").innerHTML = Object.keys(ns.Data.Meta).map(
-			key => `<tr><th scope="row">${key}</th><td>${ns.Data.Meta[key]}</td></tr>`
+			key => `<tr><th scope="row" class="no-break">${key}</th><td>${ns.Data.Meta[key]}</td></tr>`
 		).join("");
 
 		document.getElementById("currentGameMetaCard").classList.remove("hidden");
@@ -157,7 +167,19 @@ window.onload = () =>
 			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_World"); },
 			description: "Show world information"
 		},
-
+		"ALT+T": {
+			action: () => { document.getElementById("storyPane").focus() },
+			description: "Focus story text"
+		},
+		"ALT+C": {
+			action: () =>
+			{
+				const consoleEl = document.getElementById("consoleInput");
+				consoleEl.focus();
+				consoleEl.select();
+			},
+			description: "Focus input console"
+		},
 	});
 	//#endregion
 
