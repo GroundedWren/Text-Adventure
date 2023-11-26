@@ -93,7 +93,7 @@ h1, h2, h3, h4, h5, h6 {
 	min-height: 30px;
 }
 
-#metaPane_page_Player {
+#metaPane_page_Player.selected {
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
