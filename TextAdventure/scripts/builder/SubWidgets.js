@@ -780,7 +780,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					<input	id="${this.idKey}-reflexive"
 							type="text"
 							data-owner="${this.idKey}"
-							placeholder="She ate it herself."
+							placeholder="Vera ate it herself."
 							data-prop="Reflexive"
 					/>
 				</div>
