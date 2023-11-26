@@ -390,7 +390,6 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		ns.dataHeadingHeight = dataHeadingHeight;
 
 		const headingBuffers = 50;
-		const magicBuffer = -20;
 
 		const dataPGC = document.getElementById("dataCtrl_pgc");
 		const dataSectionContentStyles = window.getComputedStyle(document.getElementById("dataSectionContent"));
@@ -400,7 +399,8 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 			+ dataHeadingHeight
 			+ dataSectionContentPadding
 			+ headingBuffers
-			+ magicBuffer;
+			+ -35 //#dataCtrl_pgc margin-top
+			+ 15; //magic buffer :/
 		dataPGC.style.maxHeight = `calc(100vh - ${dataPGCOffset}px)`;
 
 		const pinList = document.getElementById("pinList");
@@ -411,7 +411,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 			+ dataHeadingHeight
 			+ pinsSectionContentPadding
 			+ headingBuffers
-			+ magicBuffer;
+			+ 5; //magic buffer :/
 		pinList.style.maxHeight = `calc(100vh - ${pinsListOffset}px)`;
 	};
 });
