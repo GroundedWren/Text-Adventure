@@ -89,6 +89,11 @@ h1, h2, h3, h4, h5, h6 {
 	border-left: none;
 	border-right: none;
 }
+
+#metaPane_page_World button, #metaPane_page_World input[type="button"] {
+	min-height: 30px;
+}
+
 /*#endregion */
 /*#region Console */
 #consolePane {

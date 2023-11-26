@@ -20,6 +20,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 				Common.Controls.Popups.hideModal();
 				clearAllData();
 				fillInBasicData();
+				renderCharacterWidget();
 			};
 			document.getElementById("abortBtn").onclick = () =>
 			{
@@ -30,6 +31,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		{
 			clearAllData();
 			fillInBasicData();
+			renderCharacterWidget();
 		}
 	};
 
@@ -72,6 +74,8 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		{
 			widgetEl.remove();
 		}
+
+		document.getElementById("characterWidget")?.remove();
 
 		for (const inputUIEl of getAllInputUIEls())
 		{
@@ -116,13 +120,13 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		setSaveTime();
 
-		//KJA TODO other pinnable widgets
 		renderAreaWidgets();
 		renderItemWidgets();
 		renderEventWidgets();
 		renderNPCWidgets();
 		renderDialogWidgets();
 		renderCriteriaWidgets();
+		renderCharacterWidget();
 	};
 
 	function fillInBasicData()
@@ -216,6 +220,15 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		}
 	};
 
+	function renderCharacterWidget()
+	{
+		Common.DOMLib.createElement(
+			"gw-db-character",
+			document.getElementById("dataCtrl_page_Character"),
+			{ id: "characterWidget" }
+		);
+	};
+
 	ns.saveDungeon = () =>
 	{
 		for (const widgetEl of getAllPinnableWidgets())
@@ -225,6 +238,8 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 				widgetEl.saveData();
 			}
 		}
+
+		document.getElementById("characterWidget").saveData();
 
 		for (const inputUIEl of getAllInputUIEls())
 		{
@@ -265,8 +280,8 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		}
 
 		const saveDateTime = new Date(ns.Data.Meta["Last Save"]);
-		
-		timeEl.setAttribute("datetime", saveDateTime.toISOString())
+
+		timeEl.setAttribute("datetime", saveDateTime.toISOString());
 		timeEl.innerText = saveDateTime.toLocaleString(
 			undefined,
 			{ dateStyle: "short", timeStyle: "short" }
@@ -445,7 +460,51 @@ window.onload = () =>
 			action: () => { document.getElementById("dataCtrl_tab_Character").click(); },
 			description: "Show Character"
 		},
+		"ALT+O": {
+			action: () =>
+			{
+				let element = document.activeElement;
+				let path = [];
+				let doSkip = false;
+				while (element)
+				{
+					const saveLoc = element.getAttribute("data-saveloc");
+					let prop = saveLoc
+						? saveLoc + "." + element.getAttribute("data-prop")
+						: element.getAttribute("data-prop");
+					prop = prop || element.getAttribute("dataProperty") || element.dataPath;
+					if (!!prop)
+					{
+						if (doSkip)
+						{
+							doSkip = false;
+						}
+						else
+						{
+							path.unshift(prop);
+						}
+					}
+					doSkip = doSkip || element.hasAttribute("data-skipParent");
+					element = element.parentElement;
+				}
+				const pathStr = path.join(".");
+
+				if (!pathStr) { return; }
+
+				const boundingRect = document.activeElement.getBoundingClientRect();
+				const pathDialog = new Common.Controls.Popups.Dialog(
+					"Field Information",
+					`Data address: ${pathStr}`,
+					{},
+					{},
+					document.activeElement
+				);
+				pathDialog.showAbsolute(boundingRect.left, boundingRect.top);
+			},
+			description: "Show Field Information"
+		},
 	});
+	Common.SVGLib.insertIcons();
 
 	Pages.DungeonBuilder.dataControl = new Common.Controls.PageControl.PageControl(
 		document.getElementById("dataCtrl"),
@@ -469,4 +528,10 @@ window.onload = () =>
 	Pages.DungeonBuilder.sectionHeightUpdateOnResize();
 
 	Pages.DungeonBuilder.newDungeon();
+};
+
+window.onbeforeunload = (event) =>
+{
+	event.preventDefault();
+	return false;
 };

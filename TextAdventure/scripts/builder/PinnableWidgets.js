@@ -1,9 +1,254 @@
 ﻿registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 {
+	ns.SaveableWidget = class SaveableWidget extends HTMLElement
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		//#endregion
+
+		//#region instance properties
+		initialized;
+		instanceId;
+		logicalId;
+
+		//#region element properties
+
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+			this.initialized = false;
+		}
+
+		get idKey()
+		{
+			throw new Error("get idKey is not implemented");
+		}
+
+		get data()
+		{
+			throw new Error("get data is not implemented");
+		}
+		set data(value)
+		{
+			throw new Error("set data is not implemented");
+		}
+		discardData()
+		{
+			throw new Error("discardData is not implemented");
+		}
+		get dataPath()
+		{
+			throw new Error("get dataPath is not implemented");
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			this.renderContent();
+			this.registerHandlers();
+		}
+
+		disconnectedCallback()
+		{
+		}
+
+		adoptedCallback()
+		{
+		}
+
+		attributeChangedCallback(name, oldValue, newValue)
+		{
+		}
+		//#endregion
+
+		renderContent()
+		{
+			throw new Error("renderContent is not implemented");
+		}
+
+		registerHandlers()
+		{
+			throw new Error("registerHandlers is not implemented");
+		}
+
+		saveData()
+		{
+			this.data = this.getSaveData();
+		}
+
+		getSaveData()
+		{
+			const data = {};
+			ns.getBasicInputData(data, this);
+			ns.getSubWidgetData(data, this);
+			return data;
+		}
+
+		ownsSubWidget = (subWidget) =>
+		{
+			throw new Error("ownsSubWidget is not implemented");
+		};
+
+		setBasicInputData()
+		{
+			for (let inputEl of ns.getAllInputUIEls(this))
+			{
+				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
+				{
+					switch (inputEl.type)
+					{
+						case "checkbox":
+							inputEl.checked = this.data[inputEl.getAttribute("data-prop")] || false;
+							break;
+						default:
+							inputEl.value = this.data[inputEl.getAttribute("data-prop")] || null;
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	ns.CharacterWidgetEl = class CharacterWidgetEl extends ns.SaveableWidget
+	{
+		get idKey()
+		{
+			return "character";
+		}
+
+		get data()
+		{
+			return Pages.DungeonBuilder.Data.Character;
+		}
+		set data(value)
+		{
+			Pages.DungeonBuilder.Data.Character = value;
+		}
+		discardData()
+		{
+			delete Pages.DungeonBuilder.Data.Character;
+		}
+		get dataPath()
+		{
+			return "Data.Character";
+		}
+
+		connectedCallback()
+		{
+			if (this.initialized) { return; }
+
+			super.connectedCallback();
+
+			this.setBasicInputData();
+
+			this.initialized = true;
+		}
+
+		ownsSubWidget = (subWidget) =>
+		{
+			return !subWidget.hasAttribute("dataOwner") || subWidget.getAttribute("dataOwner") === this.idKey;
+		};
+
+		renderContent()
+		{
+			this.innerHTML = `
+			<div class="character-content">
+				<div class="card-line">
+					<div class="input-grid widget-grid-input widget-align-start">
+						<label for="${this.idKey}-name">Name</label>
+						<input id="${this.idKey}-name"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="Name"
+						/>
+						<label for="${this.idKey}-levelEl">Level</label>
+						<input id="${this.idKey}-levelEl"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="Level"
+						/>
+					</div>
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-loc">Location</label>
+							<input	id="${this.idKey}-loc"
+									type="text"
+									data-owner="${this.idKey}"
+									data-prop="Location"
+							/>
+							<gw-db-widget-link
+								id=${this.idKey}-linkBtn
+								networkedWidget="gw-db-area" 
+								idInputElId="${this.idKey}-loc">
+							</gw-db-widget-link>
+					</div>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Party"
+										addName="NPC"
+										linePrefix="ID "
+										networkedWidget="gw-db-npc"
+										dataProperty="Party"
+					></gw-db-string-array>
+				</div>
+				<div class="card-line centered">
+						<div class="input-block">
+							<label for="${this.idKey}-description">Description</label>
+							<textarea	id="${this.idKey}-description"
+										data-owner="${this.idKey}"
+										data-prop="Description"
+										class="full-width"
+										rows="4"
+							></textarea>
+						</div>
+					</div>
+				<div class="card-line centered">
+					<gw-db-pronouns id="character-pronouns"
+									parentWidgetId="${this.id}"
+									dataProperty="Pronouns"
+					></gw-db-pronouns>
+				</div>
+				<div class="card-line centered">
+					<gw-db-vitals id="character-vitals"
+									parentWidgetId="${this.id}"
+									dataProperty="Vitals"
+					></gw-db-vitals>
+				</div>
+				<div class="card-line centered">
+					<gw-db-abilities id="character-abilities"
+										parentWidgetId="${this.id}"
+										dataProperty="Abilities"
+					></gw-db-abilities>
+				</div>
+				<div class="card-line centered">
+					<gw-db-skills id="character-skills"
+									parentWidgetId="${this.id}"
+									dataProperty="Skills"
+					></gw-db-skills>
+				</div>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Equipment"
+									addName="Item"
+									dataProperty="Equipment"
+									objectTag="gw-db-player-equip-object"
+				></gw-db-object-array>
+			</div>
+			`;
+		}
+
+		registerHandlers()
+		{
+		}
+	}
+	customElements.define("gw-db-character", ns.CharacterWidgetEl);
+	
 	/**
 	 * A base class for all pinnable widgets in the builder
 	 */
-	ns.PinnableWidget = class PinnableWidget extends HTMLElement
+	ns.PinnableWidget = class PinnableWidget extends ns.SaveableWidget
 	{
 		//#region staticProperties
 		static observedAttributes = [];
@@ -32,30 +277,11 @@
 		constructor()
 		{
 			super();
-			this.initialized = false;
 		}
 
 		get widgetName()
 		{
 			throw new Error("get widgetName is not implemented");
-		}
-
-		get idKey()
-		{
-			throw new Error("get idKey is not implemented");
-		}
-
-		get data()
-		{
-			throw new Error("get data is not implemented");
-		}
-		set data(value)
-		{
-			throw new Error("set data is not implemented");
-		}
-		discardData()
-		{
-			throw new Error("discardData is not implemented");
 		}
 		//#endregion
 
@@ -71,20 +297,7 @@
 			this.homeElId = this.getAttribute("homeEL");
 			this.pinnedElId = this.getAttribute("pinEl");
 
-			this.renderContent();
-			this.registerHandlers();
-		}
-
-		disconnectedCallback()
-		{
-		}
-
-		adoptedCallback()
-		{
-		}
-
-		attributeChangedCallback(name, oldValue, newValue)
-		{
+			super.connectedCallback();
 		}
 		//#endregion
 
@@ -107,6 +320,20 @@
 			this.btnPin = document.getElementById(`${this.idKey}-btnPin`);
 			this.titleEl = document.getElementById(`${this.idKey}-title`);
 			this.logicalIdInEl = document.getElementById(`${this.idKey}-logicalIdInEl`);
+
+			this.btnDelete?.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["trash"], "delete"));
+			this.btnOpen?.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["pen-to-square"], "open"));
+			this.btnClose?.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["book"], "close"));
+			this.#setPinIcon();
+		}
+
+		#setPinIcon()
+		{
+			this.btnPin.innerHTML = "";
+			this.btnPin?.appendChild(Common.SVGLib.createIcon(
+				Common.SVGLib.Icons["thumbtack"],
+				this.isPinned ? "Unpin" : "Pin"
+			));
 		}
 
 		renderContentClosed()
@@ -120,9 +347,9 @@
 			<div class="card-header">
 				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.widgetName} ${this.logicalId}</span>
 				<div class=card-header-btns>
-					<button id="${this.idKey}-btnDelete">Delete</button>
-					<button id="${this.idKey}-btnOpen">Open</button>
-					<button id="${this.idKey}-btnPin">${this.isPinned ? "Unpin" : "Pin"}</button>
+					<button id="${this.idKey}-btnDelete"></button>
+					<button id="${this.idKey}-btnOpen"></button>
+					<button id="${this.idKey}-btnPin"></button>
 				</div>
 			</div>
 			`;
@@ -134,9 +361,9 @@
 			<div class="card-header">
 				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.widgetName} ${this.logicalId}</span>
 				<div class="card-header-btns">
-					<button id="${this.idKey}-btnDelete">Delete</button>
-					<button id="${this.idKey}-btnClose">Close</button>
-					<button id="${this.idKey}-btnPin">${this.isPinned ? "Unpin" : "Pin"}</button>
+					<button id="${this.idKey}-btnDelete"></button>
+					<button id="${this.idKey}-btnClose"></button>
+					<button id="${this.idKey}-btnPin"></button>
 				</div>
 			</div>
 			`;
@@ -231,48 +458,16 @@
 			this.btnDelete.focus();
 		};
 
-		saveData()
-		{
-			this.data = this.getSaveData();
-		}
-
-		getSaveData()
-		{
-			const data = {};
-			ns.getBasicInputData(data, this);
-			ns.getSubWidgetData(data, this);
-			return data;
-		}
-
 		ownsSubWidget = (subWidget) =>
 		{
 			return !subWidget.hasAttribute("dataOwner") || subWidget.getAttribute("dataOwner") === this.idKey;
 		};
 
-		setBasicInputData()
-		{
-			for (let inputEl of ns.getAllInputUIEls(this))
-			{
-				if (inputEl.hasAttribute("data-prop") && inputEl.getAttribute("data-owner") === this.idKey)
-				{
-					switch (inputEl.type)
-					{
-						case "checkbox":
-							inputEl.checked = this.data[inputEl.getAttribute("data-prop")] || false;
-							break;
-						default:
-							inputEl.value = this.data[inputEl.getAttribute("data-prop")] || null;
-							break;
-					}
-				}
-			}
-		}
-
 		pinWidget = () =>
 		{
 			document.getElementById(this.isPinned ? this.homeElId : this.pinnedElId).prepend(this);
 			this.isPinned = !this.isPinned;
-			this.btnPin.innerText = this.isPinned ? "Unpin" : "Pin";
+			this.#setPinIcon();
 
 			this.btnPin.focus();
 		}
@@ -335,6 +530,10 @@
 		discardData()
 		{
 			delete Pages.DungeonBuilder.Data.World.Areas[this.logicalId];
+		}
+		get dataPath()
+		{
+			return `Data.World.Areas[${this.logicalId}]`
 		}
 
 		//#endregion
@@ -487,6 +686,10 @@
 		discardData()
 		{
 			delete Pages.DungeonBuilder.Data.World.Items[this.logicalId];
+		}
+		get dataPath()
+		{
+			return `Data.World.Items[${this.logicalId}]`;
 		}
 
 		//#endregion
@@ -663,6 +866,10 @@
 		{
 			delete Pages.DungeonBuilder.Data.Events[this.logicalId];
 		}
+		get dataPath()
+		{
+			return `Data.Events[${this.logicalId}]`;
+		}
 
 		//#endregion
 
@@ -764,6 +971,13 @@
 				</div>
 				<div class="card-line">
 					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Trigger Dialog With"
+										addName="NPC"
+										linePrefix="NPC ID "
+										networkedWidget="gw-db-npc"
+										dataProperty="TriggerDialogWith"
+					></gw-db-string-array>
+					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Mark NPCs Hostile"
 										addName="NPC"
 										linePrefix="NPC ID "
@@ -813,13 +1027,13 @@
 			this.hasAttackCbx = document.getElementById(`${this.idKey}-hasattack`);
 			this.attackEl = document.getElementById(`${this.idKey}-attack`);
 		}
-		//#endregion
 
 		renderData(data)
 		{
 			super.renderData(data);
 			this.onHasAttackSet();
 		}
+		//#endregion
 
 		//#region Handlers
 		registerHandlers()
@@ -899,6 +1113,10 @@
 		{
 			delete Pages.DungeonBuilder.Data.NPCs[this.logicalId];
 		}
+		get dataPath()
+		{
+			return `Data.NPCs[${this.logicalId}]`;
+		}
 
 		//#endregion
 
@@ -942,6 +1160,12 @@
 								data-owner="${this.idKey}"
 								data-prop="DisplayName"
 						/>
+						<label for="${this.idKey}-levelEl">Level</label>
+						<input id="${this.idKey}-levelEl"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="Level"
+						/>
 					</div>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-InternalNotes">Internal Notes</label>
@@ -951,6 +1175,9 @@
 									rows="3"
 						></textarea>
 					</div>
+					<div></div>
+				</div>
+				<div class="card-line">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-location">Location</label>
 						<input	id="${this.idKey}-location"
@@ -971,6 +1198,13 @@
 						/>
 						<div></div>
 					</div>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Equipment"
+										addName="Item"
+										linePrefix="Item ID "
+										networkedWidget="gw-db-item"
+										dataProperty="Equipment"
+					></gw-db-string-array>
 				</div>
 				<div class="card-line centered">
 					<div class="input-block">
@@ -1086,6 +1320,10 @@
 		{
 			delete Pages.DungeonBuilder.Data.Dialogs[this.logicalId];
 		}
+		get dataPath()
+		{
+			return `Data.Dialogs[${this.logicalId}]`;
+		}
 
 		//#endregion
 
@@ -1119,12 +1357,38 @@
 			this.innerHTML = `
 			<div class="card">
 				${this.getOpenHeaderHTML()}
-				<div class="card-line">
+				<div class="card-line center-align">
 					<div class="input-grid widget-grid-input">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
 					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-internalNotes">Internal Notes</label>
+						<textarea	id="${this.idKey}-internalNotes"
+									data-owner="${this.idKey}"
+									data-prop="InternalNotes"
+									rows="3"
+						></textarea>
+					</div>
+					<div></div>
 				</div>
+				<div class="card-line centered">
+					<div class="input-block">
+						<label for="${this.idKey}-text">Text</label>
+						<textarea	id="${this.idKey}-text"
+									data-owner="${this.idKey}"
+									data-prop="Text"
+									class="full-width"
+									rows="4"
+						></textarea>
+					</div>
+				</div>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Responses"
+									addName="Response"
+									dataProperty="Responses"
+									objectTag="gw-db-dialog-response-object"
+				></gw-db-object-array>
 			</div>
 			`;
 
@@ -1193,6 +1457,10 @@
 		{
 			delete Pages.DungeonBuilder.Data.Criteria[this.logicalId];
 		}
+		get dataPath()
+		{
+			return `Data.Criteria[${this.logicalId}]`;
+		}
 
 		//#endregion
 
@@ -1227,16 +1495,129 @@
 			<div class="card">
 				${this.getOpenHeaderHTML()}
 				<div class="card-line">
-					<div class="input-grid widget-grid-input">
+					<div class="input-grid widget-grid-input widget-align-start">
 						<label for="${this.idKey}-logicalIdInEl">ID</label>
 						<input id="${this.idKey}-logicalIdInEl" type="text" value="${this.logicalId}" />
+						<label for="${this.idKey}-negate">Negate Result?</label>
+						<input	id="${this.idKey}-negate"
+								type="checkbox"
+								data-owner="${this.idKey}"
+								data-prop="NegateResult"
+						/>
+						<label for="${this.idKey}-allowNPC">Allow NPC Eval?</label>
+						<input	id="${this.idKey}-allowNPC"
+								type="checkbox"
+								data-owner="${this.idKey}"
+								data-prop="AllowNPC"
+						/>
+					</div>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Or Event"
+										addName="Event"
+										linePrefix="Event ID "
+										networkedWidget="gw-db-event"
+										dataProperty="OR"
+					></gw-db-string-array>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="And Event"
+										addName="Event"
+										linePrefix="Event ID "
+										networkedWidget="gw-db-event"
+										dataProperty="AND"
+					></gw-db-string-array>
+				</div>
+				<div class="card-line">
+					<gw-db-string-array parentWidgetId="${this.id}"
+										id="${this.idKey}-NPCsInParty"
+										displayName="NPCs In Party"
+										addName="NPC"
+										linePrefix="NPC ID "
+										networkedWidget="gw-db-npc"
+										dataProperty="NPCsInParty"
+					></gw-db-string-array>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										id="${this.idKey}-EventsOccurred"
+										displayName="Events Occurred"
+										addName="Event"
+										linePrefix="Event ID "
+										networkedWidget="gw-db-event"
+										dataProperty="EventsOccurred"
+					></gw-db-string-array>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										id="${this.idKey}-HasItems"
+										displayName="Has Items"
+										addName="Item"
+										linePrefix="Item ID "
+										networkedWidget="gw-db-item"
+										dataProperty="HasItems"
+					></gw-db-string-array>
+				</div>
+				<div class="card-line">
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-inArea">In Area</label>
+						<input	id="${this.idKey}-inArea"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="InArea"
+						/>
+						<gw-db-widget-link
+							id=${this.idKey}-inArea
+							networkedWidget="gw-db-area" 
+							idInputElId="${this.idKey}-inArea">
+						</gw-db-widget-link>
+						<label for="${this.idKey}-leveledTo">Is Leveled To</label>
+						<input id="${this.idKey}-leveledTo"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="LeveledTo"
+						/>
+						<div></div>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-inernalNotes">Internal Notes</label>
+						<textarea	id="${this.idKey}-inernalNotes"
+									data-owner="${this.idKey}"
+									data-prop="InternalNotes"
+									rows="3"></textarea>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-scop">Skill Checks Operator</label>
+						<select id="${this.idKey}-scop" type="number" data-owner=${this.idKey} data-prop="SkillChecksOperator">
+							<option>OR</option>
+							<option>AND</option>
+						</select>
 					</div>
 				</div>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Skill Checks"
+									addName="Skill Check"
+									dataProperty="SkillChecks"
+									objectTag="gw-db-skill-check-object"
+				></gw-db-object-array>
 			</div>
 			`;
 
 			//element properties
 
+			[
+				document.getElementById(`${this.idKey}-NPCsInParty`),
+				document.getElementById(`${this.idKey}-EventsOccurred`),
+				document.getElementById(`${this.idKey}-HasItems`)
+			].forEach(el => el.gridEl.insertAdjacentHTML(
+				"afterbegin",
+				`
+				<label for="${el.getAttribute("dataProperty")}-op">Operator</label>
+				<select id="${el.getAttribute("dataProperty")}-op"
+						data-owner=${this.idKey}
+						data-prop="${el.getAttribute("dataProperty")}Op"
+						data-skipParent="true"
+				>
+					<option>OR</option>
+					<option>AND</option>
+				</select>
+				<div></div><div></div>
+				`
+			));
 		}
 		//#endregion
 

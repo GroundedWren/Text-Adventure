@@ -51,12 +51,12 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 
 	ns.setupFromData = function ()
 	{
-		ns.setName(ns.Data.Character.Name);
-		ns.setPronouns(ns.Data.Character.Pronouns);
-		ns.setLevel(ns.Data.Character.Level);
-		ns.setAbilities(ns.Data.Character.Abilities);
-		ns.setVitals(ns.Data.Character.Vitals);
-		ns.setSkills(ns.Data.Character.Skills);
+		ns.setName(ns.Data.Name);
+		ns.setPronouns(ns.Data.Pronouns);
+		ns.setLevel(ns.Data.Level);
+		ns.setAbilities(ns.Data.Abilities);
+		ns.setVitals(ns.Data.Vitals);
+		ns.setSkills(ns.Data.Skills);
 	};
 
 	//#region Setters
@@ -97,10 +97,20 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			|| dataVitals.Evasion
 			|| dataVitals.MaxEvasion;
 
+		dataVitals.MaxArmor = vitals.MaxArmor
+			|| dataVitals.MaxArmor
+			|| 0;
+
+		dataVitals.Armor = vitals.Armor
+			|| dataVitals.Armor
+			|| dataVitals.MaxArmor;
+
 		document.getElementById("sMaxHealth").innerText = dataVitals.MaxHealth;
 		document.getElementById("sHealth").innerText = dataVitals.Health;
 		document.getElementById("sMaxEvasion").innerText = dataVitals.MaxEvasion;
 		document.getElementById("sEvasion").innerText = dataVitals.Evasion;
+		document.getElementById("sMaxArmor").innerText = dataVitals.MaxArmor;
+		document.getElementById("sArmor").innerText = dataVitals.Armor;
 	};
 
 	ns.setAbilities = (abilities) =>
@@ -108,7 +118,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		Object.keys(ns.Data.Abilities).forEach(abi =>
 		{
 			setAbility(abi, abilities);
-			ns.getAbilityModTd(abi).innerText = di.Mechanics.calculateAbilityMod(abi)
+			ns.getAbilityModTd(abi).innerText = di.Mechanics.calculateAbilityMod(abilities[abi])
 		});
 	};
 	function setAbility(abbr, abilities)

@@ -31,9 +31,9 @@ h4, h5, h6 {
 	flex-wrap: wrap;
 }
 
-#lowerSections input {
-	max-width: 125px;
-}
+	#lowerSections input {
+		max-width: 125px;
+	}
 
 #dataSection {
 	flex-basis: 60%;
@@ -63,13 +63,21 @@ h4, h5, h6 {
 }
 
 .button-header {
+	margin-top: 5px;
 	display: grid;
-	grid-template-columns: 1fr minmax(auto, 100px);
-	height: 40px;
+	grid-template-columns: auto 1fr minmax(auto, 100px);
+	gap: 5px;
+	min-height: 40px;
 	align-items: center;
 }
 
 .z {
+}
+
+.button-header > .inline-banner {
+	margin: 2px;
+	padding: 4px;
+	max-width: fit-content;
 }
 
 .button-header > button {
@@ -95,6 +103,10 @@ h4, h5, h6 {
 	flex-basis: 25px;
 	max-width: 100px;
 	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 #dataCtrl_pgc {
@@ -125,6 +137,10 @@ hr {
 	align-items: end;
 }
 
+.widget-align-start {
+	align-self: flex-start;
+}
+
 .widget-grid-input > input[type="checkbox"] {
 	align-self: center;
 }
@@ -139,8 +155,15 @@ hr {
 	align-items: baseline;
 }
 
+.z {
+}
+
 .card-line.center-align {
 	align-items: center;
+}
+
+.card-line.end-align {
+	align-items: flex-end;
 }
 
 .z {
@@ -223,13 +246,13 @@ textarea.full-width {
 	justify-content: center;
 }
 
-.attack-fieldset-line > .input-vertical-line {
-	width: auto;
-}
+	.attack-fieldset-line > .input-vertical-line {
+		width: auto;
+	}
 
-.attack-fieldset-line input {
-	max-width: 40px;
-}
+	.attack-fieldset-line input {
+		max-width: 40px;
+	}
 
 .vitals-fieldset {
 	display: flex;
@@ -242,6 +265,14 @@ textarea.full-width {
 	padding: 2px;
 }
 
-.abilities-fieldset input, .skills-fieldset input {
+.abilities-fieldset input, .skills-fieldset input, .vitals-fieldset input {
 	width: 40px;
+}
+
+#dataCtrl_page_Character {
+	background-color: var(--content-color-2);
+}
+
+.character-content {
+	padding: 10px;
 }

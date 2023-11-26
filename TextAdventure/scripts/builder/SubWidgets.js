@@ -411,6 +411,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			<hr />
 			<div class="button-header">
 				<h5>${this.displayName}</h5>
+				<div></div>
 				<button id="${this.idKey}-btnAddLine" class="full-line">Add ${this.addName}</button>
 			</div>
 			<div id="${this.idKey}-obj-list"></div>
@@ -1306,7 +1307,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-prereqOperator">Operator</label>
-			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+			<select id="${this.idKey}-prereqOperator"
+					data-owner=${this.idKey}
+					data-prop="PrereqsOp"
+					data-skipParent="true"
+			>
 				<option>OR</option>
 				<option>AND</option>
 			</select>
@@ -1579,7 +1584,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			document.getElementById(`${this.idKey}-prereqs`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-prereqOperator">Operator</label>
-			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+			<select id="${this.idKey}-prereqOperator"
+					data-owner=${this.idKey}
+					data-prop="PrereqsOp"
+					data-skipParent="true"
+			>
 				<option>OR</option>
 				<option>AND</option>
 			</select>
@@ -1898,7 +1907,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-prereqOperator">Operator</label>
-			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+			<select id="${this.idKey}-prereqOperator"
+					data-owner=${this.idKey}
+					data-prop="PrereqsOp"
+					data-skipParent="true"
+			>
 				<option>OR</option>
 				<option>AND</option>
 			</select>
@@ -1910,7 +1923,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 	};
 	customElements.define("gw-db-salutation-object", ns.SalutationObjEl);
 
-	ns.DialogTreeEl = class DialogTreeEl extends ns.SubWidgetRepeatedObj
+	ns.DialogTreeObjEl = class DialogTreeObjEl extends ns.SubWidgetRepeatedObj
 	{
 		//#region staticProperties
 		static observedAttributes = [];
@@ -1931,9 +1944,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		{
 			super();
 
-			this.instanceId = DialogTreeEl.instanceCount++;
+			this.instanceId = DialogTreeObjEl.instanceCount++;
 
-			DialogTreeEl.instanceMap[this.instanceId] = this;
+			DialogTreeObjEl.instanceMap[this.instanceId] = this;
 		}
 
 		//#region HTMLElement implementation
@@ -2002,7 +2015,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
 			<label for="${this.idKey}-prereqOperator">Operator</label>
-			<select id="${this.idKey}-prereqOperator" data-owner=${this.idKey} data-prop="PrereqsOp">
+			<select id="${this.idKey}-prereqOperator"
+					data-owner=${this.idKey}
+					data-prop="PrereqsOp"
+					data-skipParent="true"
+			>
 				<option>OR</option>
 				<option>AND</option>
 			</select>
@@ -2012,7 +2029,272 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
-	customElements.define("gw-db-dialog-tree-object", ns.DialogTreeEl);
+	customElements.define("gw-db-dialog-tree-object", ns.DialogTreeObjEl);
+	//#endregion
+
+	//#region Dialogs
+	ns.DialogResponseObjEl = class DialogResponseObjEl extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = DialogResponseObjEl.instanceCount++;
+
+			DialogResponseObjEl.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "dialog-response-obj";
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				${this.standardHeader}
+				<div class="card-line">
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-dispName">Display Name</label>
+						<input	id="${this.idKey}-dispName"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="DisplayName"
+						/>
+						<div></div>
+						<label for="${this.idKey}-tonode">To Node</label>
+						<input id="${this.idKey}-tonode" type="text" data-owner=${this.idKey} data-prop="ToNode" />
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-dialog" 
+							idInputElId="${this.idKey}-tonode">
+						</gw-db-widget-link>
+					</div>
+					<gw-db-string-array id="${this.idKey}-prereqAry"
+										dataProperty="Prereqs"
+										dataOwner="${this.idKey}"
+										displayName="Prereqs"
+										addName="Prereq"
+										linePrefix="Criteria ID "
+										networkedWidget="gw-db-criteria"
+					></gw-db-string-array>
+					<gw-db-string-array id="${this.idKey}-eventAry"
+										dataProperty="Events"
+										dataOwner="${this.idKey}"
+										displayName="Events"
+										addName="Event"
+										linePrefix="Event ID "
+										networkedWidget="gw-db-event"
+					></gw-db-string-array>
+				</div>
+				<div class="card-line centered">
+					<div class="input-block">
+						<label for="${this.idKey}-description">Description</label>
+						<textarea	id="${this.idKey}-description"
+									data-owner="${this.idKey}"
+									data-prop="Description"
+									class="full-width"
+									rows="4"
+						></textarea>
+					</div>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
+
+			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqOperator">Operator</label>
+			<select id="${this.idKey}-prereqOperator"
+					data-owner=${this.idKey}
+					data-prop="PrereqsOp"
+					data-skipParent="true"
+			>
+				<option>OR</option>
+				<option>AND</option>
+			</select>
+			<div></div><div></div>
+			`);
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+	};
+	customElements.define("gw-db-dialog-response-object", ns.DialogResponseObjEl);
+	//#endregion
+
+	//#region Criteria
+	ns.SkillCheckObjEl = class SkillCheckObjEl extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = SkillCheckObjEl.instanceCount++;
+
+			SkillCheckObjEl.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "skill-check-obj";
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				${this.standardHeader}
+				<div class="card-line">
+					<gw-db-skill-select id="${this.idKey}-skill" dataOwner=${this.idKey} dataProperty="Skill">
+					</gw-db-skill-select>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-dc">Difficulty Class</label>
+						<input id="${this.idKey}-dc" type="number" data-owner=${this.idKey} data-prop="DC"/>
+					</div>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+	};
+	customElements.define("gw-db-skill-check-object", ns.SkillCheckObjEl);
+	//#endregion
+
+	//#region Character
+	ns.PlayerEquipObjEl = class PlayerEquipObjEl extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = PlayerEquipObjEl.instanceCount++;
+
+			PlayerEquipObjEl.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "player-equip-obj";
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				${this.standardHeader}
+				<div class="card-line end-align">
+					<div class="input-grid id-single widget-grid-input">
+						<label for="${this.idKey}-item">Item</label>
+						<input id="${this.idKey}-item" type="text" data-owner=${this.idKey} data-prop="Item" />
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-item" 
+							idInputElId="${this.idKey}-item">
+						</gw-db-widget-link>
+					</div>
+					<gw-db-bodyloc-select id="${this.idKey}-bodyloc" dataOwner=${this.idKey} dataProperty="BodyLoc">
+					</gw-db-bodyloc-select>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
+
+			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
+		}
+	};
+	customElements.define("gw-db-player-equip-object", ns.PlayerEquipObjEl);
 	//#endregion
 
 	//#endregion
@@ -2135,6 +2417,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		{
 			this.dataOwner = this.getAttribute("dataOwner");
 			this.dataProperty = this.getAttribute("dataProperty");
+			this.setAttribute("dataProperty", "");
 
 			this.renderContent();
 			this.registerHandlers();
@@ -2172,6 +2455,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					<option>Left Hand</option>
 					<option>Right Hand</option>
 					<option>Finger</option>
+					<option>None</option>
 				</select>
 			</div>
 			`;
@@ -2225,6 +2509,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		{
 			this.dataOwner = this.getAttribute("dataOwner");
 			this.dataProperty = this.getAttribute("dataProperty");
+			this.setAttribute("dataProperty", "");
 			this.labelText = this.getAttribute("labelText") || "Ability";
 
 			this.renderContent();
@@ -2310,6 +2595,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		{
 			this.dataOwner = this.getAttribute("dataOwner");
 			this.dataProperty = this.getAttribute("dataProperty");
+			this.setAttribute("dataProperty", "");
 			this.labelText = this.getAttribute("labelText") || "Skill";
 
 			this.renderContent();
