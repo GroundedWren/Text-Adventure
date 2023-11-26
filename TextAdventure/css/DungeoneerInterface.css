@@ -63,7 +63,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #metaPane_pgc table {
-	margin-bottom: 10px;
 	background-color: var(--content-color-2);
 }
 
@@ -92,6 +91,12 @@ h1, h2, h3, h4, h5, h6 {
 
 #metaPane_page_World button, #metaPane_page_World input[type="button"] {
 	min-height: 30px;
+}
+
+#metaPane_page_Player {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
 }
 
 /*#endregion */

@@ -390,7 +390,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		ns.dataHeadingHeight = dataHeadingHeight;
 
 		const headingBuffers = 50;
-		const magicBuffer = 15;
+		const magicBuffer = -20;
 
 		const dataPGC = document.getElementById("dataCtrl_pgc");
 		const dataSectionContentStyles = window.getComputedStyle(document.getElementById("dataSectionContent"));
