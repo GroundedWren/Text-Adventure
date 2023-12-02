@@ -1382,7 +1382,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 						</gw-db-widget-link>
 						<label for="${this.idKey}-destination">Display Name</label>
 						<input id="${this.idKey}-destination" type="text" data-owner=${this.idKey} data-prop="DisplayName" />
-						<div></div>
+						<div class="placeholder"></div>
 					</div>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-description">Description</label>
@@ -1392,7 +1392,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 									rows="3"
 						></textarea>
 					</div>
-					<div></div>
+					<div class="placeholder"></div>
 				</div>
 				<div class="card-line centered">
 					<div class="input-block">
@@ -1545,7 +1545,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 									rows="3"
 						></textarea>
 					</div>
-					<div></div>
+					<div class="placeholder"></div>
 				</div>
 				<div class="card-line">
 					<gw-db-string-array id="${this.idKey}-prereqs"
@@ -1564,7 +1564,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 										linePrefix="Event ID "
 										networkedWidget="gw-db-event"
 					></gw-db-string-array>
-					<div class="input-vertical-line">
+					<div class="input-vertical-line static-size">
 						<label for="${this.idKey}-mode">Mode</label>
 						<select id="${this.idKey}-mode"
 								data-owner=${this.idKey}
@@ -1820,7 +1820,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 								data-owner="${this.idKey}"
 								data-prop="ToParty"
 						/>
-						<div></div>
+						<div class="placeholder"></div>
 					</div>
 				</div>
 			</fieldset>
@@ -2000,7 +2000,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 								data-owner="${this.idKey}"
 								data-prop="DisplayName"
 						/>
-						<div></div>
+						<div class="placeholder"></div>
 						<label for="${this.idKey}-start">Dialog Start ID</label>
 						<input id="${this.idKey}-start" type="text" data-owner=${this.idKey} data-prop="StartID" />
 						<gw-db-widget-link
@@ -2110,7 +2110,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 								data-owner="${this.idKey}"
 								data-prop="DisplayName"
 						/>
-						<div></div>
+						<div class="placeholder"></div>
 						<label for="${this.idKey}-tonode">To Node</label>
 						<input id="${this.idKey}-tonode" type="text" data-owner=${this.idKey} data-prop="ToNode" />
 						<gw-db-widget-link
@@ -2222,7 +2222,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line">
+				<div class="card-line end-align">
 					<gw-db-skill-select id="${this.idKey}-skill" dataOwner=${this.idKey} dataProperty="Skill">
 					</gw-db-skill-select>
 					<div class="input-vertical-line">
@@ -2244,7 +2244,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 	//#endregion
 
 	//#region Character
-	ns.PlayerEquipObjEl = class PlayerEquipObjEl extends ns.SubWidgetRepeatedObj
+	ns.PlayerInvenObjEl = class PlayerInvenObjEl extends ns.SubWidgetRepeatedObj
 	{
 		//#region staticProperties
 		static observedAttributes = [];
@@ -2265,9 +2265,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		{
 			super();
 
-			this.instanceId = PlayerEquipObjEl.instanceCount++;
+			this.instanceId = PlayerInvenObjEl.instanceCount++;
 
-			PlayerEquipObjEl.instanceMap[this.instanceId] = this;
+			PlayerInvenObjEl.instanceMap[this.instanceId] = this;
 		}
 
 		//#region HTMLElement implementation
@@ -2315,7 +2315,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
-	customElements.define("gw-db-player-equip-object", ns.PlayerEquipObjEl);
+	customElements.define("gw-db-player-inven-object", ns.PlayerInvenObjEl);
 	//#endregion
 
 	//#endregion

@@ -60,7 +60,7 @@
 		</header>
 		<div id="BannerBuffer" class="banner-buffer"></div>
 		<main id="mainContent">
-			<div id="metaPane" class="page-control">
+			<section id="metaPane" class="page-control">
 				<div id="metaPane_pgc" class="page-container" aria-live="off">
 					<div id="metaPane_page_Player" class="page-control-page" tabindex="-1">
 						<table id="BasicInfo">
@@ -127,8 +127,8 @@
 							</tbody>
 						</table>
 					</div>
-					<div id="metaPane_page_Equipment" class="page-control-page">
-						Equipment
+					<div id="metaPane_page_Inventory" class="page-control-page">
+						Inventory
 					</div>
 					<div id="metaPane_page_World" class="page-control-page">
 						<div class="card">
@@ -178,7 +178,7 @@
 				</div>
 				<div id="metaPane_ts" class="tab-strip">
 					<div id="metaPane_tab_Player" class="tab-strip-tab button-like"><span><u>P</u>layer</span></div>
-					<div id="metaPane_tab_Equipment" class="tab-strip-tab button-like"><span>E<u>q</u>uip</span></div>
+					<div id="metaPane_tab_Inventory" class="tab-strip-tab button-like"><span><u>I</u>nventory</span></div>
 					<div id="metaPane_tab_World" class="tab-strip-tab button-like"><span>W<u>o</u>rld</span></div>
 					<button id="metaPane_tab_Story"
 							class="tab-strip-tab button-like"
@@ -188,11 +188,12 @@
 					</button>
 					<div class="tab-gutter"></div>
 				</div>
-			</div>
-			<div id="storyPane" role="region" aria-label="Story" tabindex="-1">
-			</div>
-			<div id="consolePane" role="region" aria-label="Console">
-				<div id="consoleOutput" tabindex="-1">
+			</section>
+			<section id="storyPane" aria-label="Story">
+				<div id="storyContent" tabindex="-1"></div>
+			</section>
+			<section id="consolePane" aria-label="Console">
+				<div id="consoleOutput" aria-label="Console output" tabindex="-1">
 				</div>
 				<form id="consoleForm" aria-label="Console input" class="transparent-form" autocomplete="off">
 					<fieldset class="input-flex transparent-fieldset">
@@ -203,7 +204,7 @@
 						</div>
 					</fieldset>
 				</form>
-			</div>
+			</section>
 		</main>
 		<div id="dialogRegion" role="region" aria-label="dialogs"></div>
 	</div>

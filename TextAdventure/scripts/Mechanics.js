@@ -18,4 +18,9 @@ registerNamespace("Pages.DungeoneerInterface.Mechanics", function (ns)
 	{
 		return ns.calculateAbilityMod(abilities.Dex) + 8;
 	};
+
+	ns.rollSkillCheck = function rollSkillCheck(statsObj, skill, dc)
+	{
+		return true; //KJA TODO
+	};
 });

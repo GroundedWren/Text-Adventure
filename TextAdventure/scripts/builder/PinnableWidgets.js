@@ -230,10 +230,10 @@
 					></gw-db-skills>
 				</div>
 				<gw-db-object-array parentWidgetId="${this.id}"
-									displayName="Equipment"
+									displayName="Inventory"
 									addName="Item"
-									dataProperty="Equipment"
-									objectTag="gw-db-player-equip-object"
+									dataProperty="Inventory"
+									objectTag="gw-db-player-inven-object"
 				></gw-db-object-array>
 			</div>
 			`;
@@ -756,7 +756,7 @@
 									rows="3"
 						></textarea>
 					</div>
-					<div></div>
+					<div class="placeholder"></div>
 				</div>
 				<div class="card-line centered">
 					<div class="input-block">
@@ -941,7 +941,7 @@
 									rows="3"
 						></textarea>
 					</div>
-					<div></div>
+					<div class="placeholder"></div>
 				</div>
 				<div class="card-line centered">
 					<div class="input-block">
@@ -1188,7 +1188,7 @@
 									rows="3"
 						></textarea>
 					</div>
-					<div></div>
+					<div class="placeholder"></div>
 				</div>
 				<div class="card-line">
 					<div class="input-grid id-single widget-grid-input">
@@ -1209,14 +1209,14 @@
 								data-owner="${this.idKey}"
 								data-prop="IsHostile"
 						/>
-						<div></div>
+						<div class="placeholder"></div>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
-										displayName="Equipment"
+										displayName="Inventory"
 										addName="Item"
 										linePrefix="Item ID "
 										networkedWidget="gw-db-item"
-										dataProperty="Equipment"
+										dataProperty="Inventory"
 					></gw-db-string-array>
 				</div>
 				<div class="card-line centered">
@@ -1383,7 +1383,7 @@
 									rows="3"
 						></textarea>
 					</div>
-					<div></div>
+					<div class="placeholder"></div>
 				</div>
 				<div class="card-line centered">
 					<div class="input-block">
@@ -1542,7 +1542,7 @@
 				<div class="card-line">
 					<gw-db-string-array parentWidgetId="${this.id}"
 										id="${this.idKey}-NPCsInParty"
-										displayName="NPCs In Party"
+										displayName="NPCs in Party"
 										addName="NPC"
 										linePrefix="NPC ID "
 										networkedWidget="gw-db-npc"
@@ -1584,7 +1584,7 @@
 								data-owner="${this.idKey}"
 								data-prop="LeveledTo"
 						/>
-						<div></div>
+						<div class="placeholder"></div>
 					</div>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-inernalNotes">Internal Notes</label>
@@ -1593,6 +1593,16 @@
 									data-prop="InternalNotes"
 									rows="3"></textarea>
 					</div>
+					<gw-db-string-array parentWidgetId="${this.id}"
+										id="${this.idKey}-ItemsByPlayer"
+										displayName="Items by Player"
+										addName="Item"
+										linePrefix="Item ID "
+										networkedWidget="gw-db-item"
+										dataProperty="ItemsByPlayer"
+					></gw-db-string-array>
+				</div>
+				<div class="card-line centered">
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-scop">Skill Checks Operator</label>
 						<select id="${this.idKey}-scop" type="number" data-owner=${this.idKey} data-prop="SkillChecksOperator">
@@ -1615,7 +1625,8 @@
 			[
 				document.getElementById(`${this.idKey}-NPCsInParty`),
 				document.getElementById(`${this.idKey}-EventsOccurred`),
-				document.getElementById(`${this.idKey}-HasItems`)
+				document.getElementById(`${this.idKey}-HasItems`),
+				document.getElementById(`${this.idKey}-ItemsByPlayer`)
 			].forEach(el => el.gridEl.insertAdjacentHTML(
 				"afterbegin",
 				`

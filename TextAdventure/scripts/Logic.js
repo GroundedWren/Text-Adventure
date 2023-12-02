@@ -37,7 +37,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	Object.defineProperty(ns, "StoryEl", {
 		get: function ()
 		{
-			return document.getElementById("storyPane");
+			return document.getElementById("storyContent");
 		}
 	});
 	//#endregion
@@ -117,6 +117,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			}
 			writeParagraphToStoryEl(storyTextObj.Text);
 		});
+
 		//TODO Events On-Visit
 
 		ns.InputConsole.addContext(new ns.ConsoleContext(
@@ -128,15 +129,23 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 				),
 				"GO": new ns.ConsoleCommand(
 					Common.fcd(this, this.accessPortal, [areaId]),
-					"Try to get somewhere in particular. E.g. 'GO EAST', 'GO DOOR'"
+					"Try to get somewhere in particular. E.g. 'GO EAST', 'GO DOOR ON THE LEFT'"
+				),
+				"GET": new ns.ConsoleCommand(
+					Common.fcd(this, this.getItemFromArea, [areaId]),
+					"Try to pick something up to bring with you. E.g. 'GET MYSTERIOUS TALISMAN', 'GET LETTER'"
+				),
+				"INTERACT": new ns.ConsoleCommand(
+					Common.fcd(this, this.interactWithAreaItem, [areaId]),
+					"Begin to interact with some specific item. Will display more options. E.g. 'INTERACT CHEST'"
 				),
 			},
 			undefined,
 			{ disableExit: true, autoExit: false },
-			"")
-		);
+			""
+		));
 
-		setTimeout(() => { Common.axAlertPolite("Story text updated; focus with Alt+T"); }, 10);
+		setTimeout(() => { Common.axAlertPolite("Story text updated; focus with Alt+R"); }, 10);
 	};
 
 	ns.lookInArea = function lookInArea(areaId, arg)
@@ -207,10 +216,86 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		{
 			ns.InputConsole.echo(portalObj.AccessDeniedText);
 		}
-	}
+	};
 	//#endregion Areas
 
 	//#region Items
+	ns.getItemFromArea = function (areaId, itemArg)
+	{
+		const itemDisplayName = itemArg.toUpperCase();
+		const areaObj = ns.Data.World.Areas[areaId];
+
+		const matchedId = areaObj.Items.filter(itemId =>
+			ns.Data.World.Items[itemId]?.DisplayName.toUpperCase() === itemDisplayName
+		)[0];
+		if (!matchedId)
+		{
+			ns.InputConsole.echo(`You don't see anything like ${itemDisplayName} you can pick up`);
+			return;
+		}
+
+		const itemObj = ns.Data.World.Items[matchedId];
+		const pickUpActions = itemObj.Actions.filter(actionObj => actionObj.Mode === "Pick Up");
+		const matchedPickUpAction = pickUpActions.filter(
+			actionObj => ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp)
+		)[0];
+		if (!matchedPickUpAction)
+		{
+			ns.InputConsole.echo(`You can't pick up the ${itemDisplayName}`);
+		}
+
+		ns.runItemAction(itemObj, matchedPickUpAction);
+	};
+
+	ns.interactWithAreaItem = function (areaId, itemArg)
+	{
+		const itemDisplayName = itemArg.toUpperCase();
+		const areaObj = ns.Data.World.Areas[areaId];
+
+		const matchedId = areaObj.Items.filter(itemId =>
+			ns.Data.World.Items[itemId]?.DisplayName.toUpperCase() === itemDisplayName
+		)[0];
+		if (!matchedId)
+		{
+			ns.InputConsole.echo(`You don't see anything like ${itemDisplayName} you can interact with`);
+			return;
+		}
+
+		const itemObj = ns.Data.World.Items[matchedId];
+		const commandObj = {};
+		itemObj.Actions.forEach(actionObj =>
+		{
+			const commandStr = (actionObj.DisplayName || actionObj.Mode).replaceAll(" ", "-").toUpperCase();
+			commandObj[commandStr] = new ns.ConsoleCommand(
+				Common.fcd(this, this.runItemAction, [matchedId, actionObj, areaObj]),
+				actionObj.Description
+			);
+		});
+		ns.InputConsole.addContext(new ns.ConsoleContext(
+			itemObj.DisplayName || itemObj.ID,
+			commandObj,
+			undefined,
+			{ disableExit: false, autoExit: true },
+			itemObj.Description
+		));
+	};
+
+	ns.runItemAction = function runItemAction(itemId, actionObj, areaObj)
+	{
+		const itemObj = ns.Data.World.Items[itemId];
+
+		ns.InputConsole.echo(actionObj.TextOnAct);
+
+		switch (actionObj.Mode)
+		{
+			case "Pick Up":
+				ns.Data.Character.Inventory.push(itemId);
+				areaObj.Items.splice(areaObj.Items.indexOf(itemId), 1);
+				break;
+		}
+
+		//TODO Events On-Action
+	};
 	//#endregion
 
 	//#region Events
@@ -225,7 +310,75 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	//#region Criteria
 	ns.evaluateCriteria = function (criteriaId, npcId)
 	{
-		return true; //KJA TODO
+		const criteriaObj = ns.Data.Criteria[criteriaId];
+
+		if (!criteriaObj) { return true; }
+
+		if (!criteriaObj.AllowNPC && !!npcId) { return false; }
+
+		const npcsInPartyResults = criteriaObj.NPCsInParty.map(
+			npcId => ns.Data.Character.Party.indexOf(npcId) >= 0
+		);
+		const npcsInPartyPassed = (npcsInPartyResults.length === 0) || (criteriaObj.NPCsInPartyOp === "OR"
+			? npcsInPartyResults.some(result => result)
+			: npcsInPartyResults.every(result => result));
+
+		const eventsOccurredResults = criteriaObj.EventsOccurred.map(
+			eventId => ns.Data.Events[eventId].Occurrences > 0
+		);
+		const eventsOccurredPassed = (eventsOccurredResults.length === 0) || (criteriaObj.EventsOccurredOp === "OR"
+			? eventsOccurredResults.some(result => result)
+			: eventsOccurredResults.every(result => result));
+
+		const hasItemsResults = criteriaObj.HasItems.map(
+			itemId => ns.Data.Character.Inventory.indexOf(itemId) >= 0
+		);
+		const hasItemsPassed = (hasItemsResults.length === 0) || (criteriaObj.HasItemsOp === "OR"
+			? hasItemsResults.some(result => result)
+			: hasItemsResults.every(result => result));
+
+		const inAreaPassed = !!criteriaObj.InArea
+			? ns.Data.Character.Location === criteriaObj.InArea
+			: true;
+
+		const levelPassed = !!criteriaObj.LeveledTo
+			? ns.Data.Character.Level >= criteriaObj.LeveledTo
+			: true;
+
+		const itemsByPlayerResults = criteriaObj.ItemsByPlayer.map(
+			itemId => ns.Data.World.Areas[ns.Data.Character.Location].Items.indexOf(itemId) >= 0
+		);
+		const itemsByPlayerPassed = (itemsByPlayerResults.length === 0) || (criteriaObj.ItemsByPlayerOp === "OR"
+			? itemsByPlayerResults.some(result => result)
+			: itemsByPlayerResults.every(result => result));
+
+		const skillCheckResults = criteriaObj.SkillChecks.map(skillCheckObj => ns.Mechanics.rollSkillCheck(
+			ns.Data.Character,
+			skillCheckObj.Skill,
+			skillCheckObj.DC
+		));
+		const skillChecksPassed = (skillCheckResults.length === 0) || (criteriaObj.SkillChecksOperator === "OR"
+			? skillCheckResults.some(result => result)
+			: skillCheckResults.every(result => result));
+
+		//TODO money
+
+		const didThisPass = npcsInPartyPassed
+			&& eventsOccurredPassed
+			&& hasItemsPassed
+			&& inAreaPassed
+			&& levelPassed
+			&& itemsByPlayerPassed
+			&& skillChecksPassed;
+
+		const orCriteriaResults = criteriaObj.OR.map(orCriteriaId => ns.evaluateCriteria(orCriteriaId, npcId));
+		const didORPass = orCriteriaResults.some(result => result);
+
+		const andCriteriaResults = criteriaObj.AND.map(andCriteriaId => ns.evaluateCriteria(andCriteriaId, npcId));
+		const didANDPass = (andCriteriaResults.length === 0) || andCriteriaResults.every(result => result);
+
+		const pentultimateResult = (didThisPass || didORPass) && didANDPass;
+		return criteriaObj.NegateResult ? !pentultimateResult : pentultimateResult;
 	};
 
 	ns.evaluateCriteriaArray = function (criteriaArray, operator, npcId)

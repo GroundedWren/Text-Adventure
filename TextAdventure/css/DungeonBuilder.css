@@ -170,14 +170,30 @@ hr {
 .z {
 }
 
+.card-line > div {
+	flex-grow: 1;
+}
+
+.card-line > .input-grid, .card-line > .placeholder, .card-line > .static-size {
+	flex-grow: 0;
+}
+
 .card-line > .input-vertical-line {
 	width: auto;
-	align-self: flex-start;
 	margin: 5px;
+}
+
+.card-line:not(.centered) > .input-vertical-line {
+	align-self: flex-start;
 }
 
 .input-grid > label, .input-flex-line > label, .string-array-line > label {
 	border-bottom: 1px solid var(--accent-color);
+}
+
+.card-line textarea {
+	resize: vertical;
+	align-self: stretch;
 }
 
 textarea.full-width {

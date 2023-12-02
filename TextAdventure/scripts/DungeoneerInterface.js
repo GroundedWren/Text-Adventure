@@ -97,7 +97,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		applyMetaData();
 		applyCharacterData().then(() =>
 		{
-			document.getElementById("storyPane").innerHTML = "";
+			document.getElementById("storyContent").innerHTML = "";
 			ns.InputConsole.clear();
 			ns.InputConsole.removeAllContexts();
 			ns.Logic.enterArea(ns.Data.Character.Location || "0");
@@ -159,16 +159,16 @@ window.onload = () =>
 			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_Player"); },
 			description: "Show player information"
 		},
-		"ALT+Q": {
-			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_Equipment"); },
-			description: "Show equipment"
+		"ALT+I": {
+			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_Inventory"); },
+			description: "Show inventory"
 		},
 		"ALT+O": {
 			action: () => { ns.MetaControl.setActiveTab("metaPane_tab_World"); },
 			description: "Show world information"
 		},
-		"ALT+T": {
-			action: () => { document.getElementById("storyPane").focus() },
+		"ALT+R": {
+			action: () => { document.getElementById("storyContent").focus() },
 			description: "Focus story text"
 		},
 		"ALT+C": {
@@ -180,6 +180,10 @@ window.onload = () =>
 			},
 			description: "Focus input console"
 		},
+		"ALT+U": {
+			action: () => { document.getElementById("consoleOutput").focus(); },
+			description: "Focus console output"
+		},
 	});
 	//#endregion
 
@@ -190,7 +194,7 @@ window.onload = () =>
 		document.getElementById("metaPane_pgc"),
 		{
 			"metaPane_tab_Player": document.getElementById("metaPane_page_Player"),
-			"metaPane_tab_Equipment": document.getElementById("metaPane_page_Equipment"),
+			"metaPane_tab_Inventory": document.getElementById("metaPane_page_Inventory"),
 			"metaPane_tab_World": document.getElementById("metaPane_page_World"),
 		},
 		"No Tab Selected",

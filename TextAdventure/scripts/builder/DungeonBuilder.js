@@ -144,7 +144,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		ns.Data.Criteria = ns.Data.Criteria || {};
 
 		ns.Data.Character = ns.Data.Character || {};
-		ns.Data.Character.Equipment = ns.Data.Character.Equipment || [];
+		ns.Data.Character.Inventory = ns.Data.Character.Inventory || [];
 		ns.Data.Character.Party = ns.Data.Character.Party || [];
 	};
 

@@ -11,7 +11,7 @@
 .z {
 }
 
-main > div {
+main > section {
 	background-color: var(--content-color-2);
 }
 
