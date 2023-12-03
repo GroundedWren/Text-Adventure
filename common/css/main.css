@@ -811,12 +811,15 @@ button[role="link"], .button-like[role="link"] {
 	height: 16px;
 }
 
-	.icon.unloaded-icon {
-		width: auto !important;
-		height: auto !important;
-	}
+.z {
+}
 
-.icon-container {
+.icon.unloaded-icon {
+	width: auto !important;
+	height: auto !important;
+}
+
+.icon-container, gw-icon {
 	display: inline-flex;
 	flex-direction: row;
 	align-items: center;

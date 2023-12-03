@@ -62,10 +62,22 @@ h4, h5, h6 {
 	background-color: var(--content-color);
 }
 
+.page-center {
+	display: flex;
+	flex-direction: column;
+}
+
+legend {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	align-items: center;
+}
+
 .button-header {
 	margin-top: 5px;
 	display: grid;
-	grid-template-columns: auto 1fr minmax(auto, 100px);
+	grid-template-columns: minmax(100px, auto) 1fr minmax(auto, 100px);
 	gap: 5px;
 	min-height: 40px;
 	align-items: center;

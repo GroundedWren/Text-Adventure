@@ -150,9 +150,17 @@ registerNamespace("Common.Controls.PageControl", function (ns)
 		{
 			if (this.__tabDict[tabId] == null) { return; }
 
+			const prevActiveId = this.__activeTabId;
 			if (this.__activeTabId !== null)
 			{
 				this.__tabDict[this.__activeTabId].deactivate();
+			}
+
+			if (tabId === prevActiveId)
+			{
+				this.__activeTabId = null;
+				this.__enterZeroState();
+				return;
 			}
 
 			this.__exitZeroState();
@@ -168,6 +176,13 @@ registerNamespace("Common.Controls.PageControl", function (ns)
 			if (this.__zeroStateControl)
 			{
 				Common.DOMLib.addStyle(this.__zeroStateControl, { "display": "none" });
+			}
+		}
+		__enterZeroState()
+		{
+			if (this.__zeroStateControl)
+			{
+				Common.DOMLib.addStyle(this.__zeroStateControl, { "display": "block" });
 			}
 		}
 	};

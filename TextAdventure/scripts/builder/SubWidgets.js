@@ -120,10 +120,15 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 						case "checkbox":
 							inputEl.checked = data[inputEl.getAttribute("data-prop")] || false;
 							break;
+						case "select-one":
+							inputEl.value = data[inputEl.getAttribute("data-prop")]
+								|| inputEl.firstElementChild.innerText;
+							break;
 						default:
 							inputEl.value = data[inputEl.getAttribute("data-prop")] || null;
 							break;
 					}
+					inputEl.dispatchEvent(new Event("change", { "bubbles": true }));
 				}
 			}
 		}
@@ -268,10 +273,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		renderContent()
 		{
+			const iconKey = ns.KEY_CLASS_MAP[this.networkedWidget].iconKey;
 			//Markup
 			this.innerHTML = `
 			<fieldset class="string-array ${this.networkedWidget ? "id-array" : "string-array"}">
-				<legend>${this.displayName}</legend>
+				<legend>${iconKey ? ns.getDecorativeIcon(iconKey) : ""} ${this.displayName}</legend>
 				<div id="${this.idKey}-input-grid" class="input-grid">
 					<button id="${this.idKey}-btnAddLine" class="full-line">Add ${this.addName}</button>
 				</div>
@@ -315,6 +321,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		addName;
 		lineIdx;
 		objectTag;
+		iconKey;
 
 		//#region element properties
 		btnAdd;
@@ -346,6 +353,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.displayName = this.getAttribute("displayName") || "";
 			this.addName = this.getAttribute("addName") || "";
 			this.objectTag = this.getAttribute("objectTag") || "div";
+			this.iconKey = this.getAttribute("iconKey") || null;
 
 			super.connectedCallback();
 			this.initialized = true;
@@ -406,12 +414,15 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		renderContent()
 		{
+			const icon = this.iconKey
+				? `<gw-icon iconKey=${this.iconKey} aria-hidden="true"></gw-icon>`
+				: "";
 			//Markup
 			this.innerHTML = `
 			<hr />
 			<div class="button-header">
 				<h5>${this.displayName}</h5>
-				<div></div>
+				<div class="page-center">${icon}</div>
 				<button id="${this.idKey}-btnAddLine" class="full-line">Add ${this.addName}</button>
 			</div>
 			<div id="${this.idKey}-obj-list"></div>
@@ -602,7 +613,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 
 		//#region element properties
-		
+
 		//#endregion
 		//#endregion
 
@@ -965,7 +976,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		}
 
 		onAbilityChange(modEl, event)
-		{	
+		{
 			this.updateModVal(modEl, event.target.value);
 		}
 
@@ -1380,8 +1391,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 							networkedWidget="gw-db-area" 
 							idInputElId="${this.idKey}-destination">
 						</gw-db-widget-link>
-						<label for="${this.idKey}-destination">Display Name</label>
-						<input id="${this.idKey}-destination" type="text" data-owner=${this.idKey} data-prop="DisplayName" />
+						<label for="${this.idKey}-displayName">Display Name</label>
+						<input id="${this.idKey}-displayName" type="text" data-owner=${this.idKey} data-prop="DisplayName" />
 						<div class="placeholder"></div>
 					</div>
 					<div class="input-vertical-line">
@@ -1800,7 +1811,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 						/>
 						<gw-db-widget-link
 							id=${this.idKey}-npc-linkBtn
-							networkedWidget="gw-db-NPC" 
+							networkedWidget="gw-db-npc" 
 							idInputElId="${this.idKey}-npc">
 						</gw-db-widget-link>
 						<label for="${this.idKey}-toArea">To Area</label>
@@ -1842,7 +1853,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			{
 				if (this.toPartyEl.checked)
 				{
-					this.toAreaEl.value = "";	
+					this.toAreaEl.value = "";
 				}
 				this.toAreaEl.disabled = this.toPartyEl.checked;
 				this.toAreaLinkEl.buttonElement.disabled = this.toPartyEl.checked;
@@ -2333,6 +2344,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		instanceId;
 		networkedWidget;
 		idInputElId;
+		pauseIconUpdates;
 
 		//#region element properties
 		buttonElement;
@@ -2344,6 +2356,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			super();
 			this.instanceId = WidgetLinkEl.instanceCount++;
 			WidgetLinkEl.instanceMap[this.instanceId] = this;
+			this.pauseIconUpdates = false;
 		}
 
 		get idKey()
@@ -2384,20 +2397,55 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.buttonElement = document.getElementById(this.idKey);
 
+			this.updateButtonIcon();
+		}
+
+		updateButtonIcon()
+		{
+			if (this.pauseIconUpdates) { return; }
+			this.buttonElement.innerHTML = "";
 			this.buttonElement.appendChild(
-				Common.SVGLib.createIcon(Common.SVGLib.Icons["link"], "Pin Linked Widget")
+				!!this.getLinkedWidget()
+					? Common.SVGLib.createIcon(Common.SVGLib.Icons["link"], "Pin Linked Widget")
+					: Common.SVGLib.createIcon(Common.SVGLib.Icons["plus"], "Add Linked Widget")
 			);
+		}
+
+		getLinkedWidget()
+		{
+			return [...document.getElementsByTagName(this.networkedWidget)].filter(
+				widgetEl => widgetEl.getAttribute("logicalId") === document.getElementById(this.idInputElId)?.value
+			)[0];
 		}
 
 		//#region Handlers
 		registerHandlers()
 		{
+			this.buttonElement.addEventListener("mousedown", () => { this.pauseIconUpdates = true; });
 			this.buttonElement.addEventListener("click", () =>
 			{
-				[...document.getElementsByTagName(this.networkedWidget)].filter(
-					widgetEl => widgetEl.getAttribute("logicalId") === document.getElementById(this.idInputElId)?.value
-				)[0]?.pinWidget();
+				const inputEl = document.getElementById(this.idInputElId);
+				if (!inputEl || !inputEl.value) { return; }
+
+				const linkedWidget = this.getLinkedWidget()
+					|| Pages.DungeonBuilder.newPinnableWidget(this.networkedWidget);
+				linkedWidget.pinWidget();
+
+				linkedWidget.onOpen();
+				linkedWidget.logicalIdInEl.value = inputEl.value;
+				linkedWidget.logicalIdInEl.dispatchEvent(new Event("change", { "bubbles": true }));
+
+				this.pauseIconUpdates = false;
+				this.updateButtonIcon();
 			});
+
+			document.getElementById(this.idInputElId).addEventListener(
+				"change",
+				() =>
+				{
+					this.updateButtonIcon();
+				}
+			);
 		}
 		//#endregion
 	};
@@ -2464,6 +2512,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			<div class="input-vertical-line">
 				<label for="${this.idKey}-select">Body Location</label>
 				<select id="${this.idKey}-select" data-owner=${this.dataOwner} data-prop="${this.dataProperty}">
+					<option>None</option>					
 					<option>Head</option>
 					<option>Neck</option>
 					<option>Torso</option>
@@ -2476,7 +2525,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					<option>Left Hand</option>
 					<option>Right Hand</option>
 					<option>Finger</option>
-					<option>None</option>
 				</select>
 			</div>
 			`;

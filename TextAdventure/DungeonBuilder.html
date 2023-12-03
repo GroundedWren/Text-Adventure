@@ -104,75 +104,110 @@
 								<div id="dataCtrl_page_Areas" class="page-control-page">
 									<div class="button-header">
 										<h3>Areas</h3>
-										<div></div>
+										<div class="page-center"><gw-icon iconKey="location-dot" aria-hidden="true"></gw-icon></div>
 										<button id="newArea" onclick="Pages.DungeonBuilder.newArea()">New Area</button>
 									</div>
 									<div id="areaList">
 										<!-- AREAS -->
 									</div>
 									<div class="inline-banner">
-										<span class="icon-container" data-icon="circle-info"></span>
-										Area 0 is the starting area
+										<span id="areaIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="areaIcoTitle"></gw-icon>
+										Areas are locations the player can move between via portals.<br /><br />
+										They each have a number of "Story Text"s, which appear when the player enters the area and persist until they leave.<br />
+										Areas can also hold items and NPCs, and events can trigger when the player visits.<br /><br />
+										Area 0 is the default starting area.
 									</div>
 								</div>
 								<div id="dataCtrl_page_Items" class="page-control-page">
 									<div class="button-header">
 										<h3>Items</h3>
-										<div></div>
+										<div class="page-center"><gw-icon iconKey="box-open" aria-hidden="true"></gw-icon></div>
 										<button id="newItem" onclick="Pages.DungeonBuilder.newItem()">New Item</button>
 									</div>
 									<div id="itemList">
 										<!-- ITEMS -->
 									</div>
+									<div class="inline-banner">
+										<span id="itemIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="itemIcoTitle"></gw-icon>
+										Items are objects the character can interact with. Some can be picked up and added to the character's inventory.<br /><br />
+										Items should usually be unique in the world, but they don't have to be. Each entry here defines properties which will be shared between all items with their ID in the world.<br />
+										If multiple instances of an item exist in the player's inventory or in an area, they will not be meaningfully distinct.<br /><br />
+										Actions are how the player may interact with the item. The "Don" and "Doff" action modes make an item equippable, and an "Attack" mode makes it a weapon.
+									</div>
 								</div>
 								<div id="dataCtrl_page_Events" class="page-control-page">
 									<div class="button-header">
 										<h3>Events</h3>
-										<div></div>
+										<div class="page-center"><gw-icon iconKey="calendar" aria-hidden="true"></gw-icon></div>
 										<button id="newItem" onclick="Pages.DungeonBuilder.newEvent()">New Event</button>
 									</div>
 									<div id="eventList">
 										<!-- EVENTS -->
 									</div>
+									<div class="inline-banner">
+										<span id="eventIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="eventIcoTitle"></gw-icon>
+										Events can be triggered by all kinds of player action, and can drive all sorts of game behavior. Their occurrances are recorded, and can later be used for game logic.<br /><br />
+										If an event has occurred and has been flagged as a singleton, it will silently not recur. If an event's corequisite criteria are not met, the event will also not occur.
+									</div>
 								</div>
 								<div id="dataCtrl_page_NPCs" class="page-control-page">
 									<div class="button-header">
 										<h3>NPCs</h3>
-										<div></div>
+										<div class="page-center"><gw-icon iconKey="people-group" aria-hidden="true"></gw-icon></div>
 										<button id="newItem" onclick="Pages.DungeonBuilder.newNPC()">New NPC</button>
 									</div>
 									<div id="npcList">
 										<!-- NPCs -->
 									</div>
+									<div class="inline-banner">
+										<span id="npcIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="npcIcoTitle"></gw-icon>
+										A Non-Player Character, or NPC, is an player-entity in the world who can be interacted with, fought, or recruited to the player's party.<br /><br />
+										Hostile NPCs will not talk to the player, but attack as soon as they share an area with the player.<br /><br />
+										Salutations are how dialog with this NPC will begin. From there, the player may choose from linked dialog trees to continue conversation.
+									</div>
 								</div>
 								<div id="dataCtrl_page_Dialogs" class="page-control-page">
 									<div class="button-header">
 										<h3>Dialogs</h3>
-										<div></div>
+										<div class="page-center"><gw-icon iconKey="comments" aria-hidden="true"></gw-icon></div>
 										<button id="newItem" onclick="Pages.DungeonBuilder.newDialog()">New Dialog</button>
 									</div>
 									<div id="dialogList">
 										<!-- Dialogs -->
 									</div>
+									<div class="inline-banner">
+										<span id="dialogIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="dialogIcoTitle"></gw-icon>
+										A dialog record is a node in a conversation between the player and a NPC which is mainly comprised of text to display and a series of available player response options.<br />
+										The response options can either direct to another dialog node, or not link to a node to represent the termination of dialog.
+									</div>
 								</div>
 								<div id="dataCtrl_page_Criteria" class="page-control-page">
 									<div class="button-header">
 										<h3>Criteria</h3>
-										<div></div>
+										<div class="page-center"><gw-icon iconKey="clipboard-check" aria-hidden="true"></gw-icon></div>
 										<button id="newCriteria" onclick="Pages.DungeonBuilder.newCriteria()">New Criteria</button>
 									</div>
 									<div id="criteriaList">
 										<!-- CRITERIA -->
 									</div>
 									<div class="inline-banner">
-										<span class="icon-container" data-icon="circle-info"></span>
-										All top-level properties in each record are evaluated as AND
+										<span id="criteriaInfoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="criteriaInfoTitle"></gw-icon>
+										Criteria records drive game logic. Each can only return true or false, and determine the appearance of story texts, the availability of player options, the success of events, and other things.<br /><br />
+										Criteria records can be linked to each other to form complex logic. If any "And" criteria are listed, they must all be satisfied for a true result. If any "Or" criteria are listed, any of them evaluating true will lead to a true result unless there are failing "And" criteria.<br /><br />
+										Skill checks never short-circuit and will always roll (and display to the player).
+										All top-level properties in each record are evaluated with logical and.
 									</div>
 								</div>
 								<div id="dataCtrl_page_Character" class="page-control-page">
 									<div class="button-header">
 										<h3>Character</h3>
-										<div></div>
+										<div class="page-center"><gw-icon iconKey="user" aria-hidden="true"></gw-icon></div>
 										<div></div>
 									</div>
 								</div>
@@ -182,7 +217,11 @@
 				</section>
 				<section id="pinsSection" aria-labelledby="pinsHeader">
 					<div id="pinsSectionContent" class="lowerSectionContent">
-						<h2 id="pinsHeader">Pins</h2>
+						<div class="button-header">
+							<h2 id="pinsHeader">Pins</h2>
+							<gw-icon iconKey="thumbtack" aria-hidden="true"></gw-icon>
+							<div></div>
+						</div>
 						<div id="pinList">
 
 						</div>
@@ -196,15 +235,15 @@
 			<div class="banner-center">
 				<button id="newButton"
 						onclick="Pages.DungeonBuilder.newDungeon()">
-					New
+					New (Alt+1)
 				</button>
 				<button id="loadButton"
 						onclick="Pages.DungeonBuilder.loadDungeon()">
-					Load
+					Load (Alt+2)
 				</button>
 				<button id="saveButton"
 						onclick="Pages.DungeonBuilder.saveDungeon()">
-					Save
+					Save (Alt+3)
 				</button>
 			</div>
 		</footer>

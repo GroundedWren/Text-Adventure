@@ -7,25 +7,43 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 	{
 		if (!!ns.Data)
 		{
-			Common.Controls.Popups.showModal(
-				`New Dungeon`,
-				`<p>Begin a new dungeon? All unsaved chagnes will be lost.</p><br />`
-				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
-				+ `Continue</button>`
-				+ `<button id="abortBtn" style="float: right; height: 25px;">`
-				+ `Go back</button>`
-			);
-			document.getElementById("confirmBtn").onclick = () =>
+			const doConfirm = () =>
 			{
 				Common.Controls.Popups.hideModal();
 				clearAllData();
 				fillInBasicData();
 				renderCharacterWidget();
 			};
-			document.getElementById("abortBtn").onclick = () =>
+			const doAbort = () =>
 			{
 				Common.Controls.Popups.hideModal();
 			};
+
+			Common.Components.registerShortcuts({
+				"ALT+C": {
+					action: doConfirm,
+					description: "Confirm the dialog"
+				},
+				"ALT+G": {
+					action: doAbort,
+					description: "Abort the dialog"
+				},
+			});
+			Common.Controls.Popups.showModal(
+				`New Dungeon`,
+				`<p>Begin a new dungeon? All unsaved chagnes will be lost.</p><br />`
+				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
+				+ `<u>C</u>ontinue</button>`
+				+ `<button id="abortBtn" style="float: right; height: 25px;">`
+				+ `<u>G</u>o back</button>`,
+				undefined,
+				() =>
+				{
+					Common.Components.unregisterShortcuts(["ALT+C", "ALT+G"]);
+				}
+			);
+			document.getElementById("confirmBtn").onclick = doConfirm;
+			document.getElementById("abortBtn").onclick = doAbort;
 		}
 		else
 		{
@@ -39,25 +57,43 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 	{
 		if (!!ns.Data)
 		{
-			Common.Controls.Popups.showModal(
-				`Load Dungeon`,
-				`<p>Load a new dungeon? All unsaved chagnes will be lost.</p><br />`
-				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
-				+ `Continue</button>`
-				+ `<button id="abortBtn" style="float: right; height: 25px;">`
-				+ `Go back</button>`
-			);
-			document.getElementById("confirmBtn").onclick = () =>
+			const doConfirm = () =>
 			{
 				Common.Controls.Popups.hideModal();
 
 				clearAllData();
 				loadDungeonFromFile();
 			};
-			document.getElementById("abortBtn").onclick = () =>
+			const doAbort = () =>
 			{
 				Common.Controls.Popups.hideModal();
 			};
+
+			Common.Components.registerShortcuts({
+				"ALT+C": {
+					action: doConfirm,
+					description: "Confirm the dialog"
+				},
+				"ALT+G": {
+					action: doAbort,
+					description: "Abort the dialog"
+				},
+			});
+			Common.Controls.Popups.showModal(
+				`Load Dungeon`,
+				`<p>Load a new dungeon? All unsaved chagnes will be lost.</p><br />`
+				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
+				+ `<u>C</u>ontinue</button>`
+				+ `<button id="abortBtn" style="float: right; height: 25px;">`
+				+ `<u>G</u>o back</button>`,
+				undefined,
+				() =>
+				{
+					Common.Components.unregisterShortcuts(["ALT+C", "ALT+G"]);
+				}
+			);
+			document.getElementById("confirmBtn").onclick = doConfirm;
+			document.getElementById("abortBtn").onclick = doAbort;
 		}
 		else
 		{
@@ -307,6 +343,27 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 		];
 	};
 
+	ns.newPinnableWidget = function newPinnableWidget(type)
+	{
+		switch (type)
+		{
+			case "gw-db-area":
+				return ns.newArea();
+			case "gw-db-item":
+				return ns.newItem();
+			case "gw-db-event":
+				return ns.newEvent();
+			case "gw-db-npc":
+				return ns.newNPC();
+			case "gw-db-dialog":
+				return ns.newDialog();
+			case "gw-db-criteria":
+				return ns.newCriteria();
+			default:
+				return null;
+		}
+	};
+
 	ns.newArea = () =>
 	{
 		const areaEl = Common.DOMLib.createElement(
@@ -317,6 +374,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		areaEl.logicalIdInEl.focus();
 		areaEl.logicalIdInEl.select();
+		return areaEl;
 	};
 
 	ns.newItem = () =>
@@ -329,6 +387,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		itemEl.logicalIdInEl.focus();
 		itemEl.logicalIdInEl.select();
+		return itemEl;
 	};
 
 	ns.newEvent = () =>
@@ -341,6 +400,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		eventEl.logicalIdInEl.focus();
 		eventEl.logicalIdInEl.select();
+		return eventEl;
 	};
 
 	ns.newNPC = () =>
@@ -353,6 +413,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		npcEl.logicalIdInEl.focus();
 		npcEl.logicalIdInEl.select();
+		return npcEl;
 	};
 
 	ns.newDialog = () =>
@@ -365,6 +426,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		dialogEl.logicalIdInEl.focus();
 		dialogEl.logicalIdInEl.select();
+		return dialogEl;
 	};
 
 	ns.newCriteria = () =>
@@ -377,6 +439,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 		criteriaEl.logicalIdInEl.focus();
 		criteriaEl.logicalIdInEl.select();
+		return criteriaEl;
 	};
 
 	ns.sectionHeightUpdateOnResize = () =>
@@ -411,7 +474,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 			+ dataHeadingHeight
 			+ pinsSectionContentPadding
 			+ headingBuffers
-			+ 5; //magic buffer :/
+			+ 15; //magic buffer :/
 		pinList.style.maxHeight = `calc(100vh - ${pinsListOffset}px)`;
 	};
 });
@@ -503,6 +566,18 @@ window.onload = () =>
 			},
 			description: "Show Field Information"
 		},
+		"ALT+1": {
+			action: () => { document.getElementById("newButton").click(); },
+			description: "Start a new save file"
+		},
+		"ALT+2": {
+			action: () => { document.getElementById("loadButton").click(); },
+			description: "Load a save file from disk"
+		},
+		"ALT+3": {
+			action: () => { document.getElementById("saveButton").click(); },
+			description: "Save to disk"
+		},
 	});
 	Common.SVGLib.insertIcons();
 
@@ -519,7 +594,7 @@ window.onload = () =>
 			"dataCtrl_tab_Criteria": document.getElementById("dataCtrl_page_Criteria"),
 			"dataCtrl_tab_Character": document.getElementById("dataCtrl_page_Character"),
 		},
-		"No Tab Selected",
+		"Use this page to create a JSON save file for a game to play in the Dungeoneer Interface!",
 		"Data"
 	);
 

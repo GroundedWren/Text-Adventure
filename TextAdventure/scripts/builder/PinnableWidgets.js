@@ -1,5 +1,10 @@
 ﻿registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 {
+	ns.getDecorativeIcon = function getDecorativeIcon(key)
+	{
+		return `<gw-icon iconKey="${key}" aria-hidden="true"></gw-icon>`;
+	};
+
 	ns.SaveableWidget = class SaveableWidget extends HTMLElement
 	{
 		//#region staticProperties
@@ -105,10 +110,15 @@
 						case "checkbox":
 							inputEl.checked = this.data[inputEl.getAttribute("data-prop")] || false;
 							break;
+						case "select-one":
+							inputEl.value = this.data[inputEl.getAttribute("data-prop")]
+								|| inputEl.firstElementChild.innerText;
+							break;
 						default:
 							inputEl.value = this.data[inputEl.getAttribute("data-prop")] || null;
 							break;
 					}
+					inputEl.dispatchEvent(new Event("change", { "bubbles": true }));
 				}
 			}
 		}
@@ -233,6 +243,7 @@
 									displayName="Inventory"
 									addName="Item"
 									dataProperty="Inventory"
+									iconKey="box-open"
 									objectTag="gw-db-player-inven-object"
 				></gw-db-object-array>
 			</div>
@@ -282,6 +293,10 @@
 		get widgetName()
 		{
 			throw new Error("get widgetName is not implemented");
+		}
+		get widgetIcon()
+		{
+			throw new Error("get widgetIcon is not implemented");
 		}
 		//#endregion
 
@@ -345,7 +360,7 @@
 		{
 			return `
 			<div class="card-header">
-				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.widgetName} ${this.logicalId}</span>
+				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.getTitleHTML()}</span>
 				<div class=card-header-btns>
 					<button id="${this.idKey}-btnDelete"></button>
 					<button id="${this.idKey}-btnOpen"></button>
@@ -359,7 +374,7 @@
 		{
 			return `
 			<div class="card-header">
-				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.widgetName} ${this.logicalId}</span>
+				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.getTitleHTML()}</span>
 				<div class="card-header-btns">
 					<button id="${this.idKey}-btnDelete"></button>
 					<button id="${this.idKey}-btnClose"></button>
@@ -367,6 +382,11 @@
 				</div>
 			</div>
 			`;
+		}
+
+		getTitleHTML()
+		{
+			return `${this.widgetIcon} ${this.widgetName} ${this.logicalId}`;
 		}
 
 		renderContentOpen()
@@ -414,7 +434,7 @@
 
 				this.logicalId = this.logicalIdInEl.value;
 				this.setAttribute("logicalId", this.logicalId);
-				this.titleEl.innerText = `${this.widgetName} ${this.logicalId}`
+				this.titleEl.innerHTML = this.getTitleHTML();
 			});
 		}
 
@@ -483,6 +503,7 @@
 		static observedAttributes = [];
 		static instanceCount = 0;
 		static instanceMap = {};
+		static iconKey = "location-dot";
 		//#endregion
 
 		//#region instance properties
@@ -513,6 +534,10 @@
 		{
 			return "Area";
 		}
+		get widgetIcon()
+		{
+			return ns.getDecorativeIcon(AreaEl.iconKey);
+		}
 
 		get idKey()
 		{
@@ -521,7 +546,7 @@
 
 		get data()
 		{
-			return Pages.DungeonBuilder.Data.World.Areas[this.logicalId]
+			return Pages.DungeonBuilder.Data.World.Areas[this.logicalId] || {};
 		}
 		set data(value)
 		{
@@ -621,12 +646,14 @@
 									displayName="Story Texts"
 									addName="Story Text"
 									dataProperty="StoryTexts"
+									iconKey="scroll"
 									objectTag="gw-db-story-text-object"
 				></gw-db-object-array>
 				<gw-db-object-array parentWidgetId="${this.id}"
 									displayName="Portals"
 									addName="Portal"
 									dataProperty="Portals"
+									iconKey="door-open"
 									objectTag="gw-db-portal-object"
 				></gw-db-object-array>
 			</div>
@@ -654,6 +681,7 @@
 		static observedAttributes = [];
 		static instanceCount = 0;
 		static instanceMap = {};
+		static iconKey = "box-open";
 		//#endregion
 
 		//#region instance properties
@@ -682,6 +710,10 @@
 		{
 			return "Item";
 		}
+		get widgetIcon()
+		{
+			return ns.getDecorativeIcon(ItemEl.iconKey);
+		}
 
 		get idKey()
 		{
@@ -690,7 +722,7 @@
 
 		get data()
 		{
-			return Pages.DungeonBuilder.Data.World.Items[this.logicalId]
+			return Pages.DungeonBuilder.Data.World.Items[this.logicalId] || {};
 		}
 		set data(value)
 		{
@@ -809,6 +841,7 @@
 									displayName="Actions"
 									addName="Action"
 									dataProperty="Actions"
+									iconKey="star"
 									objectTag="gw-db-action-object"
 				></gw-db-object-array>
 			</div>
@@ -833,6 +866,7 @@
 		static observedAttributes = [];
 		static instanceCount = 0;
 		static instanceMap = {};
+		static iconKey = "calendar";
 		//#endregion
 
 		//#region instance properties
@@ -861,6 +895,10 @@
 		{
 			return "Event";
 		}
+		get widgetIcon()
+		{
+			return ns.getDecorativeIcon(EventEl.iconKey);
+		}
 
 		get idKey()
 		{
@@ -869,7 +907,7 @@
 
 		get data()
 		{
-			return Pages.DungeonBuilder.Data.Events[this.logicalId];
+			return Pages.DungeonBuilder.Data.Events[this.logicalId] || {};
 		}
 		set data(value)
 		{
@@ -938,6 +976,24 @@
 						<textarea	id="${this.idKey}-internalNotes"
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
+									rows="3"
+						></textarea>
+					</div>
+					<div class="placeholder"></div>
+				</div>
+				<div class="card-line center-align">
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Corequisites"
+										addName="Coreq"
+										linePrefix="Criteria ID "
+										networkedWidget="gw-db-criteria"
+										dataProperty="Coreqs"
+					></gw-db-string-array>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-internalNotes">Text on Fail Coreqs</label>
+						<textarea	id="${this.idKey}-coreqFailtext"
+									data-owner="${this.idKey}"
+									data-prop="CoreqFailText"
 									rows="3"
 						></textarea>
 					</div>
@@ -1025,12 +1081,14 @@
 									displayName="Place Items"
 									addName="Item Set"
 									dataProperty="PlaceItems"
+									iconKey="boxes-stacked"
 									objectTag="gw-db-place-items-object"
 				></gw-db-object-array>
 				<gw-db-object-array parentWidgetId="${this.id}"
 									displayName="Move NPCs"
 									addName="NPC Move"
 									dataProperty="MoveNPC"
+									iconKey="person-running"
 									objectTag="gw-db-move-npc-object"
 				></gw-db-object-array>
 			</div>
@@ -1080,6 +1138,7 @@
 		static observedAttributes = [];
 		static instanceCount = 0;
 		static instanceMap = {};
+		static iconKey = "people-group";
 		//#endregion
 
 		//#region instance properties
@@ -1108,6 +1167,10 @@
 		{
 			return "NPC";
 		}
+		get widgetIcon()
+		{
+			return ns.getDecorativeIcon(NPCEl.iconKey);
+		}
 
 		get idKey()
 		{
@@ -1116,7 +1179,7 @@
 
 		get data()
 		{
-			return Pages.DungeonBuilder.Data.NPCs[this.logicalId];
+			return Pages.DungeonBuilder.Data.NPCs[this.logicalId] || {};
 		}
 		set data(value)
 		{
@@ -1257,12 +1320,14 @@
 									displayName="Salutations"
 									addName="Salutation"
 									dataProperty="Salutations"
+									iconKey="handshake"
 									objectTag="gw-db-salutation-object"
 				></gw-db-object-array>
 				<gw-db-object-array parentWidgetId="${this.id}"
 									displayName="Dialog Trees"
 									addName="Tree"
 									dataProperty="DialogTrees"
+									iconKey="comments"
 									objectTag="gw-db-dialog-tree-object"
 				></gw-db-object-array>
 			</div>
@@ -1287,6 +1352,7 @@
 		static observedAttributes = [];
 		static instanceCount = 0;
 		static instanceMap = {};
+		static iconKey = "comments";
 		//#endregion
 
 		//#region instance properties
@@ -1315,6 +1381,10 @@
 		{
 			return "Dialog";
 		}
+		get widgetIcon()
+		{
+			return ns.getDecorativeIcon(DialogEl.iconKey);
+		}
 
 		get idKey()
 		{
@@ -1323,7 +1393,7 @@
 
 		get data()
 		{
-			return Pages.DungeonBuilder.Data.Dialogs[this.logicalId];
+			return Pages.DungeonBuilder.Data.Dialogs[this.logicalId] || {};
 		}
 		set data(value)
 		{
@@ -1400,6 +1470,7 @@
 									displayName="Responses"
 									addName="Response"
 									dataProperty="Responses"
+									iconKey="reply"
 									objectTag="gw-db-dialog-response-object"
 				></gw-db-object-array>
 			</div>
@@ -1424,6 +1495,7 @@
 		static observedAttributes = [];
 		static instanceCount = 0;
 		static instanceMap = {};
+		static iconKey = "clipboard-check";
 		//#endregion
 
 		//#region instance properties
@@ -1452,6 +1524,10 @@
 		{
 			return "Criteria";
 		}
+		get widgetIcon()
+		{
+			return ns.getDecorativeIcon(CriteriaEl.iconKey);
+		}
 
 		get idKey()
 		{
@@ -1460,7 +1536,7 @@
 
 		get data()
 		{
-			return Pages.DungeonBuilder.Data.Criteria[this.logicalId];
+			return Pages.DungeonBuilder.Data.Criteria[this.logicalId] || {};
 		}
 		set data(value)
 		{
@@ -1615,6 +1691,7 @@
 									displayName="Skill Checks"
 									addName="Skill Check"
 									dataProperty="SkillChecks"
+									iconKey="d20"
 									objectTag="gw-db-skill-check-object"
 				></gw-db-object-array>
 			</div>
@@ -1630,8 +1707,15 @@
 			].forEach(el => el.gridEl.insertAdjacentHTML(
 				"afterbegin",
 				`
-				<label for="${el.getAttribute("dataProperty")}-op">Operator</label>
-				<select id="${el.getAttribute("dataProperty")}-op"
+				<label for="${this.idKey}-${el.getAttribute("dataProperty")}-negate">Negate result?</label>
+				<input	id="${this.idKey}-${el.getAttribute("dataProperty")}-negate"
+						type="checkbox"
+						data-owner="${this.idKey}"
+						data-prop="${el.getAttribute("dataProperty")}Negate"
+				/>
+				<div></div><div></div>
+				<label for="${this.idKey}-${el.getAttribute("dataProperty")}-op">Operator</label>
+				<select id="${this.idKey}-${el.getAttribute("dataProperty")}-op"
 						data-owner=${this.idKey}
 						data-prop="${el.getAttribute("dataProperty")}Op"
 						data-skipParent="true"
@@ -1699,4 +1783,13 @@
 		];
 	}
 	//#endregion
+
+	ns.KEY_CLASS_MAP = {
+		"gw-db-area": ns.AreaEl,
+		"gw-db-item": ns.ItemEl,
+		"gw-db-event": ns.EventEl,
+		"gw-db-npc": ns.NPCEl,
+		"gw-db-dialog": ns.DialogEl,
+		"gw-db-criteria": ns.CriteriaEl,
+	};
 });
