@@ -190,7 +190,7 @@ hr {
 	flex-grow: 0;
 }
 
-.card-line > .input-vertical-line {
+.card-line > .input-vertical-line, .card-line > gw-db-skill-select, .card-line gw-db-ability-select {
 	width: auto;
 	margin: 5px;
 }
@@ -275,13 +275,16 @@ textarea.full-width {
 	justify-content: center;
 }
 
-	.attack-fieldset-line > .input-vertical-line {
-		width: auto;
-	}
+.z {
+}
 
-	.attack-fieldset-line input {
-		max-width: 40px;
-	}
+.attack-fieldset-line > .input-vertical-line {
+	width: auto;
+}
+
+.attack-fieldset-line input {
+	max-width: 40px;
+}
 
 .vitals-fieldset {
 	display: flex;
@@ -298,10 +301,14 @@ textarea.full-width {
 	width: 40px;
 }
 
-#dataCtrl_page_Character {
+#dataCtrl_page_Character, #dataCtrl_page_Settings {
 	background-color: var(--content-color-2);
 }
 
-.character-content {
+.character-content, .settings-content {
 	padding: 10px;
+}
+
+#dataCtrl .inline-banner {
+	flex-direction: column;
 }

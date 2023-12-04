@@ -109,6 +109,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__contexts[0].resolvePromise(result);
 			this.__contexts.shift();
 			this.__updateContextLabel();
+			this.__showOutputList();
 		};
 
 		removeAllContexts()
@@ -131,7 +132,17 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		__echoBacklog = "";
 		echo(value, alertBehavior)
 		{
-			this.dce("li", this.__consoleOutputList, undefined, undefined, `${value}`);
+			if (value)
+			{
+				this.dce(
+					"li",
+					this.__consoleOutputList,
+					undefined,
+					undefined,
+					`${Pages.DungeoneerInterface.prepareTextForDisplay(value)}`
+				);
+			}
+			value = value || "";
 
 			alertBehavior = alertBehavior || {};
 			if (alertBehavior.holdAlert)
@@ -248,7 +259,10 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			else if (context.nullary && (value !== "" || context.disableExit === false))
 			{
 				var result = context.nullary(value);
-				if (context.autoExit) { this.removeContext(result); }
+				if (context.autoExit)
+				{
+					this.removeContext(result);
+				}
 			}
 			else
 			{

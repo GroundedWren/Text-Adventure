@@ -121,6 +121,7 @@ h1, h2, h3, h4, h5, h6 {
 	word-break: keep-all;
 }
 /*#endregion */
+
 /*#region Console */
 #consolePane {
 	display: flex;
@@ -162,11 +163,31 @@ h1, h2, h3, h4, h5, h6 {
 	padding: 5px;
 }
 
+.z {
+}
+
 #storyPane p {
 	margin-bottom: 1.5em;
 }
-/*#endregion */
 
+#storyContent {
+	height: 100%;
+	overflow-y: auto;
+}
+
+.story-info {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	max-width: 1000px;
+	margin: auto;
+}
+
+.story-info .inline-banner {
+	flex-direction: column;
+}
+/*#endregion */
 /* Pages.DungeoneerInterface.MINI_THRESHOLD */
 @media (max-width: 800px) {
 	main {

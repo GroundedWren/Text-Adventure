@@ -34,6 +34,12 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			return Pages.DungeoneerInterface.Mechanics;
 		}
 	});
+	Object.defineProperty(ns, "Character", {
+		get: function ()
+		{
+			return Pages.DungeoneerInterface.Character;
+		}
+	});
 	Object.defineProperty(ns, "StoryEl", {
 		get: function ()
 		{
@@ -45,62 +51,11 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	//#region StoryText
 	function writeParagraphToStoryEl(text)
 	{
-		ns.StoryEl.insertAdjacentHTML("beforeend", `<p>${ns.prepareTextForStoryPane(text)}</p>`);
+		ns.StoryEl.insertAdjacentHTML(
+			"beforeend",
+			`<p>${Pages.DungeoneerInterface.prepareTextForDisplay(text)}</p>`
+		);
 	}
-	ns.prepareTextForStoryPane = function prepareTextForStoryPane(text)
-	{
-		let newText = text.replaceAll("\n", "<br />");
-		let textAry = newText.split("@");
-		for (let i = 1; i < textAry.length; i += 2)
-		{
-			const replParams = textAry[i].split("-");
-
-			let name = "@ERROR-name@";
-			let pronouns = {
-				Subjective: "@ERROR-subjective@",
-				Objective: "@ERROR-objective@",
-				Possessive: "@ERROR-possessive@",
-				Reflexive: "@ERROR-reflexive@",
-				PossessiveAdjective: "@ERROR-possessiveadjective@",
-			};
-			if (replParams[0] === "Character")
-			{
-				name = ns.Data.Character.Name;
-				pronouns = ns.Data.Character.Pronouns;
-			}
-			else if (!!ns.Data.NPCs[replParams[0]])
-			{
-				name = ns.Data.NPCs[replParams[0]].DisplayName;
-				pronouns = ns.Data.NPCs[replParams[0]].Pronouns;
-			}
-
-			switch (replParams[1].toLowerCase())
-			{
-				case "name":
-					textAry[i] = name;
-					break;
-				case "subjective":
-					textAry[i] = pronouns.Subjective;
-					break;
-				case "objective":
-					textAry[i] = pronouns.Objective;
-					break;
-				case "possessive":
-					textAry[i] = pronouns.Possessive;
-					break;
-				case "reflexive":
-					textAry[i] = pronouns.Reflexive;
-					break;
-				case "possessiveadjective":
-					textAry[i] = pronouns.PossessiveAdjective;
-					break;
-				default:
-					textAry[i] = `@${replParams[0]}-ERROR@`;
-			}
-		}
-		newText = textAry.join("");
-		return newText;
-	};
 	//#endregion
 
 	//#region Areas
@@ -111,14 +66,14 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const areaObj = ns.Data.World.Areas[areaId];
 		areaObj.StoryTexts.forEach(storyTextObj =>
 		{
-			if (!ns.evaluateCriteriaArray(storyTextObj.Prereqs, storyTextObj.PrereqsOp))
+			if (!ns.evaluateCriteriaArray(storyTextObj.Prereqs, storyTextObj.PrereqsOp, storyTextObj.PrereqsNegate))
 			{
 				return;
 			}
 			writeParagraphToStoryEl(storyTextObj.Text);
 		});
 
-		//TODO Events On-Visit
+		ns.runEventsArray(areaObj.OnVisit, true);
 
 		ns.InputConsole.addContext(new ns.ConsoleContext(
 			areaObj.DisplayName || areaId,
@@ -169,7 +124,11 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		let objOfInterest = areaObj.Portals.filter(portalObj =>
 		{
 			return (portalObj.DisplayName.toUpperCase() === arg)
-				&& ns.evaluateCriteriaArray(portalObj.GateVisibility, portalObj.GateVisibilityOp);
+				&& ns.evaluateCriteriaArray(
+					portalObj.GateVisibility,
+					portalObj.GateVisibilityOp,
+					portalObj.GateVisibilityNegate
+				);
 		})[0];
 
 		objOfInterest = objOfInterest
@@ -198,13 +157,17 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		arg = arg.toUpperCase();
 
 		const portalObj = areaObj.Portals.filter(portalObj => portalObj.DisplayName.toUpperCase() == arg)[0];
-		if (!portalObj || !ns.evaluateCriteriaArray(portalObj.GateVisibility, portalObj.GateVisibilityOp))
+		if (!portalObj || !ns.evaluateCriteriaArray(
+			portalObj.GateVisibility,
+			portalObj.GateVisibilityOp,
+			portalObj.GateVisibilityNegate
+		))
 		{
 			ns.InputConsole.echo(`You don't see a way that looks like ${arg}`);
 			return;
 		}
 
-		if (ns.evaluateCriteriaArray(portalObj.GateAccess, portalObj.GateAccessOp))
+		if (ns.evaluateCriteriaArray(portalObj.GateAccess, portalObj.GateAccessOp, portalObj.GateAccessNegate))
 		{
 			ns.InputConsole.removeContext();
 			ns.StoryEl.innerHTML = "";
@@ -237,14 +200,14 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const itemObj = ns.Data.World.Items[matchedId];
 		const pickUpActions = itemObj.Actions.filter(actionObj => actionObj.Mode === "Pick Up");
 		const matchedPickUpAction = pickUpActions.filter(
-			actionObj => ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp)
+			actionObj => ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp, actionObj.PrereqsNegate)
 		)[0];
 		if (!matchedPickUpAction)
 		{
 			ns.InputConsole.echo(`You can't pick up the ${itemDisplayName}`);
 		}
 
-		ns.runItemAction(itemObj, matchedPickUpAction);
+		ns.runItemAction(matchedId, matchedPickUpAction, areaObj);
 	};
 
 	ns.interactWithAreaItem = function (areaId, itemArg)
@@ -265,6 +228,10 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const commandObj = {};
 		itemObj.Actions.forEach(actionObj =>
 		{
+			if (!ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp, actionObj.PrereqsNegate))
+			{
+				return;
+			}
 			const commandStr = (actionObj.DisplayName || actionObj.Mode).replaceAll(" ", "-").toUpperCase();
 			commandObj[commandStr] = new ns.ConsoleCommand(
 				Common.fcd(this, this.runItemAction, [matchedId, actionObj, areaObj]),
@@ -278,27 +245,87 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			{ disableExit: false, autoExit: true },
 			itemObj.Description
 		));
+		ns.InputConsole.help();
 	};
 
 	ns.runItemAction = function runItemAction(itemId, actionObj, areaObj)
 	{
-		const itemObj = ns.Data.World.Items[itemId];
+		if (!ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp, actionObj.PrereqsNegate))
+		{
+			return;
+		}
 
-		ns.InputConsole.echo(actionObj.TextOnAct);
+		ns.InputConsole.echo(actionObj.TextOnAct, { holdAlert: true });
 
 		switch (actionObj.Mode)
 		{
 			case "Pick Up":
-				ns.Data.Character.Inventory.push(itemId);
+				ns.Character.addInventoryItem(itemId);
 				areaObj.Items.splice(areaObj.Items.indexOf(itemId), 1);
 				break;
 		}
 
-		//TODO Events On-Action
+		ns.runEventsArray(actionObj.Events);
+
+		ns.InputConsole.echo();
 	};
 	//#endregion
 
 	//#region Events
+	ns.runEvent = function (eventId, toStoryText)
+	{
+		const eventObj = ns.Data.Events[eventId];
+		if (!eventObj || eventObj.Occurrences > 0 && eventObj.IsSingleton)
+		{
+			return;
+		}
+
+		eventObj.Occurrences = eventObj.Occurrences || 0;
+		if (!ns.evaluateCriteriaArray(eventObj.Coreqs))
+		{
+			if (toStoryText)
+			{
+				writeParagraphToStoryEl(eventObj.CoreqFailText);
+			}
+			else
+			{
+				ns.InputConsole.echo(eventObj.CoreqFailText, { holdAlert: true });
+			}
+			if (eventObj.AlwaysMarkOccurred)
+			{
+				eventObj.Occurrences++;
+			}
+			return;
+		}
+
+		eventObj.Occurrences++;
+		if (toStoryText)
+		{
+			writeParagraphToStoryEl(eventObj.Description);
+		}
+		else
+		{
+			ns.InputConsole.echo(eventObj.Description, { holdAlert: true });
+		}
+
+		(eventObj.RemoveItems || []).forEach(itemId => { ns.Character.removeInventoryItem(itemId); });
+		(eventObj.GetItems || []).forEach(itemId => { ns.Character.addInventoryItem(itemId); });
+		(eventObj.PlaceItems || []).forEach(placeItmsObj =>
+		{
+			let areaObj = ns.Data.World.Areas[placeItmsObj.Area];
+			areaObj.Items = areaObj.Items.concat(placeItmsObj.Items);
+		});
+		//TODO NPC Hostility
+		//TODO Dialogs
+		//TODO Move NPCs
+		//TODO Set location
+		eventObj.TriggerEvents.forEach(linkedEventId => ns.runEvent(linkedEventId));
+	}
+
+	ns.runEventsArray = function (eventArray, toStoryText)
+	{
+		eventArray.forEach(eventId => ns.runEvent(eventId, toStoryText));
+	}
 	//#endregion
 
 	//#region NPCs
@@ -319,23 +346,26 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const npcsInPartyResults = criteriaObj.NPCsInParty.map(
 			npcId => ns.Data.Character.Party.indexOf(npcId) >= 0
 		);
-		const npcsInPartyPassed = (npcsInPartyResults.length === 0) || (criteriaObj.NPCsInPartyOp === "OR"
+		let npcsInPartyPassed = (npcsInPartyResults.length === 0) || (criteriaObj.NPCsInPartyOp === "OR"
 			? npcsInPartyResults.some(result => result)
 			: npcsInPartyResults.every(result => result));
+		npcsInPartyPassed = criteriaObj.NPCsInPartyNegate ? !npcsInPartyPassed : npcsInPartyPassed;
 
 		const eventsOccurredResults = criteriaObj.EventsOccurred.map(
 			eventId => ns.Data.Events[eventId].Occurrences > 0
 		);
-		const eventsOccurredPassed = (eventsOccurredResults.length === 0) || (criteriaObj.EventsOccurredOp === "OR"
+		let eventsOccurredPassed = (eventsOccurredResults.length === 0) || (criteriaObj.EventsOccurredOp === "OR"
 			? eventsOccurredResults.some(result => result)
 			: eventsOccurredResults.every(result => result));
+		eventsOccurredPassed = criteriaObj.EventsOccurredNegate ? !eventsOccurredPassed : eventsOccurredPassed;
 
 		const hasItemsResults = criteriaObj.HasItems.map(
-			itemId => ns.Data.Character.Inventory.indexOf(itemId) >= 0
+			itemId => ns.Data.Character.Inventory.filter(charItmObj => charItmObj.Item === itemId).length > 0
 		);
-		const hasItemsPassed = (hasItemsResults.length === 0) || (criteriaObj.HasItemsOp === "OR"
+		let hasItemsPassed = (hasItemsResults.length === 0) || (criteriaObj.HasItemsOp === "OR"
 			? hasItemsResults.some(result => result)
 			: hasItemsResults.every(result => result));
+		hasItemsPassed = criteriaObj.HasItemsNegate ? !hasItemsPassed : hasItemsPassed;
 
 		const inAreaPassed = !!criteriaObj.InArea
 			? ns.Data.Character.Location === criteriaObj.InArea
@@ -348,20 +378,22 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const itemsByPlayerResults = criteriaObj.ItemsByPlayer.map(
 			itemId => ns.Data.World.Areas[ns.Data.Character.Location].Items.indexOf(itemId) >= 0
 		);
-		const itemsByPlayerPassed = (itemsByPlayerResults.length === 0) || (criteriaObj.ItemsByPlayerOp === "OR"
+		let itemsByPlayerPassed = (itemsByPlayerResults.length === 0) || (criteriaObj.ItemsByPlayerOp === "OR"
 			? itemsByPlayerResults.some(result => result)
 			: itemsByPlayerResults.every(result => result));
+		itemsByPlayerPassed = criteriaObj.ItemsByPlayerNegate ? !itemsByPlayerPassed : itemsByPlayerPassed;
 
 		const skillCheckResults = criteriaObj.SkillChecks.map(skillCheckObj => ns.Mechanics.rollSkillCheck(
 			ns.Data.Character,
 			skillCheckObj.Skill,
+			skillCheckObj.Ability,
 			skillCheckObj.DC
 		));
 		const skillChecksPassed = (skillCheckResults.length === 0) || (criteriaObj.SkillChecksOperator === "OR"
 			? skillCheckResults.some(result => result)
 			: skillCheckResults.every(result => result));
 
-		//TODO money
+		const moneyPassed = !criteriaObj.HasMoney || (ns.Data.Character.Money >= criteriaObj.HasMoney);
 
 		const didThisPass = npcsInPartyPassed
 			&& eventsOccurredPassed
@@ -369,7 +401,8 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			&& inAreaPassed
 			&& levelPassed
 			&& itemsByPlayerPassed
-			&& skillChecksPassed;
+			&& skillChecksPassed
+			&& moneyPassed;
 
 		const orCriteriaResults = criteriaObj.OR.map(orCriteriaId => ns.evaluateCriteria(orCriteriaId, npcId));
 		const didORPass = orCriteriaResults.some(result => result);
@@ -377,16 +410,17 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const andCriteriaResults = criteriaObj.AND.map(andCriteriaId => ns.evaluateCriteria(andCriteriaId, npcId));
 		const didANDPass = (andCriteriaResults.length === 0) || andCriteriaResults.every(result => result);
 
-		const pentultimateResult = (didThisPass || didORPass) && didANDPass;
+		const pentultimateResult = (didThisPass || didORPass) & didANDPass;
 		return criteriaObj.NegateResult ? !pentultimateResult : pentultimateResult;
 	};
 
-	ns.evaluateCriteriaArray = function (criteriaArray, operator, npcId)
+	ns.evaluateCriteriaArray = function (criteriaArray, operator, negate, npcId)
 	{
 		if (criteriaArray.length === 0) { return true; }
-		return operator === "OR"
+		const result = operator === "OR"
 			? criteriaArray.some(criteriaId => ns.evaluateCriteria(criteriaId, npcId))
 			: criteriaArray.every(criteriaId => ns.evaluateCriteria(criteriaId, npcId));
+		return negate ? !result : result;
 	};
 	//#endregion
 });

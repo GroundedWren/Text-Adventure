@@ -35,7 +35,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		Common.FileLib.saveJSONFile(
 			ns.Data,
 			"New Save",
-			['.save']
+			['.json']
 		);
 
 		applyMetaData();
@@ -44,6 +44,17 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	ns.__shouldApplySave = false;
 	ns.saveUploaded = (filename, saveObj) =>
 	{
+		Common.Components.registerShortcuts({
+			"ALT+Y": {
+				action: ns.__uploadSaveModalAccepted,
+				description: "Confirm the dialog"
+			},
+			"ALT+N": {
+				action: ns.__uploadSaveModalRejected,
+				description: "Abort the dialog"
+			},
+		});
+
 		const timestamp = new Date(saveObj.Meta["Last Save"]).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" });
 		Common.Controls.Popups.showModal(
 			"Import Save",
@@ -53,12 +64,14 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			+ `Timestamp: <time datetime=${saveObj.Meta["Last Save"]}>${timestamp}</time></p>`
 			+ `<p>If you continue, any current data will be overwritten. Continue?</p>`
 			+ `<button style="float: right; height: 25px; margin-left: 5px;" onclick="Pages.DungeoneerInterface.__uploadSaveModalAccepted()">`
-			+ `Yes</button>`
+			+ `<u>Y</u>es</button>`
 			+ `<button style="float: right; height: 25px;" onclick="Pages.DungeoneerInterface.__uploadSaveModalRejected()">`
-			+ `Never mind</button>`,
+			+ `<u>N</u>ever mind</button>`,
 			undefined,
 			() =>
 			{
+				Common.Components.unregisterShortcuts(["ALT+Y", "ALT+N"]);
+
 				if (ns.__shouldApplySave)
 				{
 					ns.Data = saveObj;
@@ -102,7 +115,6 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			ns.InputConsole.removeAllContexts();
 			ns.Logic.enterArea(ns.Data.Character.Location || "0");
 		});
-
 	};
 	function applyMetaData()
 	{
@@ -135,6 +147,61 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 	//#region Console Commands
 	//#endregion
+
+	ns.prepareTextForDisplay = function prepareTextForDisplay(text)
+	{
+		let newText = text.replaceAll("\n", "<br />");
+		let textAry = newText.split("@");
+		for (let i = 1; i < textAry.length; i += 2)
+		{
+			const replParams = textAry[i].split("-");
+
+			let name = "@ERROR-name@";
+			let pronouns = {
+				Subjective: "@ERROR-subjective@",
+				Objective: "@ERROR-objective@",
+				Possessive: "@ERROR-possessive@",
+				Reflexive: "@ERROR-reflexive@",
+				PossessiveAdjective: "@ERROR-possessiveadjective@",
+			};
+			if (replParams[0] === "Character")
+			{
+				name = ns.Data.Character.Name;
+				pronouns = ns.Data.Character.Pronouns;
+			}
+			else if (!!ns.Data.NPCs[replParams[0]])
+			{
+				name = ns.Data.NPCs[replParams[0]].DisplayName;
+				pronouns = ns.Data.NPCs[replParams[0]].Pronouns;
+			}
+
+			switch (replParams[1].toLowerCase())
+			{
+				case "name":
+					textAry[i] = name;
+					break;
+				case "subjective":
+					textAry[i] = pronouns.Subjective;
+					break;
+				case "objective":
+					textAry[i] = pronouns.Objective;
+					break;
+				case "possessive":
+					textAry[i] = pronouns.Possessive;
+					break;
+				case "reflexive":
+					textAry[i] = pronouns.Reflexive;
+					break;
+				case "possessiveadjective":
+					textAry[i] = pronouns.PossessiveAdjective;
+					break;
+				default:
+					textAry[i] = `@${replParams[0]}-ERROR@`;
+			}
+		}
+		newText = textAry.join("");
+		return newText;
+	};
 });
 
 /**
@@ -224,8 +291,8 @@ window.onload = () =>
 	ns.resizeListener();
 };
 
-//window.onbeforeunload = (event) =>
-//{
-//	event.preventDefault();
-//	return false;
-//};
+window.onbeforeunload = (event) =>
+{
+	event.preventDefault();
+	return false;
+};

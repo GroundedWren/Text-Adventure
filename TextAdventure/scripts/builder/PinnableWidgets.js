@@ -182,6 +182,12 @@
 								data-owner="${this.idKey}"
 								data-prop="Level"
 						/>
+						<label for="${this.idKey}-xpEl">Experience</label>
+						<input id="${this.idKey}-xpEl"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="XP"
+						/>
 					</div>
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-loc">Location</label>
@@ -195,6 +201,13 @@
 								networkedWidget="gw-db-area" 
 								idInputElId="${this.idKey}-loc">
 							</gw-db-widget-link>
+							<label for="${this.idKey}-moneyEl">Money</label>
+							<input id="${this.idKey}-moneyEl"
+									type="number"
+									data-owner="${this.idKey}"
+									data-prop="Money"
+							/>
+							<div></div>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Party"
@@ -970,6 +983,12 @@
 								data-owner="${this.idKey}"
 								data-prop="IsSingleton"
 						/>
+						<label for="${this.idKey}-mooe">Mark Occurred On Eval?</label>
+						<input	id="${this.idKey}-mooe"
+								type="checkbox"
+								data-owner="${this.idKey}"
+								data-prop="AlwaysMarkOccurred"
+						/>
 					</div>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-internalNotes">Internal Notes</label>
@@ -990,7 +1009,7 @@
 										dataProperty="Coreqs"
 					></gw-db-string-array>
 					<div class="input-vertical-line">
-						<label for="${this.idKey}-internalNotes">Text on Fail Coreqs</label>
+						<label for="${this.idKey}-coreqFailtext">Text on Fail Coreqs</label>
 						<textarea	id="${this.idKey}-coreqFailtext"
 									data-owner="${this.idKey}"
 									data-prop="CoreqFailText"
@@ -1009,6 +1028,15 @@
 									rows="4"></textarea>
 					</div>
 				</div>
+				<div class="card-line centered">
+					<gw-db-string-array parentWidgetId="${this.id}"
+										displayName="Trigger Events"
+										addName="Event"
+										linePrefix="Event ID "
+										networkedWidget="gw-db-event"
+										dataProperty="TriggerEvents"
+					></gw-db-string-array>
+				</div>
 				<div class="card-line">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-setLoc">Set Location</label>
@@ -1022,6 +1050,20 @@
 							networkedWidget="gw-db-area" 
 							idInputElId="${this.idKey}-setLoc">
 						</gw-db-widget-link>
+						<label for="${this.idKey}-moneyEl">Adjust Money</label>
+						<input id="${this.idKey}-moneyEl"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="AdjustMoney"
+						/>
+						<div></div>
+						<label for="${this.idKey}-addXP">Add XP</label>
+						<input id="${this.idKey}-addXP"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="AddXP"
+						/>
+						<div></div>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Remove Items"
@@ -1273,6 +1315,14 @@
 								data-prop="IsHostile"
 						/>
 						<div class="placeholder"></div>
+					</div>
+					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-moneyEl">Money</label>
+							<input id="${this.idKey}-moneyEl"
+									type="number"
+									data-owner="${this.idKey}"
+									data-prop="Money"
+							/>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Inventory"
@@ -1659,6 +1709,13 @@
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="LeveledTo"
+						/>
+						<div class="placeholder"></div>
+						<label for="${this.idKey}-moneyEl">Has Money</label>
+						<input id="${this.idKey}-moneyEl"
+								type="number"
+								data-owner="${this.idKey}"
+								data-prop="HasMoney"
 						/>
 						<div class="placeholder"></div>
 					</div>

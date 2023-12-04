@@ -1316,7 +1316,16 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
 
+			//TODO refactor this into criteria arrays
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqNegate">Negate result?</label>
+			<input	id="${this.idKey}-prereqNegate"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="PrereqsNegate"
+					data-skipParent="true"
+			/>
+			<div></div><div></div>
 			<label for="${this.idKey}-prereqOperator">Operator</label>
 			<select id="${this.idKey}-prereqOperator"
 					data-owner=${this.idKey}
@@ -1449,6 +1458,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.legendEl = this.standardLegend;
 
 			document.getElementById(`${this.idKey}-gateVis`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-gateVisNegate">Negate result?</label>
+			<input	id="${this.idKey}-gateVisNegate"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="GateVisibilityNegate"
+					data-skipParent="true"
+			/>
+			<div></div><div></div>
 			<label for="${this.idKey}-gateVisOperator">Operator</label>
 			<select id="${this.idKey}-gateVisOperator"
 					data-owner=${this.idKey}
@@ -1461,6 +1478,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			<div></div><div></div>
 			`);
 			document.getElementById(`${this.idKey}-gateAccess`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-gateAccessNegate">Negate result?</label>
+			<input	id="${this.idKey}-gateAccessNegate"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="GateAccessNegate"
+					data-skipParent="true"
+			/>
+			<div></div><div></div>
 			<label for="${this.idKey}-gateAccessOperator">Operator</label>
 			<select id="${this.idKey}-gateAccessOperator"
 					data-owner=${this.idKey}
@@ -1614,6 +1639,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.bodyLocEl = document.getElementById(`${this.idKey}-bodyLocSelect`);
 
 			document.getElementById(`${this.idKey}-prereqs`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqNegate">Negate result?</label>
+			<input	id="${this.idKey}-prereqNegate"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="PrereqsNegate"
+					data-skipParent="true"
+			/>
+			<div></div><div></div>
 			<label for="${this.idKey}-prereqOperator">Operator</label>
 			<select id="${this.idKey}-prereqOperator"
 					data-owner=${this.idKey}
@@ -1938,6 +1971,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.legendEl = this.standardLegend;
 
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqNegate">Negate result?</label>
+			<input	id="${this.idKey}-prereqNegate"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="PrereqsNegate"
+					data-skipParent="true"
+			/>
+			<div></div><div></div>
 			<label for="${this.idKey}-prereqOperator">Operator</label>
 			<select id="${this.idKey}-prereqOperator"
 					data-owner=${this.idKey}
@@ -2046,6 +2087,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.legendEl = this.standardLegend;
 
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqNegate">Negate result?</label>
+			<input	id="${this.idKey}-prereqNegate"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="PrereqsNegate"
+					data-skipParent="true"
+			/>
+			<div></div><div></div>
 			<label for="${this.idKey}-prereqOperator">Operator</label>
 			<select id="${this.idKey}-prereqOperator"
 					data-owner=${this.idKey}
@@ -2166,6 +2215,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.legendEl = this.standardLegend;
 
 			document.getElementById(`${this.idKey}-prereqAry`).gridEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-prereqNegate">Negate result?</label>
+			<input	id="${this.idKey}-prereqNegate"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="PrereqsNegate"
+					data-skipParent="true"
+			/>
+			<div></div><div></div>
 			<label for="${this.idKey}-prereqOperator">Operator</label>
 			<select id="${this.idKey}-prereqOperator"
 					data-owner=${this.idKey}
@@ -2199,6 +2256,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region element properties
 		rmBtnEl;
 		legendEl;
+		skillEl;
 		//#endregion
 		//#endregion
 
@@ -2236,6 +2294,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 				<div class="card-line end-align">
 					<gw-db-skill-select id="${this.idKey}-skill" dataOwner=${this.idKey} dataProperty="Skill">
 					</gw-db-skill-select>
+					<gw-db-ability-select dataOwner=${this.idKey} dataProperty="Ability"></gw-db-ability-select>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-dc">Difficulty Class</label>
 						<input id="${this.idKey}-dc" type="number" data-owner=${this.idKey} data-prop="DC"/>
@@ -2245,6 +2304,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
+			this.skillEl = document.getElementById(`${this.idKey}-skill`);
+			this.skillEl.selectEl.insertAdjacentHTML("afterbegin", `<option>None</option>`);
+
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
 
@@ -2422,6 +2484,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		registerHandlers()
 		{
 			this.buttonElement.addEventListener("mousedown", () => { this.pauseIconUpdates = true; });
+			this.buttonElement.addEventListener("mouseout", () =>
+			{
+				this.pauseIconUpdates = false;
+				this.updateButtonIcon();
+			});
 			this.buttonElement.addEventListener("click", () =>
 			{
 				const inputEl = document.getElementById(this.idInputElId);
@@ -2605,12 +2672,12 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			<div class="input-vertical-line">
 				<label for="${this.idKey}-select">${this.labelText}</label>
 				<select id="${this.idKey}-select" data-owner=${this.dataOwner} data-prop="${this.dataProperty}">
-					<option>STR</option>
-					<option>DEX</option>
-					<option>CON</option>
-					<option>INT</option>
-					<option>WIS</option>
-					<option>CHA</option>
+					<option>Str</option>
+					<option>Dex</option>
+					<option>Con</option>
+					<option>Int</option>
+					<option>Wis</option>
+					<option>Cha</option>
 				</select>
 			</div>
 			`;

@@ -523,6 +523,10 @@ window.onload = () =>
 			action: () => { document.getElementById("dataCtrl_tab_Character").click(); },
 			description: "Show Character"
 		},
+		"ALT+T": {
+			action: () => { document.getElementById("dataCtrl_tab_Settings").click(); },
+			description: "Show Settings"
+		},
 		"ALT+O": {
 			action: () =>
 			{
@@ -593,8 +597,9 @@ window.onload = () =>
 			"dataCtrl_tab_Dialogs": document.getElementById("dataCtrl_page_Dialogs"),
 			"dataCtrl_tab_Criteria": document.getElementById("dataCtrl_page_Criteria"),
 			"dataCtrl_tab_Character": document.getElementById("dataCtrl_page_Character"),
+			"dataCtrl_tab_Settings": document.getElementById("dataCtrl_page_Settings"),
 		},
-		"Use this page to create a JSON save file for a game to play in the Dungeoneer Interface!",
+		`<div class="inline-banner"><span id="welcomeInfoTitle">Info</span><gw-icon iconKey="circle-info" titleId="welcomeInfoTitle"></gw-icon><span>Use this page to create a JSON save file for a game to play in the <a href="https://textadventure.groundedwren.com/TextAdventure/DungeonnerInterface.html" target="_blank">Dungeoneer Interface</a>!<span></div>`,
 		"Data"
 	);
 

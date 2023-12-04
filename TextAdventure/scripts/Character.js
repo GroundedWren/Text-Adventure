@@ -142,4 +142,35 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		});
 	};
 	//#endregion
+
+	ns.addInventoryItem = function (itemId)
+	{
+		ns.Data.Inventory.push({ Item: itemId, "Body Location": "None" });
+	}
+
+	ns.removeInventoryItem = function (itemId)
+	{
+		let itemIndex = -1;
+		for (let i = 0; i < ns.Data.Inventory.length; i++)
+		{
+			if (ns.Data.Inventory[i].Item === itemId)
+			{
+				itemIndex = i;
+				break;
+			}
+		}
+		if (itemIndex === -1) { return; }
+
+		ns.Data.Inventory.splice(itemIndex, 1);
+	};
+
+	ns.adjustMoney = function (amount)
+	{
+		ns.Data.Money += amount;
+	};
+
+	ns.addExp = function (exp)
+	{
+		ns.Data.XP += exp;
+	}
 });
