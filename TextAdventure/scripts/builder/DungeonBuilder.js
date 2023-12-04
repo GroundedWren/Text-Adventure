@@ -31,7 +31,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 			});
 			Common.Controls.Popups.showModal(
 				`New Dungeon`,
-				`<p>Begin a new dungeon? All unsaved chagnes will be lost.</p><br />`
+				`<p>Begin a new dungeon? All unsaved changes will be lost.</p><br />`
 				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
 				+ `<u>C</u>ontinue</button>`
 				+ `<button id="abortBtn" style="float: right; height: 25px;">`
@@ -81,7 +81,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 			});
 			Common.Controls.Popups.showModal(
 				`Load Dungeon`,
-				`<p>Load a new dungeon? All unsaved chagnes will be lost.</p><br />`
+				`<p>Load a new dungeon? All unsaved changes will be lost.</p><br />`
 				+ `<button id="confirmBtn" style="float: right; height: 25px; margin-left: 5px;">`
 				+ `<u>C</u>ontinue</button>`
 				+ `<button id="abortBtn" style="float: right; height: 25px;">`
