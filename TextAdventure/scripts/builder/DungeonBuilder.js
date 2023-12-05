@@ -532,9 +532,11 @@ window.onload = () =>
 			{
 				let element = document.activeElement;
 				let path = [];
+				let helpText = "";
 				let doSkip = false;
 				while (element)
 				{
+					helpText = helpText || element.getAttribute("data-helptext");
 					const saveLoc = element.getAttribute("data-saveloc");
 					let prop = saveLoc
 						? saveLoc + "." + element.getAttribute("data-prop")
@@ -561,7 +563,7 @@ window.onload = () =>
 				const boundingRect = document.activeElement.getBoundingClientRect();
 				const pathDialog = new Common.Controls.Popups.Dialog(
 					"Field Information",
-					`Data address: ${pathStr}`,
+					`${helpText ? helpText + "<br /><br />" : ""}Data address: ${pathStr}`,
 					{},
 					{},
 					document.activeElement
@@ -599,7 +601,11 @@ window.onload = () =>
 			"dataCtrl_tab_Character": document.getElementById("dataCtrl_page_Character"),
 			"dataCtrl_tab_Settings": document.getElementById("dataCtrl_page_Settings"),
 		},
-		`<div class="inline-banner"><span id="welcomeInfoTitle">Info</span><gw-icon iconKey="circle-info" titleId="welcomeInfoTitle"></gw-icon><span>Use this page to create a JSON save file for a game to play in the <a href="https://textadventure.groundedwren.com/TextAdventure/DungeonnerInterface.html" target="_blank">Dungeoneer Interface</a>!<span></div>`,
+		`<div class="inline-banner"><span id="welcomeInfoTitle">Info</span>`
+		+ `<gw-icon iconKey="circle-info" titleId="welcomeInfoTitle"></gw-icon>`
+		+ `<span>Use this page to create a JSON save file for a game to play in the <a href="https://textadventure.groundedwren.com/TextAdventure/DungeonnerInterface.html" target="_blank">Dungeoneer Interface</a>!</span>`
+		+ `<span>Want to know what something means? Try selecting it and pressing Alt+O</span>`
+		+ `</div>`,
 		"Data"
 	);
 

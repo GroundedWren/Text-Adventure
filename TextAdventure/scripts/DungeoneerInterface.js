@@ -291,8 +291,8 @@ window.onload = () =>
 	ns.resizeListener();
 };
 
-window.onbeforeunload = (event) =>
-{
-	event.preventDefault();
-	return false;
-};
+//window.onbeforeunload = (event) =>
+//{
+//	event.preventDefault();
+//	return false;
+//};

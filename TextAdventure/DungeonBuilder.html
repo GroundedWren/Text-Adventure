@@ -63,7 +63,12 @@
 				<div class="input-horizontal-flex">
 					<div class="input-flex-line">
 						<label for="txtTitle">Title</label>
-						<input id="txtTitle" data-saveloc="Meta" data-prop="Title" type="text" />
+						<input id="txtTitle"
+							   data-saveloc="Meta"
+							   data-prop="Title"
+							   type="text"
+							   data-helptext="The title of the adventure"
+						/>
 					</div>
 					<div class="input-flex-line">
 						<label for="txaDescription">Description</label>
@@ -71,12 +76,18 @@
 								  data-saveloc="Meta"
 								  data-prop="Description"
 								  rows="1"
-								  cols="33">
-						</textarea>
+								  cols="33"
+								  data-helptext="A short description of what to expect"
+						></textarea>
 					</div>
 					<div class="input-flex-line">
 						<label for="txtCreator">Creator</label>
-						<input id="txtCreator" data-saveloc="Meta" data-prop="Creator" type="text" />
+						<input id="txtCreator" 
+							   data-saveloc="Meta" 
+							   data-prop="Creator" 
+							   type="text"
+							data-helptext="The adventure's author"
+						/>
 					</div>
 					<div class="input-flex-line">
 						<label for="txtDate">Date</label>

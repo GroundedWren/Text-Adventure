@@ -312,3 +312,18 @@ textarea.full-width {
 #dataCtrl .inline-banner {
 	flex-direction: column;
 }
+
+.neg-op-container {
+	display: contents;
+}
+
+.z {
+}
+
+.neg-op-container > label {
+	grid-column: 1 / span 2;
+}
+
+.neg-op-container > input, .neg-op-container > select {
+	grid-column: 3 / span 2;
+}

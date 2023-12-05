@@ -175,18 +175,21 @@
 								type="text"
 								data-owner="${this.idKey}"
 								data-prop="Name"
+								data-helptext="The display name of the player"
 						/>
 						<label for="${this.idKey}-levelEl">Level</label>
 						<input id="${this.idKey}-levelEl"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Level"
+								data-helptext="The level the player has achieved"
 						/>
 						<label for="${this.idKey}-xpEl">Experience</label>
 						<input id="${this.idKey}-xpEl"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="XP"
+								data-helptext="The experience points the player has earned"
 						/>
 					</div>
 					<div class="input-grid id-single widget-grid-input">
@@ -195,6 +198,7 @@
 									type="text"
 									data-owner="${this.idKey}"
 									data-prop="Location"
+									data-helptext="The area where the player is"
 							/>
 							<gw-db-widget-link
 								id=${this.idKey}-linkBtn
@@ -206,6 +210,7 @@
 									type="number"
 									data-owner="${this.idKey}"
 									data-prop="Money"
+									data-helptext="How much money the player has"
 							/>
 							<div></div>
 					</div>
@@ -215,6 +220,7 @@
 										linePrefix="ID "
 										networkedWidget="gw-db-npc"
 										dataProperty="Party"
+										data-helptext="The NPCs in the player's party"
 					></gw-db-string-array>
 				</div>
 				<div class="card-line centered">
@@ -225,6 +231,7 @@
 										data-prop="Description"
 										class="full-width"
 										rows="4"
+										data-helptext="A physical description of the player"
 							></textarea>
 						</div>
 					</div>
@@ -615,6 +622,7 @@
 								type="text"
 								data-owner="${this.idKey}"
 								data-prop="DisplayName"
+								data-helptext="The name with which the player will see and interact with this area"
 						/>
 					</div>
 					<div class="input-vertical-line">
@@ -622,7 +630,9 @@
 						<textarea	id="${this.idKey}-inernalNotes"
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
-									rows="3"></textarea>
+									rows="3"
+									data-helptext="Notes about this area not used in game logic"
+						></textarea>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Items"
@@ -630,6 +640,7 @@
 										linePrefix="ID "
 										networkedWidget="gw-db-item"
 										dataProperty="Items"
+										data-helptext="The items in the area"
 					></gw-db-string-array>
 				</div>
 				<div class="card-line">
@@ -639,13 +650,16 @@
 										linePrefix="ID "
 										networkedWidget="gw-db-npc"
 										dataProperty="NPCs"
+										data-helptext="The NPCs in the area"
 					></gw-db-string-array>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-description">Description</label>
 						<textarea	id="${this.idKey}-description"
 									data-owner="${this.idKey}"
 									data-prop="Description"
-									rows="3"></textarea>
+									rows="3"
+									data-helptext="Text the player will see when they look around the area"
+						></textarea>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Events On-Visit"
@@ -653,6 +667,7 @@
 										linePrefix="ID "
 										networkedWidget="gw-db-event"
 										dataProperty="OnVisit"
+										data-helptext="Events triggered by the player entering this area"
 					></gw-db-string-array>
 				</div>
 				<gw-db-object-array parentWidgetId="${this.id}"
@@ -791,6 +806,7 @@
 								type="text"
 								data-owner="${this.idKey}"
 								data-prop="DisplayName"
+								data-helptext="The name with which the player will see and interact with this item"
 						/>
 					</div>
 					<div class="input-vertical-line">
@@ -799,6 +815,7 @@
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
 									rows="3"
+									data-helptext="Notes about this item not used in game logic"
 						></textarea>
 					</div>
 					<div class="placeholder"></div>
@@ -810,7 +827,9 @@
 									data-owner="${this.idKey}"
 									data-prop="Description"
 									class="full-width"
-									rows="4"></textarea>
+									rows="4"
+									data-helptext="Text the player will see when they look at the item"
+						></textarea>
 					</div>
 				</div>
 				<div class="card-line">
@@ -820,12 +839,14 @@
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Health"
+								data-helptext="If this item can be damaged, this is its remaining health"
 						/>
 						<label for="${this.idKey}-maxHealth">Max Health</label>
 						<input	id="${this.idKey}-maxHealth"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="MaxHealth"
+								data-helptext="If the item can be damaged, this is its maximum health"
 						/>
 					</div>
 					<div class="input-grid widget-grid-input">
@@ -834,12 +855,14 @@
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Armor"
+								data-helptext="If the item can be worn, it will convey this armor bonus to the player"
 						/>
 						<label for="${this.idKey}-evasion">Evasion Bonus</label>
 						<input	id="${this.idKey}-evasion"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Evasion"
+								data-helptext="If this item can be worn, it will convey this evasion modifier to the player"
 						/>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
@@ -848,6 +871,7 @@
 										linePrefix="ID "
 										networkedWidget="gw-db-event"
 										dataProperty="OnBreak"
+										data-helptext="Events triggered when this item's health falls to zero"
 					></gw-db-string-array>
 				</div>
 				<gw-db-object-array parentWidgetId="${this.id}"
@@ -976,18 +1000,21 @@
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Occurrences"
+								data-helptext="The number of times this event has been triggered"
 						/>
 						<label for="${this.idKey}-singleton">Is Singleton?</label>
 						<input	id="${this.idKey}-singleton"
 								type="checkbox"
 								data-owner="${this.idKey}"
 								data-prop="IsSingleton"
+								data-helptext="Whether this event can only occur once"
 						/>
 						<label for="${this.idKey}-mooe">Mark Occurred On Eval?</label>
 						<input	id="${this.idKey}-mooe"
 								type="checkbox"
 								data-owner="${this.idKey}"
 								data-prop="AlwaysMarkOccurred"
+								data-helptext="Whether this events occurrences will increment even if the corequisites fail <br />(nothing else about the event will be triggered)"
 						/>
 					</div>
 					<div class="input-vertical-line">
@@ -996,24 +1023,28 @@
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
 									rows="3"
+									data-helptext="Notes about this event not used in game logic"
 						></textarea>
 					</div>
 					<div class="placeholder"></div>
 				</div>
 				<div class="card-line center-align">
-					<gw-db-string-array parentWidgetId="${this.id}"
+					<gw-db-condition-array parentWidgetId="${this.id}"
 										displayName="Corequisites"
 										addName="Coreq"
 										linePrefix="Criteria ID "
 										networkedWidget="gw-db-criteria"
 										dataProperty="Coreqs"
-					></gw-db-string-array>
+										ownerIdKey="${this.idKey}"
+										data-helptext="Criteria to evaluate to determine if this event will truly occur"
+					></gw-db-condition-array>
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-coreqFailtext">Text on Fail Coreqs</label>
 						<textarea	id="${this.idKey}-coreqFailtext"
 									data-owner="${this.idKey}"
 									data-prop="CoreqFailText"
 									rows="3"
+									data-helptext="Text displayed if the corequisites do not pass"
 						></textarea>
 					</div>
 					<div class="placeholder"></div>
@@ -1025,17 +1056,10 @@
 									data-owner="${this.idKey}"
 									data-prop="Description"
 									class="full-width"
-									rows="4"></textarea>
+									rows="4"
+									data-helptext="Text displayed when the event occurs"
+						></textarea>
 					</div>
-				</div>
-				<div class="card-line centered">
-					<gw-db-string-array parentWidgetId="${this.id}"
-										displayName="Trigger Events"
-										addName="Event"
-										linePrefix="Event ID "
-										networkedWidget="gw-db-event"
-										dataProperty="TriggerEvents"
-					></gw-db-string-array>
 				</div>
 				<div class="card-line">
 					<div class="input-grid id-single widget-grid-input">
@@ -1044,17 +1068,31 @@
 								type="text"
 								data-owner="${this.idKey}"
 								data-prop="SetLocation"
+								data-helptext="The player will be moved to this area after the event occurs"
 						/>
 						<gw-db-widget-link
 							id=${this.idKey}-linkBtn
 							networkedWidget="gw-db-area" 
 							idInputElId="${this.idKey}-setLoc">
 						</gw-db-widget-link>
+						<label for="${this.idKey}-talkNPC">Trigger Dialog With</label>
+						<input	id="${this.idKey}-talkNPC"
+								type="text"
+								data-owner="${this.idKey}"
+								data-prop="TriggerDialogWith"
+								data-helptext="A dialog with this NPC will start after the event"
+						/>
+						<gw-db-widget-link
+							id=${this.idKey}-linkBtn
+							networkedWidget="gw-db-npc" 
+							idInputElId="${this.idKey}-talkNPC">
+						</gw-db-widget-link>
 						<label for="${this.idKey}-moneyEl">Adjust Money</label>
 						<input id="${this.idKey}-moneyEl"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="AdjustMoney"
+								data-helptext="The player will gain or lose this amount of money"
 						/>
 						<div></div>
 						<label for="${this.idKey}-addXP">Add XP</label>
@@ -1062,6 +1100,7 @@
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="AddXP"
+								data-helptext="The player will gain this amount of experience points"
 						/>
 						<div></div>
 					</div>
@@ -1071,6 +1110,7 @@
 										linePrefix="Item ID "
 										networkedWidget="gw-db-item"
 										dataProperty="RemoveItems"
+										data-helptext="These items will be removed from the player's inventory if the player has them"
 					></gw-db-string-array>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Get Items"
@@ -1078,15 +1118,17 @@
 										linePrefix="Item ID "
 										networkedWidget="gw-db-item"
 										dataProperty="GetItems"
+										data-helptext="These items will be placed in the player's inventory"
 					></gw-db-string-array>
 				</div>
 				<div class="card-line">
 					<gw-db-string-array parentWidgetId="${this.id}"
-										displayName="Trigger Dialog With"
-										addName="NPC"
-										linePrefix="NPC ID "
-										networkedWidget="gw-db-npc"
-										dataProperty="TriggerDialogWith"
+										displayName="Trigger Events"
+										addName="Event"
+										linePrefix="Event ID "
+										networkedWidget="gw-db-event"
+										dataProperty="TriggerEvents"
+										data-helptext="Other events which can chain off of this event occurring<br />Beware, there is no cycle protection"
 					></gw-db-string-array>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Mark NPCs Hostile"
@@ -1094,6 +1136,7 @@
 										linePrefix="NPC ID "
 										networkedWidget="gw-db-npc"
 										dataProperty="MarkNPCsHostile"
+										data-helptext="These NPCs will become hostile to the player"
 					></gw-db-string-array>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="Mark NPCs Not Hostile"
@@ -1101,6 +1144,7 @@
 										linePrefix="NPC ID "
 										networkedWidget="gw-db-npc"
 										dataProperty="MarkNPCsNotHostile"
+										data-helptext="These NPCs will cease being hostile towards the player"
 					></gw-db-string-array>
 				</div>
 				<div class="card-line">
@@ -1111,6 +1155,7 @@
 									aria-controls="${this.idKey}-attack"
 									data-owner="${this.idKey}"
 									data-prop="HasAttack"
+									data-helptext="Whether this event triggers an attack on specified valid targit types in the player's area"
 							/>
 					</div>
 					<gw-db-attack	id="${this.idKey}-attack"
@@ -1277,12 +1322,14 @@
 								type="text"
 								data-owner="${this.idKey}"
 								data-prop="DisplayName"
+								data-helptext="The name with which the player will interact with this NPC"
 						/>
 						<label for="${this.idKey}-levelEl">Level</label>
 						<input id="${this.idKey}-levelEl"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Level"
+								data-helptext="The NPC's level for game mechanics"
 						/>
 					</div>
 					<div class="input-vertical-line">
@@ -1291,6 +1338,7 @@
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
 									rows="3"
+									data-helptext="Notes about this NPC not used in game logic"
 						></textarea>
 					</div>
 					<div class="placeholder"></div>
@@ -1302,6 +1350,7 @@
 								type="text"
 								data-owner="${this.idKey}"
 								data-prop="Location"
+								data-helptext="The current location of the NPC"
 						/>
 						<gw-db-widget-link
 							id=${this.idKey}-linkBtn
@@ -1313,6 +1362,7 @@
 								type="checkbox"
 								data-owner="${this.idKey}"
 								data-prop="IsHostile"
+								data-helptext="Whether the NPC is hostile towards the player"
 						/>
 						<div class="placeholder"></div>
 					</div>
@@ -1322,6 +1372,7 @@
 									type="number"
 									data-owner="${this.idKey}"
 									data-prop="Money"
+									data-helptext="How much money the NPC has"
 							/>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
@@ -1330,6 +1381,7 @@
 										linePrefix="Item ID "
 										networkedWidget="gw-db-item"
 										dataProperty="Inventory"
+										data-helptext="What the NPC has in their inventory"
 					></gw-db-string-array>
 				</div>
 				<div class="card-line centered">
@@ -1339,7 +1391,9 @@
 									data-owner="${this.idKey}"
 									data-prop="Description"
 									class="full-width"
-									rows="4"></textarea>
+									rows="4"
+									data-helptext="Text the player will see if they look at the NPC"
+						></textarea>
 					</div>
 				</div>
 				<div class="card-line centered">
@@ -1501,6 +1555,7 @@
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
 									rows="3"
+									data-helptext="Notes about this dialog not used in game logic"
 						></textarea>
 					</div>
 					<div class="placeholder"></div>
@@ -1513,6 +1568,7 @@
 									data-prop="Text"
 									class="full-width"
 									rows="4"
+									data-helptext="Text displayed to the player when this dialog node is reached"
 						></textarea>
 					</div>
 				</div>
@@ -1642,12 +1698,14 @@
 								type="checkbox"
 								data-owner="${this.idKey}"
 								data-prop="NegateResult"
+								data-helptext="Whether to negate the result of all other evaluation"
 						/>
 						<label for="${this.idKey}-allowNPC">Allow NPC Eval?</label>
 						<input	id="${this.idKey}-allowNPC"
 								type="checkbox"
 								data-owner="${this.idKey}"
 								data-prop="AllowNPC"
+								data-helptext="Whether these criteria can be passed by an NPC"
 						/>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"
@@ -1656,6 +1714,7 @@
 										linePrefix="Criteria ID "
 										networkedWidget="gw-db-criteria"
 										dataProperty="OR"
+										data-helptext="Other criteria records which can pass in place of this record's other evaluations"
 					></gw-db-string-array>
 					<gw-db-string-array parentWidgetId="${this.id}"
 										displayName="And Criteria"
@@ -1663,33 +1722,37 @@
 										linePrefix="Criteria ID "
 										networkedWidget="gw-db-criteria"
 										dataProperty="AND"
+										data-helptext="Other criteria records which must also pass for this criteria record to pass"
 					></gw-db-string-array>
 				</div>
 				<div class="card-line">
-					<gw-db-string-array parentWidgetId="${this.id}"
-										id="${this.idKey}-NPCsInParty"
+					<gw-db-condition-array parentWidgetId="${this.id}"
 										displayName="NPCs in Party"
 										addName="NPC"
 										linePrefix="NPC ID "
 										networkedWidget="gw-db-npc"
 										dataProperty="NPCsInParty"
-					></gw-db-string-array>
-					<gw-db-string-array parentWidgetId="${this.id}"
-										id="${this.idKey}-EventsOccurred"
+										ownerIdKey="${this.idKey}"
+										data-helptext="Whether the player has these NPCs in their party"
+					></gw-db-condition-array>
+					<gw-db-condition-array parentWidgetId="${this.id}"
 										displayName="Events Occurred"
 										addName="Event"
 										linePrefix="Event ID "
 										networkedWidget="gw-db-event"
 										dataProperty="EventsOccurred"
-					></gw-db-string-array>
-					<gw-db-string-array parentWidgetId="${this.id}"
-										id="${this.idKey}-HasItems"
+										ownerIdKey="${this.idKey}"
+										data-helptext="Whether these events have at least one occurrence"
+					></gw-db-condition-array>
+					<gw-db-condition-array parentWidgetId="${this.id}"
 										displayName="Has Items"
 										addName="Item"
 										linePrefix="Item ID "
 										networkedWidget="gw-db-item"
 										dataProperty="HasItems"
-					></gw-db-string-array>
+										ownerIdKey="${this.idKey}"
+										data-helptext="Whether the player has these items"
+					></gw-db-condition-array>
 				</div>
 				<div class="card-line">
 					<div class="input-grid id-single widget-grid-input">
@@ -1698,6 +1761,7 @@
 								type="text"
 								data-owner="${this.idKey}"
 								data-prop="InArea"
+								data-helptext="Whether hte player is in the specified area"
 						/>
 						<gw-db-widget-link
 							id=${this.idKey}-inArea
@@ -1709,6 +1773,7 @@
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="LeveledTo"
+								data-helptext="Whether the player is at least at this level"
 						/>
 						<div class="placeholder"></div>
 						<label for="${this.idKey}-moneyEl">Has Money</label>
@@ -1716,6 +1781,7 @@
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="HasMoney"
+								data-helptext="Whether the player has at least this amount of money"
 						/>
 						<div class="placeholder"></div>
 					</div>
@@ -1724,21 +1790,29 @@
 						<textarea	id="${this.idKey}-inernalNotes"
 									data-owner="${this.idKey}"
 									data-prop="InternalNotes"
-									rows="3"></textarea>
+									rows="3"
+									data-helptext="Notes about this criteria not used in game logic"
+						></textarea>
 					</div>
-					<gw-db-string-array parentWidgetId="${this.id}"
-										id="${this.idKey}-ItemsByPlayer"
+					<gw-db-condition-array parentWidgetId="${this.id}"
 										displayName="Items by Player"
 										addName="Item"
 										linePrefix="Item ID "
 										networkedWidget="gw-db-item"
 										dataProperty="ItemsByPlayer"
-					></gw-db-string-array>
+										ownerIdKey="${this.idKey}"
+										data-helptext="Whether these items are in the same area as the player"
+					></gw-db-condition-array>
 				</div>
 				<div class="card-line centered">
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-scop">Skill Checks Operator</label>
-						<select id="${this.idKey}-scop" type="number" data-owner=${this.idKey} data-prop="SkillChecksOperator">
+						<select id="${this.idKey}-scop"
+								type="number"
+								data-owner=${this.idKey}
+								data-prop="SkillChecksOperator"
+								data-helptext="How to combine the results of the listed skill checks"
+						>
 							<option>OR</option>
 							<option>AND</option>
 						</select>
@@ -1755,34 +1829,6 @@
 			`;
 
 			//element properties
-
-			[
-				document.getElementById(`${this.idKey}-NPCsInParty`),
-				document.getElementById(`${this.idKey}-EventsOccurred`),
-				document.getElementById(`${this.idKey}-HasItems`),
-				document.getElementById(`${this.idKey}-ItemsByPlayer`)
-			].forEach(el => el.gridEl.insertAdjacentHTML(
-				"afterbegin",
-				`
-				<label for="${this.idKey}-${el.getAttribute("dataProperty")}-negate">Negate result?</label>
-				<input	id="${this.idKey}-${el.getAttribute("dataProperty")}-negate"
-						type="checkbox"
-						data-owner="${this.idKey}"
-						data-prop="${el.getAttribute("dataProperty")}Negate"
-				/>
-				<div></div><div></div>
-				<label for="${this.idKey}-${el.getAttribute("dataProperty")}-op">Operator</label>
-				<select id="${this.idKey}-${el.getAttribute("dataProperty")}-op"
-						data-owner=${this.idKey}
-						data-prop="${el.getAttribute("dataProperty")}Op"
-						data-skipParent="true"
-				>
-					<option>OR</option>
-					<option>AND</option>
-				</select>
-				<div></div><div></div>
-				`
-			));
 		}
 		//#endregion
 
