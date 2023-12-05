@@ -586,6 +586,7 @@ tr > th {
 	margin: 10px;
 	border: 1px solid var(--general-border-color);
 	background-color: var(--inline-banner-color);
+	color: var(--text-color);
 	padding: 10px;
 	word-break: break-word;
 	display: flex;
