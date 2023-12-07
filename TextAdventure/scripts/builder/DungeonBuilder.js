@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Namespace for DungeonBuilder.html
  */
 registerNamespace("Pages.DungeonBuilder", function (ns)
@@ -123,14 +123,21 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 	function loadDungeonFromFile()
 	{
-		Common.FileLib.getFileFromUserAsObject(
-			(object) =>
-			{
-				ns.Data = object;
-				renderDungeonFromData();
-			},
-			[{ 'application/json': ['.json'] }]
-		);
+		try
+		{
+			Common.FileLib.getFileFromUserAsObject(
+				(object) =>
+				{
+					ns.Data = object;
+					renderDungeonFromData();
+				},
+				[{ 'application/json': ['.json'] }]
+			);
+		}
+		catch (error)
+		{
+			window.alert(error);
+		}
 	};
 
 	function renderDungeonFromData()
@@ -293,15 +300,21 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 				ancestor[inputUIEl.getAttribute("data-prop")] = inputUIEl.value;
 			}
 		}
+		try
+		{
+			ns.Data.Meta["Last Save"] = new Date();
+			Common.FileLib.saveJSONFile(
+				ns.Data,
+				ns.Data.Meta.Title,
+				['.json']
+			);
 
-		ns.Data.Meta["Last Save"] = new Date();
-		Common.FileLib.saveJSONFile(
-			ns.Data,
-			ns.Data.Meta.Title,
-			['.json']
-		);
-
-		setSaveTime();
+			setSaveTime();
+		}
+		catch (error)
+		{
+			window.alert(error);
+		}
 	};
 
 	function setSaveTime()
@@ -335,6 +348,7 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 			...document.getElementsByTagName("gw-db-criteria"),
 		];
 	};
+
 	function getAllInputUIEls()
 	{
 		return [
