@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Namespace for DungeonBuilder.html
  */
 registerNamespace("Pages.DungeonBuilder", function (ns)
@@ -123,21 +123,15 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 
 	function loadDungeonFromFile()
 	{
-		try
-		{
-			Common.FileLib.getFileFromUserAsObject(
-				(object) =>
-				{
-					ns.Data = object;
-					renderDungeonFromData();
-				},
-				[{ 'application/json': ['.json'] }]
-			);
-		}
-		catch (error)
-		{
-			window.alert(error);
-		}
+		Common.FileLib.getFileFromUserAsObject(
+			(object) =>
+			{
+				ns.Data = object;
+				renderDungeonFromData();
+			},
+			[{ 'application/json': ['.json'] }],
+			".json"
+		);
 	};
 
 	function renderDungeonFromData()
@@ -300,21 +294,15 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 				ancestor[inputUIEl.getAttribute("data-prop")] = inputUIEl.value;
 			}
 		}
-		try
-		{
-			ns.Data.Meta["Last Save"] = new Date();
-			Common.FileLib.saveJSONFile(
-				ns.Data,
-				ns.Data.Meta.Title,
-				['.json']
-			);
 
-			setSaveTime();
-		}
-		catch (error)
-		{
-			window.alert(error);
-		}
+		ns.Data.Meta["Last Save"] = new Date();
+		Common.FileLib.saveJSONFile(
+			ns.Data,
+			ns.Data.Meta.Title,
+			['.json']
+		);
+
+		setSaveTime();
 	};
 
 	function setSaveTime()

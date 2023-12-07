@@ -789,6 +789,10 @@ button[role="link"], .button-like[role="link"] {
 .clickable:hover {
 	cursor: pointer;
 }
+
+#gwFileDownloadLink, #gwFilePickerInput {
+	display: none;
+}
 /*#endregion*/
 
 /*#region Other*/
