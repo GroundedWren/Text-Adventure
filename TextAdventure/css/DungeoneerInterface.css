@@ -144,9 +144,13 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 }
 
+#consoleOutput li {
+	margin-top: 3px;
+}
+
 #consoleOutput .user-input {
 	font-style: italic;
-	margin-top: 5px;
+	margin-top: 10px;
 }
 
 #consoleForm {

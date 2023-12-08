@@ -378,27 +378,27 @@
 
 		getClosedHeaderHTML()
 		{
-			return `
-			<div class="card-header">
-				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.getTitleHTML()}</span>
-				<div class=card-header-btns>
-					<button id="${this.idKey}-btnDelete"></button>
-					<button id="${this.idKey}-btnOpen"></button>
-					<button id="${this.idKey}-btnPin"></button>
-				</div>
-			</div>
-			`;
+			return this.#getHeaderHTML(
+				`<button id="${this.idKey}-btnOpen" aria-describedby="${this.idKey}-title"></button>`
+			);
 		}
 
 		getOpenHeaderHTML()
+		{
+			return this.#getHeaderHTML(
+				`<button id="${this.idKey}-btnClose" aria-describedby="${this.idKey}-title"></button>`
+			);
+		}
+
+		#getHeaderHTML(closeOpenEl)
 		{
 			return `
 			<div class="card-header">
 				<span id="${this.idKey}-title" role="heading" aria-level="4">${this.getTitleHTML()}</span>
 				<div class="card-header-btns">
-					<button id="${this.idKey}-btnDelete"></button>
-					<button id="${this.idKey}-btnClose"></button>
-					<button id="${this.idKey}-btnPin"></button>
+					<button id="${this.idKey}-btnDelete" aria-describedby="${this.idKey}-title"></button>
+					${closeOpenEl}
+					<button id="${this.idKey}-btnPin" aria-describedby="${this.idKey}-title"></button>
 				</div>
 			</div>
 			`;
@@ -442,6 +442,30 @@
 			{
 				this.registerHandlersClosed();
 			}
+
+			this.addEventListener("gw-open-widget", this.onOpen);
+			this.addEventListener("gw-close-widget", this.onClose);
+			this.addEventListener("gw-pin-widget", (event) =>
+			{
+				event.stopImmediatePropagation();
+				this.pinWidget();
+			});
+			this.addEventListener("gw-next-widget", () =>
+			{
+				if (this.nextElementSibling?.widgetName)
+				{
+					this.nextElementSibling.btnOpen?.focus();
+					this.nextElementSibling.btnClose?.focus();
+				}
+			});
+			this.addEventListener("gw-prev-widget", () =>
+			{
+				if (this.previousElementSibling?.widgetName)
+				{
+					this.previousElementSibling.btnOpen?.focus();
+					this.previousElementSibling.btnClose?.focus();
+				}
+			});
 		}
 
 		registerHandlersOpen()

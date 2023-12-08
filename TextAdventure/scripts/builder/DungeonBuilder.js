@@ -570,7 +570,7 @@ window.onload = () =>
 					{},
 					document.activeElement
 				);
-				pathDialog.showAbsolute(boundingRect.left, boundingRect.top);
+				pathDialog.showAbsolute(boundingRect.left, boundingRect.bottom);
 			},
 			description: "Show Field Information"
 		},
@@ -585,6 +585,68 @@ window.onload = () =>
 		"ALT+3": {
 			action: () => { document.getElementById("saveButton").click(); },
 			description: "Save to disk"
+		},
+		"ALT+ARROWUP": {
+			action: () =>
+			{
+				document.activeElement.dispatchEvent(new CustomEvent("gw-close-widget", { bubbles: true }));
+			},
+			description: "Close the current widget"
+		},
+		"ALT+ARROWDOWN": {
+			action: () =>
+			{
+				document.activeElement.dispatchEvent(new CustomEvent("gw-open-widget", { bubbles: true }));
+			},
+			description: "Open the current widget"
+		},
+		"ALT+P": {
+			action: () =>
+			{
+				document.activeElement.dispatchEvent(new CustomEvent("gw-pin-widget", { bubbles: true }));
+			},
+			description: "Pin/Unpin the current widget"
+		},
+		"ALT+PAGEUP": {
+			action: () =>
+			{
+				document.activeElement.dispatchEvent(new CustomEvent("gw-prev-widget", { bubbles: true }));
+			},
+			description: "Move to the previous widget"
+		},
+		"ALT+PAGEDOWN": {
+			action: () =>
+			{
+				document.activeElement.dispatchEvent(new CustomEvent("gw-next-widget", { bubbles: true }));
+			},
+			description: "Move to the next widget"
+		},
+		"ALT+SHIFT+N": {
+			action: () =>
+			{
+				switch (Pages.DungeonBuilder.dataControl.activeTabId)
+				{
+					case "dataCtrl_tab_Areas":
+						document.getElementById("newArea").click();
+						break;
+					case "dataCtrl_tab_Items":
+						document.getElementById("newItem").click();
+						break;
+					case "dataCtrl_tab_Events":
+						document.getElementById("newEvent").click();
+						break;
+					case "dataCtrl_tab_NPCs":
+						document.getElementById("newNPC").click();
+						break;
+					case "dataCtrl_tab_Dialogs":
+						document.getElementById("newDialog").click();
+						break;
+					case "dataCtrl_tab_Criteria":
+						document.getElementById("newCriteria").click();
+						break;
+				}
+			},
+			description: "Create new widget"
 		},
 	});
 	Common.SVGLib.insertIcons();
