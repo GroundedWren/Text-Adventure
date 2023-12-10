@@ -291,7 +291,15 @@ registerNamespace("Pages.DungeonBuilder", function (ns)
 					ancestor[saveAncestors[i]] = ancestor[saveAncestors[i]] || {};
 					ancestor = ancestor[saveAncestors[i]];
 				}
-				ancestor[inputUIEl.getAttribute("data-prop")] = inputUIEl.value;
+				switch (inputUIEl.type)
+				{
+					case "checkbox":
+						ancestor[inputUIEl.getAttribute("data-prop")] = inputUIEl.checked || false;
+						break;
+					default:
+						ancestor[inputUIEl.getAttribute("data-prop")] = inputUIEl.value || null;
+						break;
+				}
 			}
 		}
 

@@ -61,6 +61,11 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	//#region Areas
 	ns.enterArea = function enterArea(areaId)
 	{
+		if (ns.InputConsole.currentContextName !== "")
+		{
+			debugger; //This seems bad - prevent / warn?
+		}
+
 		ns.Data.Character.Location = areaId;
 
 		const areaObj = ns.Data.World.Areas[areaId];
@@ -146,7 +151,15 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 				const npcObj = ns.Data.NPCs[npcId];
 				npcObj && npcObj.DisplayName.toUpperCase() === arg;
 			})[0]];
-		ns.InputConsole.echo(objOfInterest?.Description || `You don't see anything called ${arg}`);
+		ns.InputConsole.echo(objOfInterest?.Description || `You don't see anything called ${arg}`, { holdAlert: true });
+
+		if (objOfInterest && objOfInterest.Actions)
+		{
+			const lookActions = objOfInterest.Actions.filter(actionObj => actionObj.Mode === "Look");
+			lookActions.forEach(lookActionObj => { ns.runLookAction(lookActionObj); });
+		}
+
+		ns.InputConsole.echo();
 	};
 
 	ns.accessPortal = function accessPortal(areaId, arg)
@@ -155,7 +168,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 
 		if (!arg)
 		{
-			ns.InputConsole.echo("You need to be more specific.");
+			ns.InputConsole.echo("Please be more specific.");
 			return;
 		}
 		arg = arg.toUpperCase();
@@ -187,7 +200,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	//#endregion Areas
 
 	//#region Items
-	ns.getItemFromArea = function (areaId, itemArg)
+	ns.getItemFromArea = function getItemFromArea(areaId, itemArg)
 	{
 		const itemDisplayName = itemArg.toUpperCase();
 		const areaObj = ns.Data.World.Areas[areaId];
@@ -215,7 +228,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		ns.runItemAction(matchedId, matchedPickUpAction, areaObj);
 	};
 
-	ns.interactWithAreaItem = function (areaId, itemArg)
+	ns.interactWithAreaItem = function interactWithAreaItem(areaId, itemArg)
 	{
 		const itemDisplayName = itemArg.toUpperCase();
 		const areaObj = ns.Data.World.Areas[areaId];
@@ -232,7 +245,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		ns.interactWithItem(matchedId, areaObj);
 	};
 
-	ns.openInventory = function (itemArg)
+	ns.openInventory = function openInventory(itemArg)
 	{
 		const commandObj = {};
 		const nameSet = {};
@@ -240,10 +253,10 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		ns.Character.Data.Inventory.forEach(invItemObj =>
 		{
 			const itemObj = ns.Data.World.Items[invItemObj.Item];
-			let displayName = itemObj.DisplayName.toUpperCase().replaceAll(" ", "-");
+			let displayName = itemObj.DisplayName.toUpperCase();
 			if (nameSet[displayName] && nameSet[displayName] !== invItemObj.Item)
 			{
-				displayName = displayName + "-" + invItemObj.Item.toUpperCase().replaceAll(" ", "-");
+				displayName = displayName + " " + invItemObj.Item.toUpperCase();
 			}
 			nameSet[displayName] = invItemObj.Item;
 			commandObj[displayName] = new ns.ConsoleCommand(
@@ -260,7 +273,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			"Your inventory"
 		);
 		ns.InputConsole.addContext(context);
-		itemArg = (itemArg || "").toUpperCase().replace(" ", "-");
+		itemArg = (itemArg || "").toUpperCase();
 		if (itemArg && nameSet[itemArg])
 		{
 			ns.interactWithItem(nameSet[itemArg], playerAreaObj).then(() =>
@@ -274,7 +287,28 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		}
 	};
 
-	ns.interactWithItem = function (itemId, areaObj)
+	ns.tryInteractWithItemFromButton = function tryInteractWithItemFromButton(itemId)
+	{
+		if (Object.keys(ns.InputConsole.commands).indexOf("INVENTORY") < 0)
+		{
+			Common.Controls.Popups.showModal("Inventory", "<p>Cannot access inventory right now</p>");
+			return;
+		}
+
+		ns.InputConsole.addContext(new ns.ConsoleContext(
+			"Inventory",
+			{},
+			undefined,
+			{ disableExit: false, autoExit: true },
+			"Your inventory"
+		));
+		ns.interactWithItem(itemId, ns.Data.World.Areas[ns.Character.Data.Location]).then(() =>
+		{
+			ns.InputConsole.removeContext();
+		});
+	};
+
+	ns.interactWithItem = function interactWithItem(itemId, areaObj)
 	{
 		const itemObj = ns.Data.World.Items[itemId];
 		const charInvListing = ns.Character.Data.Inventory.filter(charInvObj => charInvObj.Item === itemId)[0];
@@ -282,12 +316,15 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const commandObj = {};
 		itemObj.Actions.forEach(actionObj =>
 		{
-			if (!ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp, actionObj.PrereqsNegate))
+			if (actionObj.Mode === "Look")
 			{
 				return;
 			}
-
 			if (actionObj.Mode === "Pick Up" && charInvListing)
+			{
+				return;
+			}
+			if (actionObj.Mode === "Put Down" && !charInvListing)
 			{
 				return;
 			}
@@ -303,10 +340,14 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 				return;
 			}
 
-			const commandStr = (actionObj.DisplayName || actionObj.Mode).replaceAll(" ", "-").toUpperCase();
-			commandObj[commandStr] = new ns.ConsoleCommand(
+			if (!ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp, actionObj.PrereqsNegate))
+			{
+				return;
+			}
+
+			commandObj[ns.getActionDisplayName(actionObj)] = new ns.ConsoleCommand(
 				Common.fcd(this, this.runItemAction, [itemId, actionObj, areaObj]),
-				actionObj.Description
+				ns.getActionDescription(actionObj)
 			);
 		});
 
@@ -320,7 +361,43 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		ns.InputConsole.addContext(context);
 		ns.InputConsole.help();
 		return context.promise;
-	}
+	};
+
+	ns.getActionDisplayName = function getActionDisplayName(actionObj)
+	{
+		if (actionObj.DisplayName)
+		{
+			return actionObj.DisplayName.toUpperCase();
+		}
+		switch (actionObj.Mode)
+		{
+			case "Don":
+				return `Don ${actionObj.DonBodyLocation}`.toUpperCase();
+			default:
+				return actionObj.Mode;
+		}
+	};
+
+	ns.getActionDescription = function getActionDescription(actionObj)
+	{
+		let postfix = "";
+		switch (actionObj.Mode)
+		{
+			case "Don":
+				postfix = `Don ${actionObj.DonBodyLocation}`;
+				break;
+			case "Doff":
+			case "Attack":
+				postfix = actionObj.Mode;
+				break;
+			default:
+				break;
+		}
+		postfix = postfix && actionObj.Description ? ` (${postfix})` : postfix;
+		return actionObj.Description
+			? `${actionObj.Description}${postfix}`
+			: postfix;
+	};
 
 	ns.runItemAction = function runItemAction(itemId, actionObj, areaObj)
 	{
@@ -341,11 +418,34 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 				ns.Character.removeInventoryItem(itemId);
 				areaObj.Items.push(itemId);
 				break;
+			case "Don":
+				ns.Character.donItem(itemId, actionObj.DonBodyLocation);
+				break;
+			case "Doff":
+				ns.Character.doffItem(itemId);
+				break;
 		}
 
 		ns.runEventsArray(actionObj.Events);
 
 		ns.InputConsole.echo();
+	};
+
+	ns.runLookAction = function runLookAction(actionObj)
+	{
+		if (!ns.evaluateCriteriaArray(actionObj.Prereqs, actionObj.PrereqsOp, actionObj.PrereqsNegate))
+		{
+			return;
+		}
+
+		ns.InputConsole.echo(actionObj.TextOnAct, { holdAlert: true });
+		ns.runEventsArray(actionObj.Events);
+	};
+
+	ns.itemIsWeapon = function itemIsWeapon(itemId)
+	{
+		const itemObj = ns.Data.World.Items[itemId];
+		return itemObj.Actions.filter(actionObj => actionObj.Mode === "Attack").length > 0;
 	};
 	//#endregion
 
@@ -398,12 +498,12 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		//TODO Move NPCs
 		//TODO Set location
 		eventObj.TriggerEvents.forEach(linkedEventId => ns.runEvent(linkedEventId));
-	}
+	};
 
 	ns.runEventsArray = function (eventArray, toStoryText)
 	{
 		eventArray.forEach(eventId => ns.runEvent(eventId, toStoryText));
-	}
+	};
 	//#endregion
 
 	//#region NPCs
@@ -438,7 +538,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		eventsOccurredPassed = criteriaObj.EventsOccurredNegate ? !eventsOccurredPassed : eventsOccurredPassed;
 
 		const hasItemsResults = criteriaObj.HasItems.map(
-			itemId => ns.Data.Character.Inventory.filter(charItmObj => charItmObj.Item === itemId).length > 0
+			itemId => ns.Character.hasInventoryItem(itemId) //ns.Data.Character.Inventory.filter(charItmObj => charItmObj.Item === itemId).length > 0
 		);
 		let hasItemsPassed = (hasItemsResults.length === 0) || (criteriaObj.HasItemsOp === "OR"
 			? hasItemsResults.some(result => result)
@@ -461,12 +561,23 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			: itemsByPlayerResults.every(result => result));
 		itemsByPlayerPassed = criteriaObj.ItemsByPlayerNegate ? !itemsByPlayerPassed : itemsByPlayerPassed;
 
-		const skillCheckResults = criteriaObj.SkillChecks.map(skillCheckObj => ns.Mechanics.rollSkillCheck(
-			ns.Data.Character,
-			skillCheckObj.Skill,
-			skillCheckObj.Ability,
-			skillCheckObj.DC
-		));
+		const skillCheckResults = criteriaObj.SkillChecks.map(skillCheckObj =>
+		{
+			if (skillCheckObj.IsSingleton && skillCheckObj.ResultSet)
+			{
+				return skillCheckObj.SingletonResult;
+			}
+			
+			const result = ns.Mechanics.rollSkillCheck(
+				ns.Data.Character,
+				skillCheckObj.Skill,
+				skillCheckObj.Ability,
+				skillCheckObj.DC
+			);
+			skillCheckObj.ResultSet = true;
+			skillCheckObj.SingletonResult = result;
+			return result;
+		});
 		const skillChecksPassed = (skillCheckResults.length === 0) || (criteriaObj.SkillChecksOperator === "OR"
 			? skillCheckResults.some(result => result)
 			: skillCheckResults.every(result => result));

@@ -110,6 +110,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		applyMetaData();
 		applyCharacterData().then(() =>
 		{
+			document.getElementById("storyContent").classList.add("loaded");
 			document.getElementById("storyContent").innerHTML = "";
 			ns.InputConsole.clear();
 			ns.InputConsole.removeAllContexts();

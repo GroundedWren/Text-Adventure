@@ -70,7 +70,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				if (command === "META" && !ns.isMiniViewport) { continue; }
 
 				var tableRow = this.dce("tr", tBody);
-				this.dce("td", tableRow, undefined, ["row-label"], command);
+				this.dce("th", tableRow, {scope: "row"} , undefined, command);
 				this.dce("td", tableRow, undefined, undefined, commands[command].description);
 			}
 		};
@@ -126,6 +126,16 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		{
 			this.__getContext().commands[key] = command;
 		};
+
+		get commands()
+		{
+			return this.__getContext().commands;
+		};
+
+		get currentContextName()
+		{
+			return this.__contexts.length ? this.contexts[0].name : "";
+		}
 		//#endregion
 
 		//#region Commands
@@ -232,20 +242,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__consoleInputEl.value = "";
 			this.__recordSubmit(value);
 
-			var commandStr;
-			var args;
-			if (value.includes(" ")) //KJA TODO support commands with spaces, then remove all replaceAll(" ", "-")
-			{
-				commandStr = value.substring(0, value.indexOf(" ")).toUpperCase();
-				args = value.substring(value.indexOf(" ") + 1);
-			}
-			else
-			{
-				commandStr = value.toUpperCase();
-				args = "";
-			}
-
 			var context = this.__getContext();
+			const { commandStr, args } = this.__parseCommandFromArgs(value, context.commands);
 
 			var cmd = context.commands[commandStr];
 			if (commandStr === "META" && !ns.isMiniViewport) { cmd = null; }
@@ -283,6 +281,26 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				this.echo(`Command ${commandStr} not recognized. Type help for command information.`);
 			}
 		};
+
+		__parseCommandFromArgs(value, commands)
+		{
+			let commandStr = "";
+			let args = "";
+
+			const wordAry = value.toUpperCase().split(" ");
+			let candidate = "";
+			while (commandStr === "" && wordAry.length)
+			{
+				candidate = candidate ? candidate + " " + wordAry.shift() : wordAry.shift();
+				if (commands[candidate])
+				{
+					commandStr = candidate;
+				}
+			}
+			args = wordAry.join(" ");
+
+			return { commandStr, args }
+		}
 
 		__recordSubmit(value)
 		{

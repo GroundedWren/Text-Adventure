@@ -34,8 +34,14 @@ registerNamespace("Pages.DungeoneerInterface.Mechanics", function (ns)
 		const result = ns.rollDice(1, 1, 20, skillMod + abilityMod);
 		const wasSuccess = result.value >= dc;
 
+		let successString = "";
+		if (Pages.DungeoneerInterface.Data.World.ShowChecksResult)
+		{
+			successString = ` (${wasSuccess ? "PASS" : "FAIL"})`;
+		}
+
 		ns.InputConsole.echo(
-			`[${statsObj.Name}- ${skill !== "None" ? skill + "-" : ""}${ability} Check: ${result.value}${result.crits ? " (CRIT!)" : ""} (${wasSuccess ? "PASS" : "FAIL"})]`,
+			`[${statsObj.Name}- ${skill !== "None" ? skill + "-" : ""}${ability} Check: ${result.value}${result.crits ? " (CRIT!)" : ""}${successString}]`,
 			{ holdAlert: true }
 		);
 		return wasSuccess;

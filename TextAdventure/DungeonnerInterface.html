@@ -95,12 +95,12 @@
 								<tr><th>Ability</th><th>Value</th><th>Modifier</th></tr>
 							</thead>
 							<tbody>
-								<tr><td>STR</td><td id="tdStr">-</td><td id="tdStrMod">-</td></tr>
-								<tr><td>DEX</td><td id="tdDex">-</td><td id="tdDexMod">-</td></tr>
-								<tr><td>CON</td><td id="tdCon">-</td><td id="tdConMod">-</td></tr>
-								<tr><td>INT</td><td id="tdInt">-</td><td id="tdIntMod">-</td></tr>
-								<tr><td>WIS</td><td id="tdWis">-</td><td id="tdWisMod">-</td></tr>
-								<tr><td>CHA</td><td id="tdCha">-</td><td id="tdChaMod">-</td></tr>
+								<tr><th scope="row">STR</th><td id="tdStr">-</td><td id="tdStrMod">-</td></tr>
+								<tr><th scope="row">DEX</th><td id="tdDex">-</td><td id="tdDexMod">-</td></tr>
+								<tr><th scope="row">CON</th><td id="tdCon">-</td><td id="tdConMod">-</td></tr>
+								<tr><th scope="row">INT</th><td id="tdInt">-</td><td id="tdIntMod">-</td></tr>
+								<tr><th scope="row">WIS</th><td id="tdWis">-</td><td id="tdWisMod">-</td></tr>
+								<tr><th scope="row">CHA</th><td id="tdCha">-</td><td id="tdChaMod">-</td></tr>
 							</tbody>
 						</table>
 						<table id="Skills">
@@ -109,21 +109,21 @@
 								<tr><th>Skill</th><th>Bonus</th></tr>
 							</thead>
 							<tbody>
-								<tr><td>Acrobatics</td><td id="tdAcrobatics">-</td></tr>
-								<tr><td>Athletics</td><td id="tdAthletics">-</td></tr>
-								<tr><td>Deception</td><td id="tdDeception">-</td></tr>
-								<tr><td>History</td><td id="tdHistory">-</td></tr>
-								<tr><td>Insight</td><td id="tdInsight">-</td></tr>
-								<tr><td>Intimidation</td><td id="tdIntimidation">-</td></tr>
-								<tr><td>Investigation</td><td id="tdInvestigation">-</td></tr>
-								<tr><td>Magic</td><td id="tdMagic">-</td></tr>
-								<tr><td>Medicine</td><td id="tdMedicine">-</td></tr>
-								<tr><td>Nature</td><td id="tdNature">-</td></tr>
-								<tr><td>Perception</td><td id="tdPerception">-</td></tr>
-								<tr><td>Performance</td><td id="tdPerformance">-</td></tr>
-								<tr><td>Persuasion</td><td id="tdPersuasion">-</td></tr>
-								<tr><td>Stealth</td><td id="tdStealth">-</td></tr>
-								<tr><td>Survival</td><td id="tdSurvival">-</td></tr>
+								<tr><th scope="row">Acrobatics</th><td id="tdAcrobatics">-</td></tr>
+								<tr><th scope="row">Athletics</th><td id="tdAthletics">-</td></tr>
+								<tr><th scope="row">Deception</th><td id="tdDeception">-</td></tr>
+								<tr><th scope="row">History</th><td id="tdHistory">-</td></tr>
+								<tr><th scope="row">Insight</th><td id="tdInsight">-</td></tr>
+								<tr><th scope="row">Intimidation</th><td id="tdIntimidation">-</td></tr>
+								<tr><th scope="row">Investigation</th><td id="tdInvestigation">-</td></tr>
+								<tr><th scope="row">Magic</th><td id="tdMagic">-</td></tr>
+								<tr><th scope="row">Medicine</th><td id="tdMedicine">-</td></tr>
+								<tr><th scope="row">Nature</th><td id="tdNature">-</td></tr>
+								<tr><th scope="row">Perception</th><td id="tdPerception">-</td></tr>
+								<tr><th scope="row">Performance</th><td id="tdPerformance">-</td></tr>
+								<tr><th scope="row">Persuasion</th><td id="tdPersuasion">-</td></tr>
+								<tr><th scope="row">Stealth</th><td id="tdStealth">-</td></tr>
+								<tr><th scope="row">Survival</th><td id="tdSurvival">-</td></tr>
 							</tbody>
 						</table>
 					</div>
@@ -134,69 +134,69 @@
 								<tr><th>Location</th><th>Item</th><th>Armor</th><th>Evasion</th></tr>
 							</thead>
 							<tbody id="BodyTBody">
-								<tr id="HeadRow" class="shown">
+								<tr id="HeadRow">
 									<th scope="row">Head</th>
-									<td id="HeadItem"></td>
+									<td><button id="HeadItemBtn"></button></td>
 									<td id="HeadArmor"></td>
 									<td id="HeadEvasion"></td>
 								</tr>
 								<tr id="NeckRow">
 									<th scope="row">Neck</th>
-									<td id="NeckItem"></td>
+									<td><button id="NeckItemBtn"></button></td>
 									<td id="NeckArmor"></td>
 									<td id="NeckEvasion"></td>
 								</tr>
 								<tr id="TorsoRow">
 									<th scope="row">Torso</th>
-									<td id="TorsoItem"></td>
+									<td><button id="TorsoItemBtn"></button></td>
 									<td id="TorsoArmor"></td>
 									<td id="TorsoEvasion"></td>
 								</tr>
 								<tr id="BeltRow">
 									<th scope="row">Belt</th>
-									<td id="BeltItem"></td>
+									<td><button id="BeltItemBtn"></button></td>
 									<td id="BeltArmor"></td>
 									<td id="BeltEvasion"></td>
 								</tr>
 								<tr id="LegsRow">
 									<th scope="row">Legs</th>
-									<td id="LegsItem"></td>
+									<td><button id="LegsItemBtn"></button></td>
 									<td id="LegsArmor"></td>
 									<td id="LegsEvasion"></td>
 								</tr>
 								<tr id="FeetRow">
 									<th scope="row">Feet</th>
-									<td id="FeetItem"></td>
+									<td><button id="FeetItemBtn"></button></td>
 									<td id="FeetArmor"></td>
 									<td id="FeetEvasion"></td>
 								</tr>
 								<tr id="Left_WristRow">
 									<th scope="row">Left Wrist</th>
-									<td id="Left_WristItem"></td>
+									<td><button id="Left_WristItemBtn"></button></td>
 									<td id="Left_WristArmor"></td>
 									<td id="Left_WristEvasion"></td>
 								</tr>
 								<tr id="Right_WristRow">
 									<th scope="row">Right Wrist</th>
-									<td id="Right_WristItem"></td>
+									<td><button id="Right_WristItemBtn"></button></td>
 									<td id="Right_WristArmor"></td>
 									<td id="Right_WristEvasion"></td>
 								</tr>
 								<tr id="Left_HandRow">
 									<th scope="row">Left Hand</th>
-									<td id="Left_HandItem"></td>
+									<td><button id="Left_HandItemBtn"></button></td>
 									<td id="Left_HandArmor"></td>
 									<td id="Left_HandEvasion"></td>
 								</tr>
 								<tr id="Right_HandRow">
-									<th scope="row">Right_Hand</th>
-									<td id="Right_HandItem"></td>
+									<th scope="row">Right Hand</th>
+									<td><button id="Right_HandItemBtn"></button></td>
 									<td id="Right_HandArmor"></td>
 									<td id="Right_HandEvasion"></td>
 								</tr>
 								<tr id="FingerRow">
 									<th scope="row">Finger</th>
-									<td id="FingerItem"></td>
+									<td><button id="FingerItemBtn"></button></td>
 									<td id="FingerArmor"></td>
 									<td id="FingerEvasion"></td>
 								</tr>
@@ -208,7 +208,7 @@
 								<tr><th>Name</th><th>Location</th></tr>
 							</thead>
 							<tbody id="WeaponsTBody">
-								<tr><th scope="row">Sword</th><td>Bag</td></tr>
+								<!--<tr><th scope="row">Sword</th><td>Bag</td></tr>-->
 							</tbody>
 						</table>
 						<h2 id="hBag">Bag</h2>
@@ -219,7 +219,7 @@
 					<div id="metaPane_page_World" class="page-control-page">
 						<div class="card">
 							<div class="card-header" role="heading" aria-level="2">Load</div>
-							<div class="bottomSpacing">
+							<div class="card-line">
 								<h3 id="hUploadSave">Upload Save</h3>
 								<input id="saveUpload"
 									   type="file"
@@ -227,7 +227,7 @@
 									   style="width: 100%;"
 									   aria-labelledby="hUploadSave" />
 							</div>
-							<div class="bottomSpacing">
+							<div class="card-line">
 								<h3 id="hPrebuiltGames">Prebuilt Games</h3>
 								<ul id="prebuiltGamesList" aria-labelledby="hPrebuiltGames">
 									<li>

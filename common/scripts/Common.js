@@ -518,4 +518,13 @@ registerNamespace("Common", function (ns)
 
 	};
 	customElements.define("gw-themer", ns.Themer);
+
+	ns.isNullUndefinedOrEmpty = function isNullUndefinedOrEmpty(subject)
+	{
+		return ns.isNullOrUndefined(subject) || subject === "";
+	}
+	ns.isNullOrUndefined = function isNullOrUndefined(subject)
+	{
+		return subject === null || subject === undefined;
+	}
 });

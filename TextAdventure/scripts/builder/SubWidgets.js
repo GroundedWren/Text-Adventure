@@ -1625,6 +1625,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 							<option>Doff</option>
 							<option>Pick Up</option>
 							<option>Put Down</option>
+							<option>Look</option>
 							<option>Attack</option>
 						</select>
 					</div>
@@ -1682,6 +1683,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 				case "Pick Up":
 				case "Put Down":
 				case "Doff":
+				case "Look":
 				default:
 					this.attackEl.classList.add("hidden");
 					this.bodyLocEl.classList.add("hidden");
@@ -2251,6 +2253,18 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					<div class="input-vertical-line">
 						<label for="${this.idKey}-dc">Difficulty Class</label>
 						<input id="${this.idKey}-dc" type="number" data-owner=${this.idKey} data-prop="DC"/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-singleton">Is Singleton?</label>
+						<input id="${this.idKey}-singleton" type="checkbox" data-owner=${this.idKey} data-prop="IsSingleton"/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-resultSet">Singleton result set?</label>
+						<input id="${this.idKey}-resultSet" type="checkbox" data-owner=${this.idKey} data-prop="ResultSet"/>
+					</div>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-sngRslt">Singleton result</label>
+						<input id="${this.idKey}-sngRslt" type="checkbox" data-owner=${this.idKey} data-prop="SingletonResult"/>
 					</div>
 				</div>
 			</fieldset>
