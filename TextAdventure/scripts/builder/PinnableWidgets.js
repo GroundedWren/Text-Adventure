@@ -726,6 +726,7 @@
 
 	/**
 	 * A pinnable widget for "Item"s.
+	 * TODO add skill bonuses
 	 */
 	ns.ItemEl = class ItemEl extends ns.PinnableWidget
 	{
@@ -1242,6 +1243,7 @@
 
 	/**
 	 * A pinnable widget for "NPC"s.
+	 * TODO add attacks
 	 */
 	ns.NPCEl = class NPCEl extends ns.PinnableWidget
 	{

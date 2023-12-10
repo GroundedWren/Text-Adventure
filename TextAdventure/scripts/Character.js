@@ -334,6 +334,8 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 	function popFromBody(bodyLoc)
 	{
 		const { tableRowId, itemBtnId, armorCellId, evasionCellId } = getBodyIds(bodyLoc);
+		if (!document.getElementById(tableRowId)) { return; }
+
 		document.getElementById(tableRowId).classList.remove("shown");
 		document.getElementById(itemBtnId).innerText = "";
 		document.getElementById(itemBtnId).onClick = () => { };

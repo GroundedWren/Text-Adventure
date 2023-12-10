@@ -242,7 +242,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			return;
 		}
 
-		ns.interactWithItem(matchedId, areaObj);
+		ns.interactWithItem(matchedId, areaObj, true);
 	};
 
 	ns.openInventory = function openInventory(itemArg)
@@ -308,10 +308,12 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		});
 	};
 
-	ns.interactWithItem = function interactWithItem(itemId, areaObj)
+	ns.interactWithItem = function interactWithItem(itemId, areaObj, ignoreInv)
 	{
 		const itemObj = ns.Data.World.Items[itemId];
-		const charInvListing = ns.Character.Data.Inventory.filter(charInvObj => charInvObj.Item === itemId)[0];
+		const charInvListing = ignoreInv
+			? null
+			: ns.Character.Data.Inventory.filter(charInvObj => charInvObj.Item === itemId)[0];
 
 		const commandObj = {};
 		itemObj.Actions.forEach(actionObj =>
@@ -333,8 +335,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 				return;
 			}
 			if ((actionObj.Mode === "Doff" || actionObj.Mode === "Attack")
-				&& charInvListing
-				&& charInvListing.BodyLoc === "None"
+				&& ((charInvListing && charInvListing.BodyLoc === "None") || !charInvListing)
 			)
 			{
 				return;
