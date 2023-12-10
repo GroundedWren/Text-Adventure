@@ -154,6 +154,12 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		let textAry = newText.split("@");
 		for (let i = 1; i < textAry.length; i += 2)
 		{
+			if (textAry[i].toLowerCase() === "money-label")
+			{
+				textAry[i] = ns.Data.World.MoneyLabel;
+				continue;
+			}
+
 			const replParams = textAry[i].split("-");
 
 			let name = "@ERROR-name@";

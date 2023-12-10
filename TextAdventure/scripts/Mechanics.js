@@ -62,7 +62,7 @@ registerNamespace("Pages.DungeoneerInterface.Mechanics", function (ns)
 		return { value: result, crits: crits };
 	}
 
-	ns.rollDie = function rollDIe(sides)
+	ns.rollDie = function rollDie(sides)
 	{
 		return Math.floor(Math.random() * sides) + 1;
 	}

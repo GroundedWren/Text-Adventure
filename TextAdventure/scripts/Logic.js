@@ -94,6 +94,10 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 					Common.fcd(this, this.interactWithAreaItem, [areaId]),
 					"Begin to interact with some specific item. Will display more options. E.g. 'INTERACT CHEST'"
 				),
+				"INVENTORY": new ns.ConsoleCommand(
+					Common.fcd(this, this.openInventory),
+					"Open the inventory menu. Optionally specify an item, e.g. INVENTORY BOOK"
+				),
 			},
 			undefined,
 			{ disableExit: true, autoExit: false },
@@ -205,6 +209,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		if (!matchedPickUpAction)
 		{
 			ns.InputConsole.echo(`You can't pick up the ${itemDisplayName}`);
+			return;
 		}
 
 		ns.runItemAction(matchedId, matchedPickUpAction, areaObj);
@@ -224,7 +229,56 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			return;
 		}
 
-		const itemObj = ns.Data.World.Items[matchedId];
+		ns.interactWithItem(matchedId, areaObj);
+	};
+
+	ns.openInventory = function (itemArg)
+	{
+		const commandObj = {};
+		const nameSet = {};
+		const playerAreaObj = ns.Data.World.Areas[ns.Character.Data.Location];
+		ns.Character.Data.Inventory.forEach(invItemObj =>
+		{
+			const itemObj = ns.Data.World.Items[invItemObj.Item];
+			let displayName = itemObj.DisplayName.toUpperCase().replaceAll(" ", "-");
+			if (nameSet[displayName] && nameSet[displayName] !== invItemObj.Item)
+			{
+				displayName = displayName + "-" + invItemObj.Item.toUpperCase().replaceAll(" ", "-");
+			}
+			nameSet[displayName] = invItemObj.Item;
+			commandObj[displayName] = new ns.ConsoleCommand(
+				Common.fcd(this, this.interactWithItem, [invItemObj.Item, playerAreaObj]),
+				itemObj.Description
+			);
+		});
+
+		const context = new ns.ConsoleContext(
+			"Inventory",
+			commandObj,
+			undefined,
+			{ disableExit: false, autoExit: true },
+			"Your inventory"
+		);
+		ns.InputConsole.addContext(context);
+		itemArg = (itemArg || "").toUpperCase().replace(" ", "-");
+		if (itemArg && nameSet[itemArg])
+		{
+			ns.interactWithItem(nameSet[itemArg], playerAreaObj).then(() =>
+			{
+				ns.InputConsole.removeContext();
+			});
+		}
+		else
+		{
+			ns.InputConsole.help();
+		}
+	};
+
+	ns.interactWithItem = function (itemId, areaObj)
+	{
+		const itemObj = ns.Data.World.Items[itemId];
+		const charInvListing = ns.Character.Data.Inventory.filter(charInvObj => charInvObj.Item === itemId)[0];
+
 		const commandObj = {};
 		itemObj.Actions.forEach(actionObj =>
 		{
@@ -232,21 +286,41 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			{
 				return;
 			}
+
+			if (actionObj.Mode === "Pick Up" && charInvListing)
+			{
+				return;
+			}
+			if (actionObj.Mode === "Don" && charInvListing && charInvListing.BodyLoc !== "None")
+			{
+				return;
+			}
+			if ((actionObj.Mode === "Doff" || actionObj.Mode === "Attack")
+				&& charInvListing
+				&& charInvListing.BodyLoc === "None"
+			)
+			{
+				return;
+			}
+
 			const commandStr = (actionObj.DisplayName || actionObj.Mode).replaceAll(" ", "-").toUpperCase();
 			commandObj[commandStr] = new ns.ConsoleCommand(
-				Common.fcd(this, this.runItemAction, [matchedId, actionObj, areaObj]),
+				Common.fcd(this, this.runItemAction, [itemId, actionObj, areaObj]),
 				actionObj.Description
 			);
 		});
-		ns.InputConsole.addContext(new ns.ConsoleContext(
-			itemObj.DisplayName || itemObj.ID,
+
+		const context = new ns.ConsoleContext(
+			itemObj.DisplayName || itemId,
 			commandObj,
 			undefined,
 			{ disableExit: false, autoExit: true },
 			itemObj.Description
-		));
+		);
+		ns.InputConsole.addContext(context);
 		ns.InputConsole.help();
-	};
+		return context.promise;
+	}
 
 	ns.runItemAction = function runItemAction(itemId, actionObj, areaObj)
 	{
@@ -262,6 +336,10 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			case "Pick Up":
 				ns.Character.addInventoryItem(itemId);
 				areaObj.Items.splice(areaObj.Items.indexOf(itemId), 1);
+				break;
+			case "Put Down":
+				ns.Character.removeInventoryItem(itemId);
+				areaObj.Items.push(itemId);
 				break;
 		}
 

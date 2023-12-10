@@ -217,22 +217,24 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 					&& this.__consoleInputEl.value === ""
 					&& !this.__getContext().disableExit)
 				{
+					Common.axAlertPolite(`Console exited ${this.__getContext().name}`);
 					this.removeContext();
 				}
 				this.__prevCmdIdx = -1;
 			}
 		};
 
-		__onSubmit()
+		async __onSubmit()
 		{
 			this.__showOutputList();
 
 			const value = this.__consoleInputEl.value;
+			this.__consoleInputEl.value = "";
 			this.__recordSubmit(value);
 
 			var commandStr;
 			var args;
-			if (value.includes(" "))
+			if (value.includes(" ")) //KJA TODO support commands with spaces, then remove all replaceAll(" ", "-")
 			{
 				commandStr = value.substring(0, value.indexOf(" ")).toUpperCase();
 				args = value.substring(value.indexOf(" ") + 1);
@@ -251,7 +253,15 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			if (cmd)
 			{
 				var result = cmd.handler(args);
-				if (commandStr !== "HELP" && commandStr !== "META" && context.autoExit)
+				if (result && result.then)
+				{
+					result = await result;
+				}
+				if (commandStr !== "HELP"
+					&& commandStr !== "META"
+					&& commandStr !== "EXIT"
+					&& context.autoExit
+				)
 				{
 					this.removeContext(result);
 				}
@@ -259,6 +269,10 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			else if (context.nullary && (value !== "" || context.disableExit === false))
 			{
 				var result = context.nullary(value);
+				if (result && result.then)
+				{
+					result = await result;
+				}
 				if (context.autoExit)
 				{
 					this.removeContext(result);
@@ -268,8 +282,6 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			{
 				this.echo(`Command ${commandStr} not recognized. Type help for command information.`);
 			}
-
-			this.__consoleInputEl.value = "";
 		};
 
 		__recordSubmit(value)
@@ -333,13 +345,15 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		helpText = "";
 		constructor(name, commands, nullary, exitBehavior, helpText)
 		{
+			commands = commands || {};
+
 			this.name = name;
-			this.commands = commands || {};
+			this.commands = {};
 			Object.keys(commands).forEach(cmdKey =>
 			{
-				if (!this.commands[cmdKey])
+				if (commands[cmdKey])
 				{
-					delete this.commands[cmdKey];
+					this.commands[cmdKey.toUpperCase()] = commands[cmdKey];
 				}
 			});
 			this.nullary = nullary;

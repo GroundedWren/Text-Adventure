@@ -2538,7 +2538,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					<option>Torso</option>
 					<option>Belt</option>
 					<option>Legs</option>
-					<option>Knees</option>
 					<option>Feet</option>
 					<option>Left Wrist</option>
 					<option>Right Wrist</option>

@@ -92,7 +92,7 @@ h1, h2, h3, h4, h5, h6 {
 	min-height: 30px;
 }
 
-#metaPane_page_Player.selected {
+#metaPane_page_Player.selected, #metaPane_page_Inventory.selected {
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
@@ -120,8 +120,17 @@ h1, h2, h3, h4, h5, h6 {
 .no-break {
 	word-break: keep-all;
 }
-/*#endregion */
 
+#BodyTBody tr:not(.shown)
+{
+	display: none;
+}
+
+.bag-item {
+	display: flex;
+	gap: 5px;
+}
+/*#endregion */
 /*#region Console */
 #consolePane {
 	display: flex;
@@ -155,10 +164,24 @@ h1, h2, h3, h4, h5, h6 {
 
 #consoleForm {
 	margin-top: 5px;
+	margin-bottom: 2px;
+}
+
+#consoleInputLabel {
+	flex-grow: 0;
+}
+
+#consoleInput {
+	flex-grow: 1;
+	height: 1.5em;
+	border-radius: 20px;
+	padding-left: 10px;
 }
 
 #consoleSubmit {
 	margin-left: 5px;
+	align-self: stretch;
+	border-radius: 20px;
 }
 /*#endregion */
 
@@ -172,6 +195,11 @@ h1, h2, h3, h4, h5, h6 {
 
 #storyPane p {
 	margin-bottom: 1.5em;
+}
+
+#storyPane mark {
+	background-color: var(--accent-color);
+	color: var(--heading-color);
 }
 
 #storyContent {

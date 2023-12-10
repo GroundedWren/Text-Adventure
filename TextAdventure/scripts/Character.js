@@ -145,7 +145,24 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 
 	ns.addInventoryItem = function (itemId)
 	{
-		ns.Data.Inventory.push({ Item: itemId, "Body Location": "None" });
+		ns.Data.Inventory.push({ Item: itemId, "BodyLoc": "None" });
+
+		const elementId = `bagItem-${itemId}`;
+		const elementCountId = `${elementId}-count`;
+		const itemName = Pages.DungeoneerInterface.Data.World.Items[itemId].DisplayName;
+
+		const extantBagItemCount = document.getElementById(elementCountId);
+		if (extantBagItemCount)
+		{
+			extantBagItemCount.parentElement.classList.remove("hidden");
+			extantBagItemCount.innerText = parseInt(extantBagItemCount.innerText) + 1;
+			return;
+		}
+
+		const bagList = document.getElementById("bagList");
+		bagList.insertAdjacentHTML("afterbegin", `
+		<li id="${elementId}"><span class="bag-item"><span>${itemName}</span><span class="hidden">(<span id=${elementCountId}>1</span>)</span></span></li>
+		`);
 	}
 
 	ns.removeInventoryItem = function (itemId)
@@ -162,6 +179,24 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		if (itemIndex === -1) { return; }
 
 		ns.Data.Inventory.splice(itemIndex, 1);
+
+		const bagElementId = `bagItem-${itemId}`;
+		const bagElementCountId = `${bagElementId}-count`;
+		if (document.getElementById(bagElementId))
+		{
+			const bagCountEl = document.getElementById(bagElementCountId);
+			const bagCount = parseInt(bagCountEl.innerText);
+			if (bagCount === 1)
+			{
+				document.getElementById(bagElementId).remove();
+			}
+			else
+			{
+				bagCountEl.innerText = bagCount - 1;
+			}
+		}
+		//TODO Weapon table
+		//TODO Body table
 	};
 
 	ns.adjustMoney = function (amount)
