@@ -19,6 +19,8 @@ registerNamespace("Common", function (ns)
 		DownArrow: 40,
 		F1: 112,
 		F2: 113,
+		End: 35,
+		Home: 36,
 	};
 	ns.KeyCodes = KeyCodes;
 

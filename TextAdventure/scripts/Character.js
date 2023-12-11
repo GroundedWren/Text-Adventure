@@ -33,7 +33,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		Stealth: "Stealth",
 		Survival: "Survival",
 	};
-	
+
 	ns.Abilities = {
 		Str: "Str",
 		Dex: "Dex",
@@ -57,6 +57,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		ns.setAbilities(ns.Data.Abilities);
 		ns.setVitals(ns.Data.Vitals);
 		ns.setSkills(ns.Data.Skills);
+		ns.setInventory(ns.Data.Inventory);
 	};
 
 	//#region Setters
@@ -117,29 +118,19 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			dataVitals.Evasion = dataVitals.MaxEvasion;
 		}
 
-		if (!Common.isNullUndefinedOrEmpty(vitals.MaxArmor))
-		{
-			dataVitals.MaxArmor = vitals.MaxArmor;
-		}
-		else if (Common.isNullUndefinedOrEmpty(dataVitals.MaxArmor))
-		{
-			dataVitals.MaxArmor = 0;
-		}
-
 		if (!Common.isNullUndefinedOrEmpty(vitals.Armor))
 		{
 			dataVitals.Armor = vitals.Armor;
 		}
 		else if (Common.isNullUndefinedOrEmpty(dataVitals.Armor))
 		{
-			dataVitals.Armor = dataVitals.MaxArmor;
+			dataVitals.Armor = 0;
 		}
 
 		document.getElementById("sMaxHealth").innerText = dataVitals.MaxHealth;
 		document.getElementById("sHealth").innerText = dataVitals.Health;
 		document.getElementById("sMaxEvasion").innerText = dataVitals.MaxEvasion;
 		document.getElementById("sEvasion").innerText = dataVitals.Evasion;
-		document.getElementById("sMaxArmor").innerText = dataVitals.MaxArmor;
 		document.getElementById("sArmor").innerText = dataVitals.Armor;
 	};
 
@@ -148,7 +139,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		Object.keys(ns.Data.Abilities).forEach(abi =>
 		{
 			setAbility(abi, abilities);
-			ns.getAbilityModTd(abi).innerText = di.Mechanics.calculateAbilityMod(abilities[abi])
+			ns.getAbilityModTd(abi).innerText = di.Mechanics.calculateAbilityMod(abilities[abi]);
 		});
 	};
 	function setAbility(abbr, abilities)
@@ -178,13 +169,29 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 				|| 0;
 		});
 	};
+
+	ns.setInventory = function setInventory(inventory)
+	{
+		inventory.forEach(charInvObj =>
+		{
+			if (charInvObj.BodyLoc === "None" || !charInvObj.BodyLoc)
+			{
+				pushToBag(charInvObj.Item);
+			}
+			else
+			{
+				pushToBody(charInvObj.Item, charInvObj.BodyLoc);
+			}
+			updateWeapons(charInvObj.Item, charInvObj.BodyLoc);
+		});
+	};
 	//#endregion
 
 	//#region Inventory
 	ns.hasInventoryItem = function hasInventoryItem(itemId)
 	{
 		return this.Data.Inventory.filter(charItmObj => charItmObj.Item === itemId).length > 0;
-	}
+	};
 
 	ns.addInventoryItem = function (itemId)
 	{
@@ -192,7 +199,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 
 		pushToBag(itemId);
 		updateWeapons(itemId, "Bag");
-	}
+	};
 
 	ns.removeInventoryItem = function (itemId)
 	{
@@ -233,16 +240,15 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		ns.setVitals({
 			MaxEvasion: parseInt(ns.Data.Vitals.MaxEvasion) + parseInt(itemObj.Evasion || 0),
 			Evasion: parseInt(ns.Data.Vitals.Evasion) + parseInt(itemObj.Evasion || 0),
-			MaxArmor: parseInt(ns.Data.Vitals.MaxArmor) + parseInt(itemObj.Armor || 0),
 			Armor: parseInt(ns.Data.Vitals.Armor) + parseInt(itemObj.Armor || 0),
-		})
-	}
+		});
+	};
 	ns.doffItem = function donItem(itemId)
 	{
 		const itemObj = Pages.DungeoneerInterface.Data.World.Items[itemId];
 		const extantItem = this.Data.Inventory.filter(charItmObj => charItmObj.Item === itemId)[0];
 		const prevBodyLoc = extantItem.BodyLoc;
-		extantItem.BodyLoc = "None"
+		extantItem.BodyLoc = "None";
 
 		pushToBag(itemId);
 		popFromBody(prevBodyLoc);
@@ -250,10 +256,9 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		ns.setVitals({
 			MaxEvasion: parseInt(ns.Data.Vitals.MaxEvasion) - parseInt(itemObj.Evasion || 0),
 			Evasion: parseInt(ns.Data.Vitals.Evasion) - parseInt(itemObj.Evasion || 0),
-			MaxArmor: parseInt(ns.Data.Vitals.MaxArmor) - parseInt(itemObj.Armor || 0),
 			Armor: parseInt(ns.Data.Vitals.Armor) - parseInt(itemObj.Armor || 0),
-		})
-	}
+		});
+	};
 
 	function popFromBag(itemId)
 	{
@@ -360,7 +365,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 
 	function getBagIds(itemId)
 	{
-		const elementId = `bagItem-${itemId}`
+		const elementId = `bagItem-${itemId}`;
 		return {
 			elementId,
 			elementButtonId: `$${elementId}-button`,
@@ -398,5 +403,5 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 	ns.addExp = function (exp)
 	{
 		ns.Data.XP += exp;
-	}
+	};
 });

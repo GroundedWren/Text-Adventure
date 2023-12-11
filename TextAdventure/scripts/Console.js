@@ -15,6 +15,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 		__prevCmds = [];
 		__prevCmdIdx = -1;
+		__curCmdIdx = -1;
 
 		__contexts = [];
 
@@ -55,10 +56,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			const context = this.__getContext();
 			this.__consoleHelpWindow.innerHTML = null;
 			this.dce("h2", this.__consoleHelpWindow, undefined, undefined, "Console Help");
-			if (context.helpText)
-			{
-				this.dce("p", this.__consoleHelpWindow, undefined, ["center-text"], context.helpText);
-			}
+
+			const consoleHelpText = context.helpText
+				|| "Hint: Use the arrow keys to navigate between commands. Up/Down for command history, Left/Right/Home/End for available commands";
+			this.dce("p", this.__consoleHelpWindow, undefined, ["center-text"], consoleHelpText);
+
 			const table = this.dce("table", this.__consoleHelpWindow);
 			this.dce("thead", table, undefined, undefined, "<tr><th>Command</th><th>Description</th></tr>");
 			const tBody = this.dce("tbody", table);
@@ -70,7 +72,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				if (command === "META" && !ns.isMiniViewport) { continue; }
 
 				var tableRow = this.dce("tr", tBody);
-				this.dce("th", tableRow, {scope: "row"} , undefined, command);
+				this.dce("th", tableRow, { scope: "row" }, undefined, command);
 				this.dce("td", tableRow, undefined, undefined, commands[command].description);
 			}
 		};
@@ -132,10 +134,15 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			return this.__getContext().commands;
 		};
 
+		get commandKeys()
+		{
+			return Object.keys(this.__getContext().commands);
+		};
+
 		get currentContextName()
 		{
 			return this.__contexts.length ? this.contexts[0].name : "";
-		}
+		};
 		//#endregion
 
 		//#region Commands
@@ -192,17 +199,20 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		//#endregion
 
 		//#region Private methods
+
+		//TODO this is kind of a mess...
 		__onInputKeydown = (event) =>
 		{
-			if (!this.__prevCmds.length) { return; }
-
 			if (event.keyCode === Common.KeyCodes.UpArrow)
 			{
 				if (++this.__prevCmdIdx >= this.__prevCmds.length)
 				{
 					this.__prevCmdIdx--;
 				}
-				this.__consoleInputEl.value = this.__prevCmds[this.__prevCmdIdx];
+				if (this.__prevCmdIdx >= 0 && this.__prevCmdIdx < this.__prevCmds.length)
+				{
+					this.__consoleInputEl.value = this.__prevCmds[this.__prevCmdIdx];
+				}
 			}
 			else if (event.keyCode === Common.KeyCodes.DownArrow)
 			{
@@ -211,9 +221,48 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 					this.__consoleInputEl.value = "";
 					this.__prevCmdIdx = -1;
 				}
-				else
+				else if (this.__prevCmdIdx < this.__prevCmds.length)
 				{
 					this.__consoleInputEl.value = this.__prevCmds[this.__prevCmdIdx];
+				}
+			}
+			else if ((event.keyCode === Common.KeyCodes.RightArrow || event.keyCode == Common.KeyCodes.End)
+				&& this.__consoleInputEl.selectionStart === this.__consoleInputEl.value.length
+			)
+			{
+				if (++this.__curCmdIdx >= this.commandKeys.length)
+				{
+					this.__curCmdIdx--;
+				}
+				if (this.__curCmdIdx >= 0 && this.__curCmdIdx < this.commandKeys.length)
+				{
+					if (this.commandKeys[this.__curCmdIdx] === "META" && !ns.isMiniViewport)
+					{
+						this.__onInputKeydown(event);
+						return;
+					}
+					this.__consoleInputEl.value = this.commandKeys[this.__curCmdIdx];
+					Common.axAlertPolite(this.__consoleInputEl.value);
+				}
+			}
+			else if ((event.keyCode === Common.KeyCodes.LeftArrow || event.keyCode === Common.KeyCodes.Home)
+				&& this.__consoleInputEl.selectionStart === 0
+			)
+			{
+				if (--this.__curCmdIdx <= -1)
+				{
+					this.__consoleInputEl.value = "";
+					this.__curCmdIdx = -1;
+				}
+				else if (this.__curCmdIdx < this.commandKeys.length)
+				{
+					if (this.commandKeys[this.__curCmdIdx] === "META" && !ns.isMiniViewport)
+					{
+						this.__onInputKeydown(event);
+						return;
+					}
+					this.__consoleInputEl.value = this.commandKeys[this.__curCmdIdx];
+					Common.axAlertPolite(this.__consoleInputEl.value);
 				}
 			}
 			else if (event.keyCode === Common.KeyCodes.Esc)
@@ -231,6 +280,14 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 					this.removeContext();
 				}
 				this.__prevCmdIdx = -1;
+				if (event.keyCode !== Common.KeyCodes.LeftArrow
+					&& event.keyCode !== Common.KeyCodes.RightArrow
+					&& event.keyCode !== Common.KeyCodes.End
+					&& event.keyCode !== Common.KeyCodes.Home
+				)
+				{
+					this.__curCmdIdx = -1;
+				}
 			}
 		};
 
@@ -299,7 +356,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			}
 			args = wordAry.join(" ");
 
-			return { commandStr, args }
+			return { commandStr, args };
 		}
 
 		__recordSubmit(value)
@@ -322,7 +379,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			{
 				return this.__contexts[0];
 			}
-			return new ns.ConsoleContext("", this.__commands, null, {disableExit: true});
+			return new ns.ConsoleContext("", this.__commands, null, { disableExit: true });
 		};
 
 		__updateContextLabel()

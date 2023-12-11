@@ -745,13 +745,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 							data-prop="Armor"
 							data-helptext="The bonus the character has to resist damage"
 					/>
-					<label for="${this.idKey}-max-armor">Max Armor</label>
-					<input	id="${this.idKey}-max-armor"
-							type="number"
-							data-owner="${this.idKey}"
-							data-prop="MaxArmor"
-							data-helptext="The maximum bonus the character has to resist damage"
-					/>
 				</div>
 			</fieldset>
 			`;
