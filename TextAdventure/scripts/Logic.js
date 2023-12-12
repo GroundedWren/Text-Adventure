@@ -78,7 +78,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			writeParagraphToStoryEl(storyTextObj.Text);
 		});
 
-		ns.runEventsArray(areaObj.OnVisit, true);
+		ns.runEventsArray(areaObj.OnVisit, (text) => { writeParagraphToStoryEl(text); });
 
 		ns.InputConsole.addContext(new ns.ConsoleContext(
 			areaObj.DisplayName || areaId,
@@ -109,6 +109,9 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			""
 		));
 
+		//TODO NPC Actions
+		ns.InputConsole.echo();
+
 		setTimeout(() => { Common.axAlertPolite("Story text updated; focus with Alt+R"); }, 10);
 	};
 
@@ -125,7 +128,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 
 		if (arg === "SELF")
 		{
-			ns.InputConsole.echo("You decide to look yourself over. Here's what you see:", { holdAlert: true });
+			ns.InputConsole.echoQuiet("You decide to look yourself over. Here's what you see:");
 			ns.InputConsole.echo(ns.Data.Character.Description || "You're just a regular person.");
 			return;
 		}
@@ -151,13 +154,15 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 				const npcObj = ns.Data.NPCs[npcId];
 				npcObj && npcObj.DisplayName.toUpperCase() === arg;
 			})[0]];
-		ns.InputConsole.echo(objOfInterest?.Description || `You don't see anything called ${arg}`, { holdAlert: true });
+		ns.InputConsole.echoQuiet(objOfInterest?.Description || `You don't see anything called ${arg}`);
 
+		ns.InputConsole.addBlocker("lookActions");
 		if (objOfInterest && objOfInterest.Actions)
 		{
 			const lookActions = objOfInterest.Actions.filter(actionObj => actionObj.Mode === "Look");
 			lookActions.forEach(lookActionObj => { ns.runLookAction(lookActionObj); });
 		}
+		ns.InputConsole.removeBlocker("lookActions");
 
 		ns.InputConsole.echo();
 	};
@@ -190,7 +195,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			ns.StoryEl.innerHTML = "";
 
 			writeParagraphToStoryEl(portalObj.AccessText);
-			ns.enterArea(portalObj.Destination);
+			ns.enterArea(portalObj.Destination); //criteria eval echo'd out from here
 		}
 		else
 		{
@@ -361,7 +366,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		);
 		ns.InputConsole.addContext(context);
 		ns.InputConsole.help();
-		return context.promise;
+		return context.promise.then();
 	};
 
 	ns.getActionDisplayName = function getActionDisplayName(actionObj)
@@ -406,8 +411,9 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		{
 			return;
 		}
+		ns.InputConsole.addBlocker("runItemAction");
 
-		ns.InputConsole.echo(actionObj.TextOnAct, { holdAlert: true });
+		ns.InputConsole.echo(actionObj.TextOnAct);
 
 		switch (actionObj.Mode)
 		{
@@ -429,6 +435,8 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 
 		ns.runEventsArray(actionObj.Events);
 
+		//TODO NPC Actions
+		ns.InputConsole.removeBlocker("runItemAction");
 		ns.InputConsole.echo();
 	};
 
@@ -439,7 +447,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			return;
 		}
 
-		ns.InputConsole.echo(actionObj.TextOnAct, { holdAlert: true });
+		ns.InputConsole.echo(actionObj.TextOnAct);
 		ns.runEventsArray(actionObj.Events);
 	};
 
@@ -451,7 +459,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	//#endregion
 
 	//#region Events
-	ns.runEvent = function (eventId, toStoryText)
+	ns.runEvent = function (eventId, outputDelegate)
 	{
 		const eventObj = ns.Data.Events[eventId];
 		if (!eventObj || eventObj.Occurrences > 0 && eventObj.IsSingleton)
@@ -462,14 +470,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		eventObj.Occurrences = eventObj.Occurrences || 0;
 		if (!ns.evaluateCriteriaArray(eventObj.Coreqs))
 		{
-			if (toStoryText)
-			{
-				writeParagraphToStoryEl(eventObj.CoreqFailText);
-			}
-			else
-			{
-				ns.InputConsole.echo(eventObj.CoreqFailText, { holdAlert: true });
-			}
+			outputDelegate(eventObj.CoreqFailText)
 			if (eventObj.AlwaysMarkOccurred)
 			{
 				eventObj.Occurrences++;
@@ -478,14 +479,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		}
 
 		eventObj.Occurrences++;
-		if (toStoryText)
-		{
-			writeParagraphToStoryEl(eventObj.Description);
-		}
-		else
-		{
-			ns.InputConsole.echo(eventObj.Description, { holdAlert: true });
-		}
+		outputDelegate(eventObj.Description);
 
 		(eventObj.RemoveItems || []).forEach(itemId => { ns.Character.removeInventoryItem(itemId); });
 		(eventObj.GetItems || []).forEach(itemId => { ns.Character.addInventoryItem(itemId); });
@@ -498,12 +492,16 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		//TODO Dialogs
 		//TODO Move NPCs
 		//TODO Set location
-		eventObj.TriggerEvents.forEach(linkedEventId => ns.runEvent(linkedEventId));
+		eventObj.TriggerEvents.forEach(linkedEventId => ns.runEvent(linkedEventId, outputDelegate));
 	};
 
-	ns.runEventsArray = function (eventArray, toStoryText)
+	ns.runEventsArray = function runEventsArray(eventArray, outputDelegate)
 	{
-		eventArray.forEach(eventId => ns.runEvent(eventId, toStoryText));
+		outputDelegate = outputDelegate || ((text) => { ns.InputConsole.echo(text); });
+
+		ns.InputConsole.addBlocker("runEventsArray");
+		eventArray.forEach(eventId => ns.runEvent(eventId, outputDelegate));
+		ns.InputConsole.removeBlocker("runEventsArray");
 	};
 	//#endregion
 
@@ -521,6 +519,8 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		if (!criteriaObj) { return true; }
 
 		if (!criteriaObj.AllowNPC && !!npcId) { return false; }
+
+		ns.InputConsole.addBlocker("evaluateCriteria");
 
 		const npcsInPartyResults = criteriaObj.NPCsInParty.map(
 			npcId => ns.Data.Character.Party.indexOf(npcId) >= 0
@@ -568,7 +568,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			{
 				return skillCheckObj.SingletonResult;
 			}
-			
+
 			const result = ns.Mechanics.rollSkillCheck(
 				ns.Data.Character,
 				skillCheckObj.Skill,
@@ -601,6 +601,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		const didANDPass = (andCriteriaResults.length === 0) || andCriteriaResults.every(result => result);
 
 		const pentultimateResult = (didThisPass || didORPass) & didANDPass;
+		ns.InputConsole.removeBlocker("evaluateCriteria");
 		return criteriaObj.NegateResult ? !pentultimateResult : pentultimateResult;
 	};
 

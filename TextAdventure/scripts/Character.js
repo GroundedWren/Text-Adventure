@@ -44,12 +44,12 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 	};
 	//#endregion
 
-	ns.getAbilityModTd = function (ability)
+	ns.getAbilityModTd = function getAbilityModTd(ability)
 	{
 		return document.getElementById(`td${ability}Mod`);
 	};
 
-	ns.setupFromData = function ()
+	ns.setupFromData = function setupFromData()
 	{
 		ns.setName(ns.Data.Name);
 		ns.setPronouns(ns.Data.Pronouns);
@@ -193,7 +193,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		return this.Data.Inventory.filter(charItmObj => charItmObj.Item === itemId).length > 0;
 	};
 
-	ns.addInventoryItem = function (itemId)
+	ns.addInventoryItem = function addInventoryItem(itemId)
 	{
 		ns.Data.Inventory.push({ Item: itemId, "BodyLoc": "None" });
 
@@ -201,7 +201,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		updateWeapons(itemId, "Bag");
 	};
 
-	ns.removeInventoryItem = function (itemId)
+	ns.removeInventoryItem = function removeInventoryItem(itemId)
 	{
 		let itemIndex = -1;
 		for (let i = 0; i < ns.Data.Inventory.length; i++)
@@ -243,7 +243,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			Armor: parseInt(ns.Data.Vitals.Armor) + parseInt(itemObj.Armor || 0),
 		});
 	};
-	ns.doffItem = function donItem(itemId)
+	ns.doffItem = function doffItem(itemId)
 	{
 		const itemObj = Pages.DungeoneerInterface.Data.World.Items[itemId];
 		const extantItem = this.Data.Inventory.filter(charItmObj => charItmObj.Item === itemId)[0];
@@ -395,12 +395,12 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 	}
 	//endregion Inventory
 
-	ns.adjustMoney = function (amount)
+	ns.adjustMoney = function adjustMoney(amount)
 	{
 		ns.Data.Money += amount;
 	};
 
-	ns.addExp = function (exp)
+	ns.addExp = function addExp(exp)
 	{
 		ns.Data.XP += exp;
 	};

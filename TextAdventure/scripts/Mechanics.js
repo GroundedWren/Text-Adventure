@@ -41,8 +41,7 @@ registerNamespace("Pages.DungeoneerInterface.Mechanics", function (ns)
 		}
 
 		ns.InputConsole.echo(
-			`[${statsObj.Name}- ${skill !== "None" ? skill + "-" : ""}${ability} Check: ${result.value}${result.crits ? " (CRIT!)" : ""}${successString}]`,
-			{ holdAlert: true }
+			`[${statsObj.Name}- ${skill !== "None" ? skill + "-" : ""}${ability} Check: ${result.value}${result.crits ? " (CRIT!)" : ""}${successString}]`
 		);
 		return wasSuccess;
 	};

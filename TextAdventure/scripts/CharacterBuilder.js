@@ -16,7 +16,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		);
 		ns.InputConsole.lineFeed();
 
-		ns.InputConsole.echo("What are your pronouns?", { holdAlert: true });
+		ns.InputConsole.echoQuiet("What are your pronouns?");
 		ns.InputConsole.echo("Subjective(e.g. he/she/they):");
 		const subjective = await ns.InputConsole.addContext(new ns.ConsoleContext(
 			"SUBJECTIVE PRONOUN",
@@ -83,9 +83,8 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		{
 			var points = 27;
 
-			ns.InputConsole.echo(
-				"Select ability scores; standard DnD 5e Point Buy. (type help for more information)",
-				{ holdAlert: true }
+			ns.InputConsole.echoQuiet(
+				"Select ability scores; standard DnD 5e Point Buy. (type help for more information)"
 			);
 
 			str = await promptAbility("Strength (STR):", "STR", "Strength determines raw physical ability.", {
@@ -155,7 +154,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			}, points);
 			points -= getPointCost(cha);
 
-			ns.InputConsole.echo(`${points} points remaining`, { holdAlert: true });
+			ns.InputConsole.echoQuiet(`${points} points remaining`);
 			ns.InputConsole.echo("Done? (Y/N)");
 			done = await ns.InputConsole.addContext(new ns.ConsoleContext(
 				"DONE",
@@ -174,7 +173,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 	async function promptAbility(prompt, ability, description, helpDescs, points)
 	{
-		ns.InputConsole.echo(`${points} points remaining`, { holdAlert: true });
+		ns.InputConsole.echoQuiet(`${points} points remaining`);
 		ns.InputConsole.echo(prompt);
 		var abi = await ns.InputConsole.addContext(new ns.ConsoleContext(
 			ability,

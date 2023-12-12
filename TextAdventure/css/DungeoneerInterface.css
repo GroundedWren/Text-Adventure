@@ -86,7 +86,10 @@ table button {
 }
 
 #currentGameMetaCard th {
-	min-width: 75px
+	min-width: 75px;
+	word-break: keep-all;
+	padding-right: 4px;
+	vertical-align: baseline;
 }
 
 #currentGameTableBody td, #currentGameTableBody th {
@@ -122,10 +125,6 @@ table button {
 	border-radius: 25px;
 	margin-left: auto;
 	margin-right: auto;
-}
-
-.no-break {
-	word-break: keep-all;
 }
 
 #BodyTBody tr:not(.shown) {

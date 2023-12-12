@@ -19,6 +19,9 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 		__contexts = [];
 
+		__echoBacklog = "";
+		__blockers = {};
+
 		dce = Common.DOMLib.createElement;
 		dsa = Common.DOMLib.setAttributes;
 
@@ -146,8 +149,14 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		//#endregion
 
 		//#region Commands
-		__echoBacklog = "";
-		echo(value, alertBehavior)
+		echoQuiet(value)
+		{
+			this.addBlocker("echoQuiet");
+			this.echo(value);
+			this.removeBlocker("echoQuiet");
+		};
+
+		echo(value)
 		{
 			if (value)
 			{
@@ -161,12 +170,11 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			}
 			value = value || "";
 
-			alertBehavior = alertBehavior || {};
-			if (alertBehavior.holdAlert)
+			if (this.__isBlocked)
 			{
 				this.__echoBacklog = this.__echoBacklog + " " + value;
 			}
-			else if (!alertBehavior.skipAlert)
+			else
 			{
 				value = this.__echoBacklog + " " + value;
 				setTimeout(() => { Common.axAlertPolite(value); }, 10);
@@ -186,6 +194,19 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__consoleOutputList.innerHTML = "";
 			this.__showOutputList();
 		};
+
+		addBlocker(identifier)
+		{
+			this.__blockers[identifier] = "";
+		}
+		removeBlocker(identifier)
+		{
+			delete this.__blockers[identifier];
+		}
+		get __isBlocked()
+		{
+			return Object.keys(this.__blockers).length > 0;
+		}
 
 		help()
 		{

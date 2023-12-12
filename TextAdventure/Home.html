@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en" class="theme-vera">
+<html lang="en" class="theme-ocean">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,7 @@
 		<header>
 			<h1>
 				<a href="https://www.textadventure.groundedwren.com/" class="heading-text">
-					TextAdventure / GroundedWren.com
+					GroundedWren Text Adventure Suite
 				</a>
 			</h1>
 			<a class="banner-link hide-until-focus"
@@ -40,6 +40,7 @@
 			   style="margin: auto;">
 				Skip to content
 			</a>
+			<p id="subtitle">TextAdventure / GroundedWren.com</p>
 			<div id="bnrTblNetWarning" class="inline-banner center warning">
 				<span class="icon-container" data-icon="triangle-exclamation">Warning:</span>
 				This is a work in progress
@@ -67,82 +68,78 @@
 			<main id="mainContent">
 				<div id="about" class="card">
 					<h2 class="card-header">About</h2>
-					<p>
-						This subdomain is for a text-based adventure game project.
-					</p>
-					<p>
-						I played a number of text games when I was a kid; I was very bad at them, but I liked the idea enough that once I learned what binary trees were in high school computer science, I immediately implemented a simple text-game with them.
-					</p>
-					<p>
-						It was really rudimentary, but watching my friends stumble their way through a nonsensical zombie-apocalypse scenario in which they were frequently characters was beyond fun. I even made a UI to show images based on the game-state.
-					</p>
-					<p>
-						I've tried a couple times since to make a more sophistocated verison of that game, but I never completed one and I'm not sure where the code is anymore.
-					</p>
-					<p>
-						So this is that; yet another attempt that I hope I'll be able to stick with!
-					</p>
+					<p>The GroundedWren Text Adventure Suite (GTAS) is lightweight, accessible software for creating and playing robust single-player text-based games.</p>
+					<p>Built from scratch using only fundamental web technologies, GTAS was designed from the ground-up for all users and all modes of engaging with web content. Keyboard workflows are complete and efficient, and screen readers are designed for first, not as an afterthought. These are text games, after all.</p>
+					<p>GTAS is the passion project of just one caffine-addicted woman. If you have feedback, ideas, or questions, please reach out to <a href="mailto:vera@groundedwren.com">vera@groundedwren.com</a></p>
+					<p>The <a href="https://github.com/GroundedWren/Text-Adventure">code for this project</a> is freely available; if it will help you, please use it for good.</p>
 				</div>
 				<div id="updatesCard" class="card">
 					<h2>Updates</h2>
 					<div id="updates">
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-12-04T06:00:00.000Z">12/4/23</time></h3>
+						<div class="card update curUpdate">
+							<h3 class="card-header"><time datetime="2023-12-11T06:00:00.000Z">11 December 2023</time></h3>
+							<p>
+								Some refactoring of the console logic, and a facelift for this page. I think I'll probably clean out these old working updates when I actually begin to share this with people and save them for major changes.
+							</p>
+						</div>
+						<button id="moreUpdatesBtn" onclick="Pages.Home.toggleMoreUpdates()">Show More Updates</button>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-12-04T06:00:00.000Z">4 December 2023</time></h3>
 							<p>
 								The game is coming along, and I've had to tweak aspects of the builder along the way as I'm finding out what playing the game is actually like. You can currently perform basic interactions and move between rooms; the criteria logic is in place, and the event logic has partial support. There's still so much to do.
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-11-25T06:00:00.000Z">11/25/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-11-25T06:00:00.000Z">25 November 2023</time></h3>
 							<p>
 								I hereby declare the Dungeon Builder finished! Now just to implement the game....
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-11-17T06:00:00.000Z">11/17/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-11-17T06:00:00.000Z">17 November 2023</time></h3>
 							<p>
 								More generic components and saving! We still have a long way to go, though.
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-11-12T06:00:00.000Z">11/12/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-11-12T06:00:00.000Z">12 November 2023</time></h3>
 							<p>
 								The Dunegon Builder is beginning to come along - basic UI is mocked up and some skeleton functionality exists. Also, I added a theme switcher.
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-09-05T05:00:00.000Z">9/5/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-09-05T05:00:00.000Z">5 September 2023</time></h3>
 							<p>
-								New page- Dungeon Builder! On a long international flight I mapped out what the structure of the game world might be, and I've created this page to help create save files which conform to that format. It's still a WIP.'
+								New page- Dungeon Builder! On a long international flight I mapped out what the structure of the game world might be, and I've created this page to help create save files which conform to that format. It's still a WIP.
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-07-21T05:00:00.000Z">7/21/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-07-21T05:00:00.000Z">21 July 2023</time></h3>
 							<p>
 								I've added more statistics to the character, still mostly borrowing from 5e but with a little Vera twist. I've also made it so loading/saving from a file works.
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-07-13T05:00:00.000Z">7/13/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-07-13T05:00:00.000Z">13 July 2023</time></h3>
 							<p>
 								Mostly just a face-lift. I'm trying to make the dungeoneer interface console work well on mobile, but some of the issues can't be tested but on a real mobile device, so it's hard.
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-07-06T05:00:00.000Z">7/6/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-07-06T05:00:00.000Z">6 July 2023</time></h3>
 							<p>
 								Responsive layout! The Dungeoneer Interface now meets
-								<a href="https://www.w3.org/TR/WCAG21/#reflow" target="_blank">WCAG 1.4.10</a> so that it works well on mobile :)
+								<a href="https://www.w3.org/TR/WCAG21/#reflow" target="_blank">WCAG 1.4.10</a> so that it works better on mobile :)
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-07-03T05:00:00.000Z">7/3/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-07-03T05:00:00.000Z">3 July 2023</time></h3>
 							<p>
 								Created the console framework to handle a configurable set of commands. Created the first part of a caracter builder.
 							</p>
 						</div>
-						<div class="card">
-							<h3 class="card-header"><time datetime="2023-07-02T05:00:00.000Z">7/2/23</time></h3>
+						<div class="card update">
+							<h3 class="card-header"><time datetime="2023-07-02T05:00:00.000Z">2 July 2023</time></h3>
 							<p>
 								Re-launched! This time I've structured the project directory so that the text adventure can more easily share common code with the main website.
 							</p>
@@ -154,7 +151,7 @@
 		<div id="dialogRegion" role="region" aria-label="dialogs"></div>
 		<div class="banner-buffer"></div>
 		<footer class="banner fixed-footer">
-			<span></span>
+			<span><button onclick="window.scrollTo(0, 0)">Go to Top</button></span>
 			<span>
 				A <a href="https://groundedwren.com" class="banner-link">Grounded Wren</a> Project
 			</span>
