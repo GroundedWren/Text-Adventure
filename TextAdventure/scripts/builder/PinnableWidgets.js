@@ -859,19 +859,19 @@
 				</div>
 				<div class="card-line">
 					<div class="input-grid widget-grid-input">
+						<label for="${this.idKey}-areaLook">Visible to area look?</label>
+						<input	id="${this.idKey}-areaLook"
+								type="checkbox"
+								data-owner="${this.idKey}"
+								data-prop="VisibleToAreaLook"
+								data-helptext="Whether this item may be listed when a character looks directionlessly in its area.<br />Will be set on items put down by the player."
+						/>
 						<label for="${this.idKey}-health">Health</label>
 						<input	id="${this.idKey}-health"
 								type="number"
 								data-owner="${this.idKey}"
 								data-prop="Health"
 								data-helptext="If this item can be damaged, this is its remaining health"
-						/>
-						<label for="${this.idKey}-maxHealth">Max Health</label>
-						<input	id="${this.idKey}-maxHealth"
-								type="number"
-								data-owner="${this.idKey}"
-								data-prop="MaxHealth"
-								data-helptext="If the item can be damaged, this is its maximum health"
 						/>
 					</div>
 					<div class="input-grid widget-grid-input">

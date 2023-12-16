@@ -125,7 +125,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			: "Never";
 
 		document.getElementById("currentGameTableBody").innerHTML = Object.keys(ns.Data.Meta).map(
-			key => `<tr><th scope="row" class="no-break">${key}</th><td>${ns.Data.Meta[key]}</td></tr>`
+			key => `<tr><th scope="row">${key}</th><td>${ns.Data.Meta[key]}</td></tr>`
 		).join("");
 
 		document.getElementById("currentGameMetaCard").classList.remove("hidden");
@@ -257,6 +257,18 @@ window.onload = () =>
 		"ALT+U": {
 			action: () => { document.getElementById("consoleOutput").focus(); },
 			description: "Focus console output"
+		},
+		"CTRL+HOME": {
+			description: "Previous available command"
+		},
+		"CTRL+END": {
+			description: "Next available command"
+		},
+		"ARROWUP": {
+			description: "Previous command in history"
+		},
+		"ARROWDOWN": {
+			description: "Next command in history"
 		},
 	});
 	//#endregion

@@ -190,7 +190,7 @@ hr {
 	flex-grow: 0;
 }
 
-.card-line > .input-vertical-line, .card-line > gw-db-skill-select, .card-line gw-db-ability-select {
+.card-line > .input-vertical-line, .card-line gw-db-skill-select, .card-line gw-db-ability-select {
 	width: auto;
 	margin: 5px;
 }

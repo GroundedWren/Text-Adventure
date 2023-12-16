@@ -8,6 +8,12 @@
 	grid-gap: 5px;
 }
 
+#subveil 
+{
+	max-height: 100vh;
+	overflow: clip;
+}
+
 .z {
 }
 
@@ -136,6 +142,7 @@ table button {
 	gap: 5px;
 }
 /*#endregion */
+
 /*#region Console */
 #consolePane {
 	display: flex;
@@ -237,6 +244,7 @@ mark {
 	flex-direction: column;
 }
 /*#endregion */
+
 /* Pages.DungeoneerInterface.MINI_THRESHOLD */
 @media (max-width: 800px) {
 	main {

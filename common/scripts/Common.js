@@ -155,7 +155,7 @@ registerNamespace("Common", function (ns)
 		parentEl.innerHTML = "";
 
 		var messageEl = document.createElement("p");
-		messageEl.innerText = message.replaceAll("<br />", " ");
+		messageEl.innerHTML = message.replaceAll("<br />", " ");
 
 		parentEl.appendChild(messageEl);
 	}

@@ -121,7 +121,19 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 
 		if (!arg)
 		{
-			ns.InputConsole.echo(areaObj.Description || "There's nothing to see.");
+			const lookableItemIds = areaObj.Items.filter(itemId => ns.Data.World.Items[itemId].VisibleToAreaLook);
+			if (!areaObj.Description && lookableItemIds.length === 0)
+			{
+				ns.InputConsole.echo("There's nothing to see.");
+				return;
+			}
+
+			ns.InputConsole.echoQuiet(areaObj.Description);
+			lookableItemIds.forEach(itemId =>
+			{
+				ns.InputConsole.echoQuiet(`You see a <mark>${ns.Data.World.Items[itemId].DisplayName}</mark>`);
+			});
+			ns.InputConsole.echo();
 			return;
 		}
 		arg = arg.toUpperCase();
@@ -424,6 +436,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			case "Put Down":
 				ns.Character.removeInventoryItem(itemId);
 				areaObj.Items.push(itemId);
+				ns.Data.World.Items[itemId].VisibleToAreaLook = true;
 				break;
 			case "Don":
 				ns.Character.donItem(itemId, actionObj.DonBodyLocation);

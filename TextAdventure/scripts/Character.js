@@ -393,7 +393,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			evasionCellId: `${bodyLocKey}Evasion`,
 		};
 	}
-	//endregion Inventory
+	//#endregion
 
 	ns.adjustMoney = function adjustMoney(amount)
 	{

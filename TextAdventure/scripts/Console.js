@@ -61,7 +61,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.dce("h2", this.__consoleHelpWindow, undefined, undefined, "Console Help");
 
 			const consoleHelpText = context.helpText
-				|| "Hint: Use the arrow keys to navigate between commands. Up/Down for command history, Left/Right/Home/End for available commands";
+				|| "Hint: Use the Up/Down arrow keys to navigate command history. Use Ctrl+Home/Ctrl+End to navigate available commands.";
 			this.dce("p", this.__consoleHelpWindow, undefined, ["center-text"], consoleHelpText);
 
 			const table = this.dce("table", this.__consoleHelpWindow);
@@ -198,6 +198,17 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		addBlocker(identifier)
 		{
 			this.__blockers[identifier] = "";
+			setTimeout(Common.fcd(this, (identifier) =>
+			{
+				if (this.__blockers[identifier])
+				{
+					console.log("Console blocked for more than 5s. Blockers: " + Object.keys(this.__blockers));
+					debugger;
+
+					this.removeBlocker(identifier);
+					this.echo();
+				}
+			}, [identifier]), 5000);
 		}
 		removeBlocker(identifier)
 		{
@@ -247,28 +258,28 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 					this.__consoleInputEl.value = this.__prevCmds[this.__prevCmdIdx];
 				}
 			}
-			else if ((event.keyCode === Common.KeyCodes.RightArrow || event.keyCode == Common.KeyCodes.End)
-				&& this.__consoleInputEl.selectionStart === this.__consoleInputEl.value.length
-			)
+			else if (event.keyCode == Common.KeyCodes.End && event.ctrlKey)
 			{
 				if (++this.__curCmdIdx >= this.commandKeys.length)
 				{
-					this.__curCmdIdx--;
+					this.__curCmdIdx = this.commandKeys.length - 1;
 				}
 				if (this.__curCmdIdx >= 0 && this.__curCmdIdx < this.commandKeys.length)
 				{
 					if (this.commandKeys[this.__curCmdIdx] === "META" && !ns.isMiniViewport)
 					{
+						if ((this.__curCmdIdx === this.commandKeys.length - 1))
+						{
+							this.__curCmdIdx--;
+							return
+						}
 						this.__onInputKeydown(event);
 						return;
 					}
 					this.__consoleInputEl.value = this.commandKeys[this.__curCmdIdx];
-					Common.axAlertPolite(this.__consoleInputEl.value);
 				}
 			}
-			else if ((event.keyCode === Common.KeyCodes.LeftArrow || event.keyCode === Common.KeyCodes.Home)
-				&& this.__consoleInputEl.selectionStart === 0
-			)
+			else if (event.keyCode === Common.KeyCodes.Home && event.ctrlKey)
 			{
 				if (--this.__curCmdIdx <= -1)
 				{
@@ -279,11 +290,20 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				{
 					if (this.commandKeys[this.__curCmdIdx] === "META" && !ns.isMiniViewport)
 					{
+						if (this.__curCmdIdx === 0)
+						{
+							this.__curCmdIdx++;
+							return;
+						}
 						this.__onInputKeydown(event);
 						return;
 					}
 					this.__consoleInputEl.value = this.commandKeys[this.__curCmdIdx];
-					Common.axAlertPolite(this.__consoleInputEl.value);
+					this.__consoleInputEl.setSelectionRange(
+						this.__consoleInputEl.value.length,
+						this.__consoleInputEl.value.length
+					);
+					event.preventDefault();
 				}
 			}
 			else if (event.keyCode === Common.KeyCodes.Esc)
