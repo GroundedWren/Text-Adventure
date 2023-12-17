@@ -184,7 +184,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			}
 
 			const pluralitySwitch = replParams[1].split(":");
-			switch (replParams[1].toLowerCase())
+			switch (pluralitySwitch[0].toLowerCase())
 			{
 				case "name":
 					textAry[i] = name;

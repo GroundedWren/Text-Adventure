@@ -125,6 +125,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 
 		if (!arg)
 		{
+			//TODO lookable NPCs
 			const lookableItemIds = areaObj.Items.filter(itemId => ns.Data.World.Items[itemId].VisibleToAreaLook);
 			if (!areaObj.Description && lookableItemIds.length === 0)
 			{
