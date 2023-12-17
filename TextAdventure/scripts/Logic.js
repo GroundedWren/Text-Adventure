@@ -99,6 +99,10 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 					Common.fcd(this, this.interactWithAreaItem, [areaId]),
 					"Begin to interact with some specific item. Will display more options. E.g. 'INTERACT CHEST'"
 				),
+				"TALK": new ns.ConsoleCommand(
+					Common.fcd(this, this.talkToNPC, [areaId]),
+					"Chat up an NPC. E.g. 'TALK PERCY'"
+				),
 				"INVENTORY": new ns.ConsoleCommand(
 					Common.fcd(this, this.openInventory),
 					"Open the inventory menu. Optionally specify an item, e.g. INVENTORY BOOK"
@@ -164,7 +168,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			|| ns.Data.NPCs[areaObj.NPCs.filter(npcId =>
 			{
 				const npcObj = ns.Data.NPCs[npcId];
-				npcObj && npcObj.DisplayName.toUpperCase() === arg;
+				return npcObj && npcObj.DisplayName.toUpperCase() === arg;
 			})[0]];
 		ns.InputConsole.echoQuiet(objOfInterest?.Description || `You don't see anything called ${arg}`);
 
@@ -411,10 +415,10 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			default:
 				break;
 		}
-		postfix = postfix && actionObj.Description ? ` (${postfix})` : postfix;
+		postfix = postfix ? ` (${postfix})` : "";
 		return actionObj.Description
 			? `${actionObj.Description}${postfix}`
-			: postfix;
+			: "";
 	};
 
 	ns.runItemAction = function runItemAction(itemId, actionObj, areaObj)
@@ -519,9 +523,99 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	//#endregion
 
 	//#region NPCs
+	ns.talkToNPC = function talkToNPC(areaId, arg)
+	{
+		const areaObj = ns.Data.World.Areas[areaId];
+		if (!arg)
+		{
+			ns.InputConsole.echo("Talk to whom?");
+			return;
+		}
+
+		const matchedNPCs = areaObj.NPCs.filter(
+			npcId => ns.Data.NPCs[npcId].DisplayName.toUpperCase() === arg.toUpperCase()
+		);
+		if (!matchedNPCs.length)
+		{
+			ns.InputConsole.echo(`You can't find anyone called ${arg} who wants to talk to you`);
+			return;
+		}
+
+		const matchedNPCObj = ns.Data.NPCs[matchedNPCs[0]];
+
+		ns.InputConsole.addBlocker("salutations");
+		let spokenSalutationCnt = 0;
+		if (matchedNPCObj.Salutations && matchedNPCObj.Salutations.length)
+		{
+			matchedNPCObj.Salutations.forEach(salutationObj =>
+			{
+				if (ns.evaluateCriteriaArray(
+					salutationObj.Prereqs,
+					salutationObj.PrereqsOp,
+					salutationObj.PrereqsNegate
+				))
+				{
+					if (!spokenSalutationCnt)
+					{
+						ns.InputConsole.echo(
+							`${matchedNPCObj.Pronouns.Subjective} ${matchedNPCObj.Pronouns.UsePlural ? "say" : "says"}:`
+						);
+					}
+					ns.InputConsole.echo(`<q>${salutationObj.Text}</q>`);
+					spokenSalutationCnt++;
+				}
+			});
+		}
+		if (!spokenSalutationCnt)
+		{
+			ns.InputConsole.echo(`${matchedNPCObj.Pronouns.Subjective} ${matchedNPCObj.Pronouns.UsePlural ? "regard" : "regards"} you.`);
+		}
+		ns.InputConsole.removeBlocker("salutations");
+
+		const treeCommands = {};
+		(matchedNPCObj.DialogTrees || {}).forEach(dialogTreeObj =>
+		{
+			if (ns.evaluateCriteriaArray(
+				dialogTreeObj.Prereqs,
+				dialogTreeObj.PrereqsOp,
+				dialogTreeObj.PrereqsNegate
+			))
+			{
+				treeCommands[dialogTreeObj.DisplayName] = new ns.ConsoleCommand(
+					Common.fcd(this, this.runDialogNode, [dialogTreeObj.StartID, matchedNPCs[0]]),
+					dialogTreeObj.Description
+				);
+			}
+		});
+
+		if (!Object.keys(treeCommands).length)
+		{
+			ns.InputConsole.echo(`${matchedNPCObj.Pronouns.Subjective} ${matchedNPCObj.Pronouns.UsePlural ? "have" : "has"} nothing further to say.`);
+			return;
+		}
+
+		ns.InputConsole.addContext(new ns.ConsoleContext(
+			matchedNPCObj.DisplayName,
+			treeCommands,
+			undefined,
+			{ disableExit: false, autoExit: true },
+			""
+		));
+		ns.InputConsole.echo("Dialog initiated. Type <q>help</q> for options.");
+	}
 	//#endregion
 
 	//#region Dialogs
+	ns.runDialogNodeOnNewStack = function runDialogNodeOnNewStack(nodeId, npcId)
+	{
+		setTimeout(() => { ns.runDialogNode(nodeId, npcId); }, 0);
+	}
+
+	ns.runDialogNode = function runDialogNode(nodeId, npcId)
+	{
+		//TODO
+		//TODO replace NPCID with the npc id in the text
+	}
 	//#endregion
 
 	//#region Criteria
@@ -552,7 +646,9 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		eventsOccurredPassed = criteriaObj.EventsOccurredNegate ? !eventsOccurredPassed : eventsOccurredPassed;
 
 		const hasItemsResults = criteriaObj.HasItems.map(
-			itemId => ns.Character.hasInventoryItem(itemId) //ns.Data.Character.Inventory.filter(charItmObj => charItmObj.Item === itemId).length > 0
+			itemId => criteriaObj.HasItemsDonned
+				? ns.Character.hasItemDonned(itemId)
+				: ns.Character.hasInventoryItem(itemId)
 		);
 		let hasItemsPassed = (hasItemsResults.length === 0) || (criteriaObj.HasItemsOp === "OR"
 			? hasItemsResults.some(result => result)

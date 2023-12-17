@@ -73,6 +73,7 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		ns.Data.Pronouns = pro;
 		document.getElementById("tdPronouns").innerText = `${pro.Subjective}/${pro.Objective}/${pro.Possessive}`;
 		document.getElementById("tdPronouns2").innerText = `${pro.Reflexive}/${pro.PossessiveAdjective}`;
+		document.getElementById("tdGramNum").innerText = pro.UsePlural ? "Plural" : "Singular";
 	};
 	ns.setLevel = (level) =>
 	{
@@ -164,9 +165,18 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			const skillVal = skills[skillNm];
 			var extSkill = ns.Data.Skills[skillNm];
 
-			ns.Data.Skills[skillNm] = document.getElementById(`td${skillNm}`).innerText = skillVal
-				|| extSkill
-				|| 0;
+			let valueToSet = 0;
+
+			if (!Common.isNullUndefinedOrEmpty(skillVal))
+			{
+				valueToSet = skillVal;
+			}
+			else if (!Common.isNullUndefinedOrEmpty(extSkill))
+			{
+				valueToSet = extSkill;
+			}
+
+			ns.Data.Skills[skillNm] = document.getElementById(`td${skillNm}`).innerText = valueToSet;
 		});
 	};
 
@@ -191,6 +201,13 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 	ns.hasInventoryItem = function hasInventoryItem(itemId)
 	{
 		return this.Data.Inventory.filter(charItmObj => charItmObj.Item === itemId).length > 0;
+	};
+
+	ns.hasItemDonned = function hasItemDonned(itemId)
+	{
+		return this.Data.Inventory.filter(
+			charItmObj => (charItmObj.Item === itemId) && (charItmObj.BodyLoc !== "None")
+		).length > 0;
 	};
 
 	ns.addInventoryItem = function addInventoryItem(itemId)
@@ -242,6 +259,17 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			Evasion: parseInt(ns.Data.Vitals.Evasion) + parseInt(itemObj.Evasion || 0),
 			Armor: parseInt(ns.Data.Vitals.Armor) + parseInt(itemObj.Armor || 0),
 		});
+
+		const skillUpdateObj = {};
+		itemObj.SkillBonuses?.forEach(skillBonusObj =>
+		{
+			skillUpdateObj[skillBonusObj.Skill] = parseInt(
+				skillUpdateObj[skillBonusObj.Skill]
+				|| ns.Data.Skills[skillBonusObj.Skill]
+				|| 0
+			) + parseInt(skillBonusObj.Bonus);
+		});
+		ns.setSkills(skillUpdateObj);
 	};
 	ns.doffItem = function doffItem(itemId)
 	{
@@ -258,6 +286,17 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			Evasion: parseInt(ns.Data.Vitals.Evasion) - parseInt(itemObj.Evasion || 0),
 			Armor: parseInt(ns.Data.Vitals.Armor) - parseInt(itemObj.Armor || 0),
 		});
+
+		const skillUpdateObj = {};
+		itemObj.SkillBonuses?.forEach(skillBonusObj =>
+		{
+			skillUpdateObj[skillBonusObj.Skill] = parseInt(
+				skillUpdateObj[skillBonusObj.Skill]
+				|| ns.Data.Skills[skillBonusObj.Skill]
+				|| 0
+			) - parseInt(skillBonusObj.Bonus)
+		});
+		ns.setSkills(skillUpdateObj);
 	};
 
 	function popFromBag(itemId)
@@ -341,17 +380,26 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		const { tableRowId, itemBtnId, armorCellId, evasionCellId } = getBodyIds(bodyLoc);
 		if (!document.getElementById(tableRowId)) { return; }
 
+		const itemId = document.getElementById(tableRowId).getAttribute("data-itemId");
+		const itemObj = Pages.DungeoneerInterface.Data.World.Items[itemId];
+
 		document.getElementById(tableRowId).classList.remove("shown");
 		document.getElementById(itemBtnId).innerText = "";
 		document.getElementById(itemBtnId).onClick = () => { };
 		document.getElementById(armorCellId).innerHTML = "";
 		document.getElementById(evasionCellId).innerHTML = "";
+
+		itemObj.SkillBonuses?.forEach(skillBonusObj =>
+		{
+			document.getElementById(getSkillBonusId(itemId, skillBonusObj)).remove();
+		});
 	}
 	function pushToBody(itemId, bodyLoc)
 	{
 		const itemObj = Pages.DungeoneerInterface.Data.World.Items[itemId];
 
 		const { tableRowId, itemBtnId, armorCellId, evasionCellId } = getBodyIds(bodyLoc);
+		document.getElementById(tableRowId).setAttribute("data-itemId", itemId);
 		document.getElementById(tableRowId).classList.add("shown");
 		document.getElementById(itemBtnId).innerText = itemObj.DisplayName;
 		document.getElementById(itemBtnId).onclick = Common.fcd(
@@ -361,6 +409,14 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 		);
 		document.getElementById(armorCellId).innerHTML = itemObj.Armor || "0";
 		document.getElementById(evasionCellId).innerHTML = itemObj.Evasion || "0";
+
+		const skillBonusesTBody = document.getElementById("SkillBonusesTBody");
+		itemObj.SkillBonuses?.forEach(skillBonusObj =>
+		{
+			skillBonusesTBody.insertAdjacentHTML("afterbegin", `
+			<tr id=${getSkillBonusId(itemId, skillBonusObj)}><th scope="row">${itemObj.DisplayName}</td><td>${skillBonusObj.Skill}</td><td>${skillBonusObj.Bonus}</td></tr>
+			`);
+		});
 	}
 
 	function getBagIds(itemId)
@@ -392,6 +448,11 @@ registerNamespace("Pages.DungeoneerInterface.Character", function (ns)
 			armorCellId: `${bodyLocKey}Armor`,
 			evasionCellId: `${bodyLocKey}Evasion`,
 		};
+	}
+
+	function getSkillBonusId(itemId, skillBonusObj)
+	{
+		return `${itemId}-${skillBonusObj.Skill}-${skillBonusObj.Bonus}-SkillBonusRow`;
 	}
 	//#endregion
 

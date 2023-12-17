@@ -726,7 +726,6 @@
 
 	/**
 	 * A pinnable widget for "Item"s.
-	 * TODO add skill bonuses
 	 */
 	ns.ItemEl = class ItemEl extends ns.PinnableWidget
 	{
@@ -899,6 +898,13 @@
 										data-helptext="Events triggered when this item's health falls to zero"
 					></gw-db-string-array>
 				</div>
+				<gw-db-object-array parentWidgetId="${this.id}"
+									displayName="Skill Bonuses"
+									addName="Skill Bonus"
+									dataProperty="SkillBonuses"
+									iconKey="dumbbell"
+									objectTag="gw-db-skill-bonus-object"
+				></gw-db-object-array>
 				<gw-db-object-array parentWidgetId="${this.id}"
 									displayName="Actions"
 									addName="Action"
@@ -1594,7 +1600,7 @@
 									data-prop="Text"
 									class="full-width"
 									rows="4"
-									data-helptext="Text displayed to the player when this dialog node is reached"
+									data-helptext="Text displayed to the player when this dialog node is reached.<br /><q>NPCID<q> will be replaced with the ID of the NPC the player is talking to.<br />See Display Text Keywords in Settings for more."
 						></textarea>
 					</div>
 				</div>
@@ -1771,6 +1777,7 @@
 										data-helptext="Whether these events have at least one occurrence"
 					></gw-db-condition-array>
 					<gw-db-condition-array parentWidgetId="${this.id}"
+										id="${this.idKey}-hasitems"
 										displayName="Has Items"
 										addName="Item"
 										linePrefix="Item ID "
@@ -1853,7 +1860,16 @@
 				></gw-db-object-array>
 			</div>
 			`;
-
+			document.getElementById(`${this.idKey}-hasitems`).addlPropsEl.insertAdjacentHTML("afterbegin", `
+			<label for="${this.idKey}-donned">Donned?</label>
+			<input	id="${this.idKey}-donned"
+					type="checkbox"
+					data-owner="${this.idKey}"
+					data-prop="HasItemsDonned"
+					data-skipParent="true"
+					data-helptext="Whether to only consider donned items"
+			/>
+			`);
 			//element properties
 		}
 		//#endregion

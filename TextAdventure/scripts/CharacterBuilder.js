@@ -62,12 +62,31 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			"Denotes ownership of the object. 'That's her donut!'")
 		);
 		ns.InputConsole.lineFeed();
+		ns.InputConsole.echo("Are your pronouns singular or plural?");
+		const usePlural = await ns.InputConsole.addContext(new ns.ConsoleContext(
+			"PLURAL or SINGULAR",
+			{
+				"PLURAL": new ns.ConsoleCommand(
+					() => { return true; },
+					"E.g. 'They say', 'Xe go'"
+				),
+				"SINGULAR": new ns.ConsoleCommand(
+					() => { return false; },
+					"E.g. 'She says', 'Ze goes'"
+				)
+			},
+			(result) => result,
+			{ disableExit: true, autoExit: true },
+			"For example, 'They say' is plural, and 'She says' is singular.")
+		);
+		ns.InputConsole.lineFeed();
 		ns.Character.setPronouns({
 			Subjective: subjective.toLowerCase(),
 			Objective: objective.toLowerCase(),
 			Possessive: possessive.toLowerCase(),
 			Reflexive: reflexive.toLowerCase(),
-			PossessiveAdjective: possessiveAdj.toLowerCase()
+			PossessiveAdjective: possessiveAdj.toLowerCase(),
+			UsePlural: usePlural,
 		});		
 
 		ns.Character.setLevel(1);

@@ -170,6 +170,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				Possessive: "@ERROR-possessive@",
 				Reflexive: "@ERROR-reflexive@",
 				PossessiveAdjective: "@ERROR-possessiveadjective@",
+				UsePlural: "@ERROR-useplural@"
 			};
 			if (replParams[0] === "Character")
 			{
@@ -182,6 +183,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 				pronouns = ns.Data.NPCs[replParams[0]].Pronouns;
 			}
 
+			const pluralitySwitch = replParams[1].split(":");
 			switch (replParams[1].toLowerCase())
 			{
 				case "name":
@@ -201,6 +203,9 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 					break;
 				case "possessiveadjective":
 					textAry[i] = pronouns.PossessiveAdjective;
+					break;
+				case "useplural":
+					textAry[i] = pronouns.UsePlural ? pluralitySwitch[1] : pluralitySwitch[2]
 					break;
 				default:
 					textAry[i] = `@${replParams[0]}-ERROR@`;

@@ -73,6 +73,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			for (const command in commands)
 			{
 				if (command === "META" && !ns.isMiniViewport) { continue; }
+				if (command === "HELP") { continue; }
 
 				var tableRow = this.dce("tr", tBody);
 				this.dce("th", tableRow, { scope: "row" }, undefined, command);
@@ -92,6 +93,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 
 		addContext(consoleContext)
 		{
+			consoleContext.commands["CLEAR"] = this.__commands.CLEAR;
 			consoleContext.commands["HELP"] = this.__commands.HELP;
 			consoleContext.commands["META"] = this.__commands.META;
 			consoleContext.setUpPromise();
@@ -200,7 +202,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__blockers[identifier] = "";
 			setTimeout(Common.fcd(this, (identifier) =>
 			{
-				if (this.__blockers[identifier])
+				if (!Common.isNullOrUndefined(this.__blockers[identifier]))
 				{
 					console.log("Console blocked for more than 5s. Blockers: " + Object.keys(this.__blockers));
 					debugger;
@@ -208,7 +210,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 					this.removeBlocker(identifier);
 					this.echo();
 				}
-			}, [identifier]), 5000);
+			}, [identifier]), 3000);
 		}
 		removeBlocker(identifier)
 		{

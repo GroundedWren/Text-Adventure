@@ -808,6 +808,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			<fieldset class="input-horizontal-flex" data-helptext="How others refer to the character">
 				<legend>Pronouns</legend>
 				<div class="input-flex-line">
+					<label for="${this.idKey}-plural">Use Plural?</label>
+					<input	id="${this.idKey}-plural"
+							type="checkbox"
+							data-owner="${this.idKey}"
+							data-prop="UsePlural"
+					/>
+				</div>
+				<div class="input-flex-line">
 					<label for="${this.idKey}-subjective">Subjective</label>
 					<input	id="${this.idKey}-subjective"
 							type="text"
@@ -1274,7 +1282,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return `
 			<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
 			<div class="obj-el-header">
-				<button id="${this.idKey}-btnRemove" class="rm-obj-btn"></button>
+				<button id="${this.idKey}-btnRemove" class="rm-obj-btn">
+					<gw-icon iconKey="xmark" title="delete"></gw-icon>
+				</button>
 			</div>
 			`;
 		};
@@ -1365,8 +1375,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-story-text-object", ns.StoryTextObjEl);
@@ -1498,8 +1506,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-portal-object", ns.PortalObjEl);
@@ -1645,8 +1651,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.modeSelectEl = document.getElementById(`${this.idKey}-mode`);
 			this.attackEl = document.getElementById(`${this.idKey}-attack`);
 			this.bodyLocEl = document.getElementById(`${this.idKey}-bodyLocSelect`);
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 
 		renderData(data)
@@ -1685,6 +1689,80 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		};
 	};
 	customElements.define("gw-db-action-object", ns.ActionObjEl);
+
+	ns.SkillBonusObjEl = class SkillBonusObjEl extends ns.SubWidgetRepeatedObj
+	{
+		//#region staticProperties
+		static observedAttributes = [];
+		static instanceCount = 0;
+		static instanceMap = {};
+		//#endregion
+
+		//#region instance properties
+
+
+		//#region element properties
+		rmBtnEl;
+		legendEl;
+		//#endregion
+		//#endregion
+
+		constructor()
+		{
+			super();
+
+			this.instanceId = SkillBonusObjEl.instanceCount++;
+
+			SkillBonusObjEl.instanceMap[this.instanceId] = this;
+		}
+
+		//#region HTMLElement implementation
+		connectedCallback()
+		{
+			super.connectedCallback();
+
+			if (this.initialized) { return; }
+
+			this.initialized = true;
+		}
+		//#endregion
+
+		get subWidgetName()
+		{
+			return "skill-bonus-obj";
+		}
+
+		renderContent()
+		{
+			//Markup
+			this.innerHTML = `
+			<fieldset class="background-color-content">
+				${this.standardHeader}
+				<div class="card-line">
+					<gw-db-skill-select	id="${this.idKey}-skill"
+										dataOwner=${this.idKey}
+										dataProperty="Skill"
+										data-helptext="The skill to modify"
+					></gw-db-skill-select>
+					<div class="input-vertical-line">
+						<label for="${this.idKey}-bonus">Bonus</label>
+						<input	id="${this.idKey}-bonus"
+								type="number"
+								data-owner=${this.idKey}
+								data-prop="Bonus"
+								data-helptext="The bonus to apply to this skill"
+						/>
+					</div>
+				</div>
+			</fieldset>
+			`;
+
+			//element properties
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.legendEl = this.standardLegend;
+		}
+	};
+	customElements.define("gw-db-skill-bonus-object", ns.SkillBonusObjEl);
 	//#endregion
 
 	//#region Events
@@ -1767,8 +1845,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-place-items-object", ns.PlaceItmsObj);
@@ -1869,8 +1945,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.toAreaEl = document.getElementById(`${this.idKey}-toArea`);
 			this.toAreaLinkEl = document.getElementById(`${this.idKey}-area-linkBtn`);
 			this.toPartyEl = document.getElementById(`${this.idKey}-toParty`);
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 
 		registerHandlers()
@@ -1963,8 +2037,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-salutation-object", ns.SalutationObjEl);
@@ -2065,8 +2137,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-dialog-tree-object", ns.DialogTreeObjEl);
@@ -2180,8 +2250,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-dialog-response-object", ns.DialogResponseObjEl);
@@ -2269,8 +2337,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-skill-check-object", ns.SkillCheckObjEl);
@@ -2344,8 +2410,6 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
 			this.legendEl = this.standardLegend;
-
-			this.rmBtnEl.appendChild(Common.SVGLib.createIcon(Common.SVGLib.Icons["xmark"], "delete"));
 		}
 	};
 	customElements.define("gw-db-player-inven-object", ns.PlayerInvenObjEl);
@@ -2771,6 +2835,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		stringAryEl;
+		addlPropsEl;
 		//#endregion
 		//#endregion
 
