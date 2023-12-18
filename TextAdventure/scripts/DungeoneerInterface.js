@@ -149,6 +149,28 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	//#region Console Commands
 	//#endregion
 
+	//#region Meta Buttons
+	ns.onExpandCollapseTable = (event) =>
+	{
+		const button = event.currentTarget;
+		const isExpanded = button.getAttribute("aria-expanded") == "true";
+
+		button.setAttribute("aria-expanded", !isExpanded);
+		const tBody = document.getElementById(button.getAttribute("aria-controls"));
+		if (isExpanded)
+		{
+			tBody.classList.add("hidden");
+		}
+		else
+		{
+			tBody.classList.remove("hidden");
+		}
+		button.innerHTML = `<gw-icon iconKey="${isExpanded ? "chevron-down" : "chevron-up"}" title="${isExpanded ? "Expand" : "Collapse"}"></gw-icon>`;
+	}
+
+	//#endregion
+
+	//This should be in a utility file or something
 	ns.prepareTextForDisplay = function prepareTextForDisplay(text)
 	{
 		let newText = text.replaceAll("\n", "<br />");

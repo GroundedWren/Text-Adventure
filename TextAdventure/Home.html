@@ -19,10 +19,12 @@
 	<script src="../common/scripts/DOMLib.js"></script>
 	<script src="../common/scripts/SVGLib.js"></script>
 	<script src="../common/scripts/FileLib.js"></script>
+	<script src="../common/scripts/GSheetsLib.js"></script>
 	<script src="../common/scripts/Components/Shortcuts.js"></script>
 	<script src="../common/scripts/Components/ElementDragger.js"></script>
 	<script src="../common/scripts/Controls/Dialog.js"></script>
 	<script src="../common/scripts/Controls/Modal.js"></script>
+	<script src="../common/scripts/Controls/Comments.js"></script>
 
 	<script src="./scripts/Home.js"></script>
 </head>
@@ -70,7 +72,7 @@
 					<h2 class="card-header">About</h2>
 					<p>The GroundedWren Text Adventure Suite (GTAS) is lightweight, accessible software for creating and playing robust single-player text-based games.</p>
 					<p>Built from scratch using only fundamental web technologies, GTAS was designed from the ground-up for screen readers first, not as an afterthought. These are text games, after all.</p>
-					<p>GTAS is the passion project of just one caffine-addicted woman. If you have feedback, ideas, or questions, please reach out to <a href="mailto:vera@groundedwren.com">vera@groundedwren.com</a></p>
+					<p>GTAS is the passion project of just one caffeine-addicted woman. If you have feedback, ideas, or questions, please reach out to <a href="mailto:vera@groundedwren.com">vera@groundedwren.com</a></p>
 					<p>The <a href="https://github.com/GroundedWren/Text-Adventure">code for this project</a> is freely available; if it will help you, please use it for good.</p>
 				</div>
 				<div id="updatesCard" class="card">
@@ -146,6 +148,17 @@
 						</div>
 					</div>
 				</div>
+				<section class="comments-region" aria-labelledby="commentsH2">
+					<h2 id="commentsH2">Guest Comments</h2>
+					<gw-comment-form id="commentForm"
+									 discordURL="https://discord.com/api/webhooks/1186132986912059547/zO0ge3VuMSOqBBy7AGHO3KBSJVatcJDIN88fl-YsczXr6W7N3cSRijTCQp4OqiRPX47p">
+					</gw-comment-form>
+					<gw-comment-list gSpreadsheetId="1Iv0lu3fNTiM7L_gLRQAcIrEMZp1zZKQBDNtAxxdpZLw"
+									 gSheetId="Text-Adventure"
+									 isNewestFirst="true"
+									 gwCommentFormId="commentForm">
+					</gw-comment-list>
+				</section>
 			</main>
 		</div>
 		<div id="dialogRegion" role="region" aria-label="dialogs"></div>

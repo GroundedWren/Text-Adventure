@@ -91,6 +91,11 @@ table button {
 	height: auto;
 }
 
+.caption-content {
+	display: grid;
+	grid-template-columns: 1fr auto;
+}
+
 #currentGameMetaCard table {
 	border: none;
 }
@@ -150,9 +155,11 @@ table button {
 }
 
 #bagList li {
+	margin-top: 5px;
 	margin-bottom: 5px;
 }
 /*#endregion */
+
 /*#region Console */
 #consolePane {
 	display: flex;

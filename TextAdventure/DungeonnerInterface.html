@@ -64,8 +64,18 @@
 				<div id="metaPane_pgc" class="page-container" aria-live="off">
 					<div id="metaPane_page_Player" class="page-control-page" tabindex="-1">
 						<table id="BasicInfo">
-							<caption role="heading" aria-level="2">Basic Information</caption>
-							<tbody>
+							<caption aria-labelledby="hBasicInfo">
+								<div class="caption-content">
+									<span id="hBasicInfo" role="heading" aria-level="2">Basic Information</span>
+									<button class="icon-button"
+											aria-controls="basicInfoTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<tbody id="basicInfoTBody">
 								<tr><th scope="row">Name</th><td id="tdName">-</td></tr>
 								<tr><th scope="row">Pronouns (S/O/P)</th><td id="tdPronouns">-/-/-</td></tr>
 								<tr><th scope="row">Pronouns (R/PA)</th><td id="tdPronouns2">-/-</td></tr>
@@ -74,8 +84,18 @@
 							</tbody>
 						</table>
 						<table id="VitalInfo">
-							<caption role="heading" aria-level="2">Vitals</caption>
-							<tbody>
+							<caption aria-labelledby="hVitals">
+								<div class="caption-content">
+									<span id="hVitals" role="heading" aria-level="2">Vitals</span>
+									<button class="icon-button"
+											aria-controls="vitalsTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<tbody id="vitalsTBody">
 								<tr>
 									<th scope="row">Health</th>
 									<td><span id="sHealth">-</span>/<span id="sMaxHealth">-</span></td>
@@ -91,11 +111,21 @@
 							</tbody>
 						</table>
 						<table id="Abilities">
-							<caption role="heading" aria-level="2">Abilities</caption>
+							<caption aria-labelledby="hAbilities">
+								<div class="caption-content">
+									<span id="hAbilities" role="heading" aria-level="2">Abilities</span>
+									<button class="icon-button"
+											aria-controls="abilitiesTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
 							<thead>
 								<tr><th>Ability</th><th>Value</th><th>Modifier</th></tr>
 							</thead>
-							<tbody>
+							<tbody id="abilitiesTBody">
 								<tr><th scope="row">STR</th><td id="tdStr">-</td><td id="tdStrMod">-</td></tr>
 								<tr><th scope="row">DEX</th><td id="tdDex">-</td><td id="tdDexMod">-</td></tr>
 								<tr><th scope="row">CON</th><td id="tdCon">-</td><td id="tdConMod">-</td></tr>
@@ -105,11 +135,21 @@
 							</tbody>
 						</table>
 						<table id="Skills">
-							<caption role="heading" aria-level="2">Skills</caption>
+							<caption aria-labelledby="hSkills">
+								<div class="caption-content">
+									<span id="hSkills" role="heading" aria-level="2">Skills</span>
+									<button class="icon-button"
+											aria-controls="skillsTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
 							<thead>
 								<tr><th>Skill</th><th>Bonus</th></tr>
 							</thead>
-							<tbody>
+							<tbody id="skillsTBody">
 								<tr><th scope="row">Acrobatics</th><td id="tdAcrobatics">-</td></tr>
 								<tr><th scope="row">Athletics</th><td id="tdAthletics">-</td></tr>
 								<tr><th scope="row">Deception</th><td id="tdDeception">-</td></tr>
@@ -130,7 +170,17 @@
 					</div>
 					<div id="metaPane_page_Inventory" class="page-control-page">
 						<table id="Body">
-							<caption role="heading" aria-level="2">Body</caption>
+							<caption aria-labelledby="hBody">
+								<div class="caption-content">
+									<span id="hBody" role="heading" aria-level="2">Body</span>
+									<button class="icon-button"
+											aria-controls="BodyTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
 							<thead>
 								<tr><th>Location</th><th>Item</th><th>Armor</th><th>Evasion</th></tr>
 							</thead>
@@ -204,7 +254,17 @@
 							</tbody>
 						</table>
 						<table id="Weapons">
-							<caption role="heading" aria-level="2">Weapons</caption>
+							<caption aria-labelledby="hWeapons">
+								<div class="caption-content">
+									<span id="hWeapons" role="heading" aria-level="2">Weapons</span>
+									<button class="icon-button"
+											aria-controls="WeaponsTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
 							<thead>
 								<tr><th>Name</th><th>Location</th></tr>
 							</thead>
@@ -213,7 +273,17 @@
 							</tbody>
 						</table>
 						<table id="SkillBonuses">
-							<caption role="heading" aria-level="2">Skill Bonuses</caption>
+							<caption aria-labelledby="hSkillBonuses">
+								<div class="caption-content">
+									<span id="hSkillBonuses" role="heading" aria-level="2">Skill Bonuses</span>
+									<button class="icon-button"
+											aria-controls="SkillBonusesTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
 							<thead>
 								<tr><th>Item</th><th>Skill</th><th>Bonus</th></tr>
 							</thead>
@@ -222,6 +292,7 @@
 							</tbody>
 						</table>
 						<h2 id="hBag">Bag</h2>
+						<div>Money: <span id="sMoney">0</span></div>
 						<ul id="bagList" aria-labelledby="hBag">
 							<!-- Bag items -->
 						</ul>
