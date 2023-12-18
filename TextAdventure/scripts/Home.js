@@ -11,11 +11,13 @@ registerNamespace("Pages.Home", function (ns)
 		{
 			updatesCardEl.classList.remove("more");
 			buttonEl.innerText = "Show More Updates";
+			buttonEl.setAttribute("aria-expanded", "false");
 		}
 		else
 		{
 			updatesCardEl.classList.add("more");
 			buttonEl.innerText = "Show Fewer Updates";
+			buttonEl.setAttribute("aria-expanded", "true");
 		}
 	};
 });
