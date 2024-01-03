@@ -424,6 +424,7 @@ form > h1, form > h2, form > h3, form > h4, form > h5, form > h6 {
 input[type="text"], input[type="password"], input[type="number"], input[type="email"], input[type="submit"] {
 	background-color: var(--input-background-color);
 	color: var(--input-text-color);
+	-moz-appearance: textfield;
 }
 
 .z { /* Fix auto-indent */
@@ -578,9 +579,12 @@ tr > th {
 	display: flex;
 }
 
-	.inline-banner-wrapper > .inline-banner {
-		width: 100%;
-	}
+.z {
+}
+
+.inline-banner-wrapper > .inline-banner {
+	width: 100%;
+}
 
 .inline-banner {
 	margin: 10px;
@@ -594,9 +598,12 @@ tr > th {
 	gap: 5px;
 }
 
-	.inline-banner.center {
-		justify-content: center;
-	}
+.z {
+}
+
+.inline-banner.center {
+	justify-content: center;
+}
 
 .z {
 }
@@ -762,11 +769,6 @@ figcaption {
 .tooltip-target:focus .tooltip-text {
 	visibility: visible;
 }
-
-.sr-only {
-	position: absolute;
-	left: -99999999px;
-}
 /*#endregion*/
 
 /*#region Elements*/
@@ -801,6 +803,12 @@ button[role="link"], .button-like[role="link"] {
 /*#endregion*/
 
 /*#region Other*/
+.sr-only {
+	position: absolute;
+	left: -99999999px;
+	top: 0px;
+}
+
 .ans-toggler {
 	cursor: pointer;
 }
@@ -848,7 +856,10 @@ button[role="link"], .button-like[role="link"] {
 	width: max-content;
 }
 
-	.nb-word + .nb-word {
-		margin-left: 0.3em;
-	}
+.z {
+}
+
+.nb-word + .nb-word {
+	margin-left: 0.3em;
+}
 /*#endregion*/
