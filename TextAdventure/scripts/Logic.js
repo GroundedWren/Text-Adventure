@@ -569,7 +569,9 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 		}
 		if (!spokenSalutationCnt)
 		{
-			ns.InputConsole.echo(`${matchedNPCObj.Pronouns.Subjective} ${matchedNPCObj.Pronouns.UsePlural ? "regard" : "regards"} you.`);
+			ns.InputConsole.echo(
+				`${matchedNPCObj.Pronouns.Subjective} ${matchedNPCObj.Pronouns.UsePlural ? "regard" : "regards"} you.`
+			);
 		}
 		ns.InputConsole.removeBlocker("salutations");
 
@@ -584,7 +586,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			{
 				treeCommands[dialogTreeObj.DisplayName] = new ns.ConsoleCommand(
 					Common.fcd(this, this.runDialogNode, [dialogTreeObj.StartID, matchedNPCs[0]]),
-					dialogTreeObj.Description
+					dialogTreeObj.Description,
 				);
 			}
 		});
@@ -602,7 +604,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 			{ disableExit: false, autoExit: true },
 			""
 		));
-		ns.InputConsole.echo("Dialog initiated. Type <q>help</q> for options.");
+		ns.InputConsole.showOrderedList();
 	}
 	//#endregion
 
@@ -620,6 +622,7 @@ registerNamespace("Pages.DungeoneerInterface.Logic", function (ns)
 	//#endregion
 
 	//#region Criteria
+	// TODO enable NPC checking some of these
 	ns.evaluateCriteria = function (criteriaId, npcId)
 	{
 		const criteriaObj = ns.Data.Criteria[criteriaId];

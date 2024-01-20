@@ -60,7 +60,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			this.renderContent();
 			this.registerHandlers();
-			if (this.parentWidget && this.parentWidget.data && this.parentWidget.data[this.dataProperty])
+			if (this.parentWidget
+				&& this.parentWidget.data
+				&& this.parentWidget.data[this.dataProperty]
+			)
 			{
 				this.renderData(this.parentWidget.data[this.dataProperty]);
 			}
@@ -144,7 +147,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			for (const subWidget of subWidgets)
 			{
-				if (subWidget.dataProperty && this.ownsSubWidget(subWidget))
+				if (subWidget.dataProperty
+					&& this.ownsSubWidget(subWidget)
+					&& data[subWidget.dataProperty]
+				)
 				{
 					subWidget.renderData(data[subWidget.dataProperty]);
 				}
@@ -387,11 +393,14 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			const lineEl = document.getElementById(lineId);
 			const rmBtnEl = lineEl.rmBtnEl;
+			const expandBtnEl = lineEl.expandBtnEl;
+			const expandableEl = lineEl.expandableEl;
 
 			this.lineAry.push({
 				"lineNum": lineNum,
 				"lineEl": lineEl,
 			});
+
 
 			rmBtnEl?.addEventListener("click", () =>
 			{
@@ -404,6 +413,30 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 					this.lineAry[i].lineEl.setListIndex(i);
 				}
 			});
+
+			if (expandBtnEl && expandableEl)
+			{
+				Common.DOMLib.addStyle(expandableEl, { display: !!event ? "" : "none" });
+				if (event)
+				{
+					expandBtnEl.innerHTML = `<gw-icon iconKey="chevron-up" title="collapse"></gw-icon>`;
+				}
+
+				Common.Components.RegisterVisToggle(
+					expandBtnEl,
+					[
+						expandableEl,
+					],
+					(visible) =>
+					{
+						expandBtnEl.innerHTML = visible
+							? `<gw-icon iconKey="chevron-up" title="collapse"></gw-icon>`
+							: `<gw-icon iconKey="chevron-down" title="expand"></gw-icon>`;
+					},
+					!!event
+				);
+			}
+			
 
 			if (lineEl.renderData && value)
 			{
@@ -1247,6 +1280,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		//#region element properties
 		legendEl;
 		rmBtnEl;
+		expandBtnEl;
+		expandableEl;
 		//#endregion
 		//#endregion
 
@@ -1282,6 +1317,9 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return `
 			<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
 			<div class="obj-el-header">
+				<button id="${this.idKey}-btnExpand">
+					<gw-icon iconKey="chevron-down" title="expand"></gw-icon>
+				</button>
 				<button id="${this.idKey}-btnRemove" class="rm-obj-btn">
 					<gw-icon iconKey="xmark" title="delete"></gw-icon>
 				</button>
@@ -1292,6 +1330,11 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		get standardRemoveBtn()
 		{
 			return document.getElementById(`${this.idKey}-btnRemove`);
+		}
+
+		get standardExpandBtn()
+		{
+			return document.getElementById(`${this.idKey}-btnExpand`);
 		}
 
 		get standardLegend()
@@ -1314,6 +1357,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -1349,7 +1393,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line centered">
+				<div id="${this.idKey}-expandable" class="card-line centered">
 					<gw-db-condition-array ownerIdKey="${this.idKey}"
 										dataProperty="Prereqs"
 										displayName="Prereqs"
@@ -1374,6 +1418,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -1392,6 +1438,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -1427,84 +1474,88 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line center-align">
-					<div class="input-grid id-single widget-grid-input">
-						<label for="${this.idKey}-destination">Destination</label>
-						<input	id="${this.idKey}-destination"
-								type="text"
-								data-owner=${this.idKey}
-								data-prop="Destination"
-								data-helptext="The area to which a portal leads"
-						/>
-						<gw-db-widget-link
-							id=${this.idKey}-linkBtn
-							networkedWidget="gw-db-area" 
-							idInputElId="${this.idKey}-destination">
-						</gw-db-widget-link>
-						<label for="${this.idKey}-displayName">Display Name</label>
-						<input	id="${this.idKey}-displayName"
-								type="text"
-								data-owner=${this.idKey}
-								data-prop="DisplayName"
-								data-helptext="The name with which this portal will be referenced"
-						/>
+				<div id="${this.idKey}-expandable">
+					<div class="card-line center-align">
+						<div class="input-grid id-single widget-grid-input">
+							<label for="${this.idKey}-destination">Destination</label>
+							<input	id="${this.idKey}-destination"
+									type="text"
+									data-owner=${this.idKey}
+									data-prop="Destination"
+									data-helptext="The area to which a portal leads"
+							/>
+							<gw-db-widget-link
+								id=${this.idKey}-linkBtn
+								networkedWidget="gw-db-area" 
+								idInputElId="${this.idKey}-destination">
+							</gw-db-widget-link>
+							<label for="${this.idKey}-displayName">Display Name</label>
+							<input	id="${this.idKey}-displayName"
+									type="text"
+									data-owner=${this.idKey}
+									data-prop="DisplayName"
+									data-helptext="The name with which this portal will be referenced"
+							/>
+							<div class="placeholder"></div>
+						</div>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-description">Description</label>
+							<textarea	id="${this.idKey}-description"
+										data-owner="${this.idKey}"
+										data-prop="Description"
+										rows="3"
+										data-helptext="Text shown to the player when they look at this portal"
+							></textarea>
+						</div>
 						<div class="placeholder"></div>
 					</div>
-					<div class="input-vertical-line">
-						<label for="${this.idKey}-description">Description</label>
-						<textarea	id="${this.idKey}-description"
-									data-owner="${this.idKey}"
-									data-prop="Description"
-									rows="3"
-									data-helptext="Text shown to the player when they look at this portal"
-						></textarea>
+					<div class="card-line centered">
+						<div class="input-block">
+							<label for="${this.idKey}-accessText">Access Text</label>
+							<textarea	id="${this.idKey}-accessText"
+										data-owner="${this.idKey}"
+										data-prop="AccessText"
+										class="full-width"
+										rows="4"
+										data-helptext="Text shown to the player after they pass through this portal"
+							></textarea>
+						</div>
 					</div>
-					<div class="placeholder"></div>
-				</div>
-				<div class="card-line centered">
-					<div class="input-block">
-						<label for="${this.idKey}-accessText">Access Text</label>
-						<textarea	id="${this.idKey}-accessText"
-									data-owner="${this.idKey}"
-									data-prop="AccessText"
-									class="full-width"
-									rows="4"
-									data-helptext="Text shown to the player after they pass through this portal"
-						></textarea>
+					<div class="card-line">
+						<gw-db-condition-array ownerIdKey="${this.idKey}"
+											dataProperty="GateVisibility"
+											displayName="Gate Visibility"
+											addName="Gate"
+											linePrefix="Criteria ID "
+											networkedWidget="gw-db-criteria"
+											data-helptext="Criteria to determine whether the player can see that this portal exists"
+						></gw-db-condition-array>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-denied">Access Denied Text</label>
+							<textarea	id="${this.idKey}-denied"
+										data-owner="${this.idKey}"
+										data-prop="AccessDeniedText"
+										rows="3"
+										data-helptext="Text displayed to the player when they fail to pass through the portal"
+							></textarea>
+						</div>
+						<gw-db-condition-array ownerIdKey="${this.idKey}"
+											dataProperty="GateAccess"
+											displayName="Gate Access"
+											addName="Gate"
+											linePrefix="Criteria ID "
+											networkedWidget="gw-db-criteria"
+											data-helptext="Criteria to determine whether the player can successfully pass throug the portal"
+						></gw-db-condition-array>
 					</div>
-				</div>
-				<div class="card-line">
-					<gw-db-condition-array ownerIdKey="${this.idKey}"
-										dataProperty="GateVisibility"
-										displayName="Gate Visibility"
-										addName="Gate"
-										linePrefix="Criteria ID "
-										networkedWidget="gw-db-criteria"
-										data-helptext="Criteria to determine whether the player can see that this portal exists"
-					></gw-db-condition-array>
-					<div class="input-vertical-line">
-						<label for="${this.idKey}-denied">Access Denied Text</label>
-						<textarea	id="${this.idKey}-denied"
-									data-owner="${this.idKey}"
-									data-prop="AccessDeniedText"
-									rows="3"
-									data-helptext="Text displayed to the player when they fail to pass through the portal"
-						></textarea>
-					</div>
-					<gw-db-condition-array ownerIdKey="${this.idKey}"
-										dataProperty="GateAccess"
-										displayName="Gate Access"
-										addName="Gate"
-										linePrefix="Criteria ID "
-										networkedWidget="gw-db-criteria"
-										data-helptext="Criteria to determine whether the player can successfully pass throug the portal"
-					></gw-db-condition-array>
 				</div>
 			</fieldset>
 			`;
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -1525,6 +1576,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		modeSelectEl;
 		attackEl;
@@ -1563,90 +1615,94 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line">
-					<div class="input-vertical-line">
-						<label for="${this.idKey}-dispName">Display Name</label>
-						<input	id="${this.idKey}-dispName"
-								type="text"
-								data-owner="${this.idKey}"
-								data-prop="DisplayName"
-								data-helptext="The name with which this action will be displayed to the player"
-						/>
-					</div>
-					<div class="input-vertical-line">
-						<label for="${this.idKey}-description">Description</label>
-						<textarea	id="${this.idKey}-description"
+				<div id="${this.idKey}-expandable">
+					<div class="card-line">
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-dispName">Display Name</label>
+							<input	id="${this.idKey}-dispName"
+									type="text"
 									data-owner="${this.idKey}"
-									data-prop="Description"
-									rows="3"
-									data-helptext="A description of the action the player may see"
-						></textarea>
+									data-prop="DisplayName"
+									data-helptext="The name with which this action will be displayed to the player"
+							/>
+						</div>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-description">Description</label>
+							<textarea	id="${this.idKey}-description"
+										data-owner="${this.idKey}"
+										data-prop="Description"
+										rows="3"
+										data-helptext="A description of the action the player may see"
+							></textarea>
+						</div>
+						<div class="input-vertical-line">
+							<label for="${this.idKey}-textOnAct">Text On-Act</label>
+							<textarea	id="${this.idKey}-textOnAct"
+										data-owner="${this.idKey}"
+										data-prop="TextOnAct"
+										rows="3"
+										data-helptext="Text shown to the player when the action is taken"
+							></textarea>
+						</div>
+						<div class="placeholder"></div>
 					</div>
-					<div class="input-vertical-line">
-						<label for="${this.idKey}-textOnAct">Text On-Act</label>
-						<textarea	id="${this.idKey}-textOnAct"
-									data-owner="${this.idKey}"
-									data-prop="TextOnAct"
-									rows="3"
-									data-helptext="Text shown to the player when the action is taken"
-						></textarea>
+					<div class="card-line">
+						<gw-db-condition-array ownerIdKey="${this.idKey}"
+											dataProperty="Prereqs"
+											displayName="Prereqs"
+											addName="Prereq"
+											linePrefix="Criteria ID "
+											networkedWidget="gw-db-criteria"
+											data-helptext="Criteria to determine whether the action may be performed"
+						></gw-db-condition-array>
+						<gw-db-string-array id="${this.idKey}-events"
+											dataProperty="Events"
+											dataOwner="${this.idKey}"
+											displayName="Events"
+											addName="Event"
+											linePrefix="Event ID "
+											networkedWidget="gw-db-event"
+											data-helptext="Events triggered by the action"
+						></gw-db-string-array>
+						<div class="input-vertical-line static-size">
+							<label for="${this.idKey}-mode">Mode</label>
+							<select id="${this.idKey}-mode"
+									data-owner=${this.idKey}
+									data-prop="Mode"
+									aria-controls="${this.idKey}-attack ${this.idKey}-bodyLocSelect"
+									data-helptext="A description of the kind of action this is, which can drive some basic behavior<br />e.g. if the action is Don or Doff, this item is considered equippable"
+							>
+								<option>None</option>
+								<option>Don</option>
+								<option>Doff</option>
+								<option>Pick Up</option>
+								<option>Put Down</option>
+								<option>Look</option>
+								<option>Attack</option>
+							</select>
+						</div>
 					</div>
-					<div class="placeholder"></div>
-				</div>
-				<div class="card-line">
-					<gw-db-condition-array ownerIdKey="${this.idKey}"
-										dataProperty="Prereqs"
-										displayName="Prereqs"
-										addName="Prereq"
-										linePrefix="Criteria ID "
-										networkedWidget="gw-db-criteria"
-										data-helptext="Criteria to determine whether the action may be performed"
-					></gw-db-condition-array>
-					<gw-db-string-array id="${this.idKey}-events"
-										dataProperty="Events"
+					<div id="${this.idKey}-modeLine" class="card-line centered">
+						<gw-db-attack	id="${this.idKey}-attack"
+										class="hidden"
 										dataOwner="${this.idKey}"
-										displayName="Events"
-										addName="Event"
-										linePrefix="Event ID "
-										networkedWidget="gw-db-event"
-										data-helptext="Events triggered by the action"
-					></gw-db-string-array>
-					<div class="input-vertical-line static-size">
-						<label for="${this.idKey}-mode">Mode</label>
-						<select id="${this.idKey}-mode"
-								data-owner=${this.idKey}
-								data-prop="Mode"
-								aria-controls="${this.idKey}-attack ${this.idKey}-bodyLocSelect"
-								data-helptext="A description of the kind of action this is, which can drive some basic behavior<br />e.g. if the action is Don or Doff, this item is considered equippable"
-						>
-							<option>None</option>
-							<option>Don</option>
-							<option>Doff</option>
-							<option>Pick Up</option>
-							<option>Put Down</option>
-							<option>Look</option>
-							<option>Attack</option>
-						</select>
+										dataProperty="Attack">
+						</gw-db-attack>
+						<gw-db-bodyloc-select	id="${this.idKey}-bodyLocSelect"
+												class="hidden"
+												dataOwner=${this.idKey}
+												dataProperty="DonBodyLocation"
+												data-helptext="The body location to don the item"
+						></gw-db-bodyloc-select>
 					</div>
-				</div>
-				<div id="${this.idKey}-modeLine" class="card-line centered">
-					<gw-db-attack	id="${this.idKey}-attack"
-									class="hidden"
-									dataOwner="${this.idKey}"
-									dataProperty="Attack">
-					</gw-db-attack>
-					<gw-db-bodyloc-select	id="${this.idKey}-bodyLocSelect"
-											class="hidden"
-											dataOwner=${this.idKey}
-											dataProperty="DonBodyLocation"
-											data-helptext="The body location to don the item"
-					></gw-db-bodyloc-select>
 				</div>
 			</fieldset>
 			`;
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 			this.modeSelectEl = document.getElementById(`${this.idKey}-mode`);
 			this.attackEl = document.getElementById(`${this.idKey}-attack`);
@@ -1703,6 +1759,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -1738,7 +1795,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line">
+				<div id="${this.idKey}-expandable" class="card-line">
 					<gw-db-skill-select	id="${this.idKey}-skill"
 										dataOwner=${this.idKey}
 										dataProperty="Skill"
@@ -1759,6 +1816,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -1779,6 +1838,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -1814,7 +1874,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line">
+				<div id="${this.idKey}-expandable" class="card-line">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-toLoc">In Location</label>
 						<input	id="${this.idKey}-toLoc"
@@ -1844,6 +1904,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -1862,6 +1924,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		toAreaEl;
 		toAreaLinkEl;
@@ -1900,7 +1963,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line">
+				<div id="${this.idKey}-expandable" class="card-line">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-npc">NPC</label>
 						<input	id="${this.idKey}-npc"
@@ -1941,6 +2004,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 			this.toAreaEl = document.getElementById(`${this.idKey}-toArea`);
 			this.toAreaLinkEl = document.getElementById(`${this.idKey}-area-linkBtn`);
@@ -1977,6 +2042,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -2014,7 +2080,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 						data-helptext="Salutations are displayed to the player when dialog with this NPC begins"
 			>
 				${this.standardHeader}
-				<div class="card-line centered">
+				<div id="${this.idKey}-expandable" class="card-line centered">
 					<gw-db-condition-array ownerIdKey="${this.idKey}"
 										dataProperty="Prereqs"
 										displayName="Prereqs"
@@ -2036,6 +2102,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -2054,6 +2122,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -2089,7 +2158,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line">
+				<div id="${this.idKey}-expandable" class="card-line">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-dispName">Display Name</label>
 						<input	id="${this.idKey}-dispName"
@@ -2136,6 +2205,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -2156,6 +2227,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -2191,57 +2263,110 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content">
 				${this.standardHeader}
-				<div class="card-line">
-					<div class="input-grid id-single widget-grid-input">
-						<label for="${this.idKey}-dispName">Display Name</label>
-						<input	id="${this.idKey}-dispName"
-								type="text"
-								data-owner="${this.idKey}"
-								data-prop="DisplayName"
-								data-helptext="The name by which the player may choose this response"
-						/>
-						<div class="placeholder"></div>
-						<label for="${this.idKey}-tonode">To Node</label>
-						<input	id="${this.idKey}-tonode"
-								type="text"
-								data-owner=${this.idKey}
-								data-prop="ToNode"
-								data-helptext="The Dialog node this response leads to<br />If blank, the conversation ends"
-						/>
-						<gw-db-widget-link
-							id=${this.idKey}-linkBtn
-							networkedWidget="gw-db-dialog" 
-							idInputElId="${this.idKey}-tonode">
-						</gw-db-widget-link>
-					</div>
-					<gw-db-condition-array id="${this.idKey}-prereqAry"
-										dataProperty="Prereqs"
-										dataOwner="${this.idKey}"
-										displayName="Prereqs"
-										addName="Prereq"
-										linePrefix="Criteria ID "
-										networkedWidget="gw-db-criteria"
-										data-helptext="Criteria which must be met to choose this option"
-					></gw-db-condition-array>
-					<gw-db-string-array ownerIdKey="${this.idKey}"
-										dataProperty="Events"
-										displayName="Events"
-										addName="Event"
-										linePrefix="Event ID "
-										networkedWidget="gw-db-event"
-										data-helptext="Events triggered by selecting this option"
-					></gw-db-string-array>
-				</div>
-				<div class="card-line centered">
-					<div class="input-block">
-						<label for="${this.idKey}-description">Description</label>
-						<textarea	id="${this.idKey}-description"
+				<div id="${this.idKey}-expandable">
+					<div class="card-line">
+						<div class="input-grid widget-input-grid">
+							<label for="${this.idKey}-dispName">Display Name</label>
+							<input	id="${this.idKey}-dispName"
+									type="text"
 									data-owner="${this.idKey}"
-									data-prop="Description"
-									class="full-width"
-									rows="4"
-									data-helptext="A description of the response available to the player"
-						></textarea>
+									data-prop="DisplayName"
+									data-helptext="The name by which the player may choose this response"
+							/>
+						</div>
+						<gw-db-condition-array id="${this.idKey}-visPrereqAry"
+											dataProperty="VisPrereqs"
+											ownerIdKey="${this.idKey}"
+											displayName="Visibility Prereqs"
+											addName="Prereq"
+											linePrefix="Criteria ID "
+											networkedWidget="gw-db-criteria"
+											data-helptext="Criteria which must be met to see this option"
+						></gw-db-condition-array>
+					</div>
+					<div class="card-line centered">
+						<gw-db-condition-array id="${this.idKey}-outcomeChkAry"
+											dataProperty="OutcomeChecks"
+											ownerIdKey="${this.idKey}"
+											displayName="Outcome Checks"
+											addName="Check"
+											linePrefix="Criteria ID "
+											networkedWidget="gw-db-criteria"
+											data-helptext="Criteria which determine the outcome of this option"
+						></gw-db-condition-array>
+						<gw-db-condition-array id="${this.idKey}-outcomeChkAry"
+											dataProperty="NPCOutcomeChecks"
+											ownerIdKey="${this.idKey}"
+											displayName="NPC Outcome Checks"
+											addName="Check"
+											linePrefix="Criteria ID "
+											networkedWidget="gw-db-criteria"
+											data-helptext="Criteria evaluated by the NPC which determine the outcome of this option."
+						></gw-db-condition-array>
+					</div>
+					<div class="card-line">
+						<div class="static-size">
+							<div class="input-grid id-single widget-grid-input">
+								<label for="${this.idKey}-successNode">Success Node</label>
+								<input	id="${this.idKey}-successNode"
+										type="text"
+										data-owner="${this.idKey}"
+										data-prop="SuccessNode"
+										data-helptext="The dialog node to navigate to on success"
+								/>
+								<gw-db-widget-link
+									id=${this.idKey}-sucNodeBtn
+									networkedWidget="gw-db-dialog" 
+									idInputElId="${this.idKey}-successNode">
+								</gw-db-widget-link>
+							</div>
+							<gw-db-string-array	id="${this.idKey}-successEvents"
+												dataOwner="${this.idKey}"
+												dataProperty="SuccessEvents"
+												displayName="Success Events"
+												addName="Event"
+												linePrefix="Event ID "
+												networkedWidget="gw-db-event"
+												data-helptext="Events triggered by a success outcome"
+							></gw-db-string-array>
+						</div>
+						<div class="static-size">
+							<div class="input-grid id-single widget-grid-input">
+								<label for="${this.idKey}-failureNode">Failure Node</label>
+								<input	id="${this.idKey}-failureNode"
+										type="text"
+										data-owner="${this.idKey}"
+										data-prop="FailureNode"
+										data-helptext="The dialog node to navigate to on success"
+								/>
+								<gw-db-widget-link
+									id=${this.idKey}-failNodeBtn
+									networkedWidget="gw-db-dialog" 
+									idInputElId="${this.idKey}-failureNode">
+								</gw-db-widget-link>
+							</div>
+							<gw-db-string-array	id="${this.idKey}-failureEvents"
+												dataOwner="${this.idKey}"
+												dataProperty="FailureEvents"
+												displayName="Failure Events"
+												addName="Event"
+												linePrefix="Event ID "
+												networkedWidget="gw-db-event"
+												data-helptext="Events triggered by a failure outcome"
+							></gw-db-string-array>
+						</div>
+					</div>
+					<div class="card-line centered">
+						<div class="input-block">
+							<label for="${this.idKey}-description">Description</label>
+							<textarea	id="${this.idKey}-description"
+										data-owner="${this.idKey}"
+										data-prop="Description"
+										class="full-width"
+										rows="4"
+										data-helptext="A description of the response available to the player"
+							></textarea>
+						</div>
 					</div>
 				</div>
 			</fieldset>
@@ -2249,6 +2374,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -2269,6 +2396,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		skillEl;
 		//#endregion
@@ -2307,7 +2435,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 						data-helptext="A skill check the player must pass by meeting or exceeding the difficult class by rolling a twenty-sided die and adding applicable modifiers"
 			>
 				${this.standardHeader}
-				<div class="card-line end-align">
+				<div id="${this.idKey}-expandable" class="card-line end-align">
 					<gw-db-skill-select id="${this.idKey}-skill" dataOwner=${this.idKey} dataProperty="Skill">
 					</gw-db-skill-select>
 					<gw-db-ability-select dataOwner=${this.idKey} dataProperty="Ability"></gw-db-ability-select>
@@ -2336,6 +2464,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.skillEl.selectEl.insertAdjacentHTML("afterbegin", `<option>None</option>`);
 
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};
@@ -2356,6 +2486,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 		//#region element properties
 		rmBtnEl;
+		expandBtnEl;
 		legendEl;
 		//#endregion
 		//#endregion
@@ -2391,7 +2522,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			this.innerHTML = `
 			<fieldset class="background-color-content" data-helptext="An item in the player's inventory">
 				${this.standardHeader}
-				<div class="card-line end-align">
+				<div id="${this.idKey}-expandable" class="card-line end-align">
 					<div class="input-grid id-single widget-grid-input">
 						<label for="${this.idKey}-item">Item</label>
 						<input id="${this.idKey}-item" type="text" data-owner=${this.idKey} data-prop="Item" />
@@ -2409,6 +2540,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 
 			//element properties
 			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 			this.legendEl = this.standardLegend;
 		}
 	};

@@ -231,7 +231,8 @@ textarea.full-width {
 
 .obj-el-header {
 	display: flex;
-	flex-direction: row-reverse;
+	justify-content: flex-end;
+	gap: 10px;
 	margin-top: -10px;
 	margin-bottom: -5px;
 }
@@ -312,6 +313,7 @@ textarea.full-width {
 #dataCtrl .inline-banner {
 	flex-direction: column;
 }
+
 #dataCtrl .inline-banner-header {
 	display: flex;
 	gap: 5px

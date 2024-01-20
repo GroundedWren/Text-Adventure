@@ -529,6 +529,11 @@
 
 		pinWidget = () =>
 		{
+			if (this.isOpen)
+			{
+				this.saveData();
+			}
+
 			document.getElementById(this.isPinned ? this.homeElId : this.pinnedElId).prepend(this);
 			this.isPinned = !this.isPinned;
 			this.#setPinIcon();
@@ -1737,7 +1742,7 @@
 								type="checkbox"
 								data-owner="${this.idKey}"
 								data-prop="AllowNPC"
-								data-helptext="Whether these criteria can be passed by an NPC"
+								data-helptext="Whether these criteria can be passed by an NPC."
 						/>
 					</div>
 					<gw-db-string-array parentWidgetId="${this.id}"

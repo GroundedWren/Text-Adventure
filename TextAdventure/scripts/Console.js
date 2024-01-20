@@ -26,10 +26,10 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 		dsa = Common.DOMLib.setAttributes;
 
 		__commands = {
-			ECHO: new ns.ConsoleCommand(Common.fcd(this, this.echo), "Repeats your input"),
-			CLEAR: new ns.ConsoleCommand(Common.fcd(this, this.clear), "Clears console history"),
-			META: new ns.ConsoleCommand(ns.showMeta, "Shows the metagame panel"),
-			HELP: new ns.ConsoleCommand(Common.fcd(this, this.help), "Shows this window :)"),
+			ECHO: new ns.ConsoleCommand(Common.fcd(this, this.echo), "Repeats your input", true),
+			CLEAR: new ns.ConsoleCommand(Common.fcd(this, this.clear), "Clears console history", true),
+			META: new ns.ConsoleCommand(ns.showMeta, "Shows the metagame panel", true),
+			HELP: new ns.ConsoleCommand(Common.fcd(this, this.help), "Shows this window :)", true),
 		};
 
 		//#region Construction
@@ -221,6 +221,25 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			return Object.keys(this.__blockers).length > 0;
 		}
 
+		showOrderedList()
+		{
+			if (!this.__getContext().commandShorts.length)
+			{
+				debugger;
+				this.echo();
+				return;
+			}
+			const shorts = this.__getContext().commandShorts;
+			let output = "<ol>";
+			for (let i = 0; i < shorts.length; i++)
+			{
+				let cmd = this.commands[shorts[i]];
+				output = output + `<li><mark>${shorts[i]}</mark> - ${cmd.description}</li>`;
+			}
+			output = output + "</ol>";
+			this.echo(output);
+		};
+
 		help()
 		{
 			this.__buildHelpWindow();
@@ -343,7 +362,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			this.__recordSubmit(value);
 
 			var context = this.__getContext();
-			const { commandStr, args } = this.__parseCommandFromArgs(value, context.commands);
+			const { commandStr, args } = this.__parseCommandFromArgs(value, context);
 
 			var cmd = context.commands[commandStr];
 			if (commandStr === "META" && !ns.isMiniViewport) { cmd = null; }
@@ -382,7 +401,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			}
 		};
 
-		__parseCommandFromArgs(value, commands)
+		__parseCommandFromArgs(value, context)
 		{
 			let commandStr = "";
 			let args = "";
@@ -392,9 +411,17 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			while (commandStr === "" && wordAry.length)
 			{
 				candidate = candidate ? candidate + " " + wordAry.shift() : wordAry.shift();
-				if (commands[candidate])
+				let candidateNum = parseInt(candidate);
+				if (context.commands[candidate])
 				{
 					commandStr = candidate;
+				}
+				else if (!isNaN(candidateNum)
+					&& candidateNum > 0
+					&& candidateNum <= context.commandShorts.length
+				)
+				{
+					commandStr = context.commandShorts[candidateNum - 1];
 				}
 			}
 			args = wordAry.join(" ");
@@ -457,6 +484,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	{
 		name = "";
 		commands = {};
+		commandShorts = [];
 		nullary = null;
 		disableExit = false;
 		autoExit = false;
@@ -471,6 +499,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 			{
 				if (commands[cmdKey])
 				{
+					this.commandShorts.push(cmdKey.toUpperCase());
 					this.commands[cmdKey.toUpperCase()] = commands[cmdKey];
 				}
 			});
@@ -495,6 +524,7 @@ registerNamespace("Pages.DungeoneerInterface", function (ns)
 	{
 		handler = null;
 		description = "";
+		shortcutIdx = null;
 		constructor(handler, description)
 		{
 			this.handler = handler || function () { };
