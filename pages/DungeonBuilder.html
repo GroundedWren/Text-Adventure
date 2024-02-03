@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="theme-ocean">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Dungeon Builder">
+	<title>Dungeon Builder</title>
+
+	<!-- Styles -->
+	<link rel="stylesheet" href="../common/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="../common/css/Controls.css" type="text/css" />
+
+	<link rel="stylesheet" href="../css/DungeonBuilder.css" type="text/css" />
+
+	<!-- ../scripts -->
+	<script src="../common/scripts/main.js"></script>
+
+	<script src="../common/scripts/Common.js"></script>
+	<script src="../common/scripts/DOMLib.js"></script>
+	<script src="../common/scripts/FileLib.js"></script>
+	<script src="../common/scripts/SVGLib.js"></script>
+	<script src="../common/scripts/Components/Shortcuts.js"></script>
+	<script src="../common/scripts/Components/ElementDragger.js"></script>
+	<script src="../common/scripts/Components/VisibilityToggle.js"></script>
+	<script src="../common/scripts/Controls/Dialog.js"></script>
+	<script src="../common/scripts/Controls/Modal.js"></script>
+	<script src="../common/scripts/Controls/PageControl.js"></script>
+	<script src="../common/scripts/Controls/ZeroState.js"></script>
+
+	<script src="../scripts/Mechanics.js"></script>
+
+	<script src="../scripts/builder/DungeonBuilder.js"></script>
+	<script src="../scripts/builder/PinnableWidgets.js"></script>
+	<script src="../scripts/builder/SubWidgets.js"></script>
+</head>
+<body>
+	<div id="subveil">
+		<header>
+			<div class="banner fixed-header">
+				<div class="banner-left">
+					<a class="banner-link hide-until-focus"
+					   role="link"
+					   href="#mainContent">
+						Skip to content
+					</a>
+					<a id="homeLink"
+					   class="banner-link"
+					   role="link"
+					   href="./Home.html">
+						<u>H</u>ome
+					</a>
+					<button id="shortcutsButton"
+							onclick="Common.Components.displayShortcuts('shortcutsButton')">
+						<u>S</u>hortcuts
+					</button>
+				</div>
+				<span role="heading" aria-level="1">Dungeon Builder</span>
+			</div>
+		</header>
+		<div id="BannerBuffer" class="banner-buffer"></div>
+		<main id="mainContent">
+			<form id="metaForm" aria-labelledby="metaHeader" autocomplete="=off">
+				<h2 id="metaHeader">Metadata</h2>
+				<div class="input-horizontal-flex">
+					<div class="input-flex-line">
+						<label for="txtTitle">Title</label>
+						<input id="txtTitle"
+							   data-saveloc="Meta"
+							   data-prop="Title"
+							   type="text"
+							   data-helptext="The title of the adventure"
+						/>
+					</div>
+					<div class="input-flex-line">
+						<label for="txaDescription">Description</label>
+						<textarea id="txaDescription"
+								  data-saveloc="Meta"
+								  data-prop="Description"
+								  rows="1"
+								  cols="33"
+								  data-helptext="A short description of what to expect"
+						></textarea>
+					</div>
+					<div class="input-flex-line">
+						<label for="txtCreator">Creator</label>
+						<input id="txtCreator" 
+							   data-saveloc="Meta" 
+							   data-prop="Creator" 
+							   type="text"
+							data-helptext="The adventure's author"
+						/>
+					</div>
+					<div class="input-flex-line">
+						<label for="txtDate">Date</label>
+						<time id="txtDate">-</time>
+					</div>
+				</div>
+			</form>
+			<div id="lowerSections">
+				<section id="dataSection">
+					<!--aria-labelledby="dataHeader"-->
+					<div id="dataSectionContent" class="lowerSectionContent">
+						<h2 id="dataHeader">Data</h2>
+						<div id="dataCtrl" class="page-control vertical-tabs">
+							<div id="dataCtrl_ts" class="tab-strip vertical-tabs">
+								<button id="dataCtrl_tab_Areas" class="tab-strip-tab button-like"><span><u>A</u>reas</span></button>
+								<button id="dataCtrl_tab_Items" class="tab-strip-tab button-like"><span><u>I</u>tems</span></button>
+								<button id="dataCtrl_tab_Events" class="tab-strip-tab button-like"><span>E<u>v</u>ents</span></button>
+								<button id="dataCtrl_tab_NPCs" class="tab-strip-tab button-like"><span><u>N</u>PCs</span></button>
+								<button id="dataCtrl_tab_Dialogs" class="tab-strip-tab button-like"><span>Dia<u>l</u>ogs</span></button>
+								<button id="dataCtrl_tab_Criteria" class="tab-strip-tab button-like"><span><u>C</u>riteria</span></button>
+								<button id="dataCtrl_tab_Character" class="tab-strip-tab button-like"><span>Cha<u>r</u>acter</span></button>
+								<button id="dataCtrl_tab_Settings" class="tab-strip-tab button-like"><span>Se<u>t</u>tings</span></button>
+								<div class="tab-gutter"></div>
+							</div>
+							<div id="dataCtrl_pgc" class="page-container">
+								<div id="dataCtrl_page_Areas" class="page-control-page">
+									<div class="button-header">
+										<h3>Areas</h3>
+										<div class="page-center"><gw-icon iconKey="location-dot" aria-hidden="true"></gw-icon></div>
+										<button id="newArea" onclick="Pages.DungeonBuilder.newArea()"><u>N</u>ew Area</button>
+									</div>
+									<div id="areaList">
+										<!-- AREAS -->
+									</div>
+									<div class="inline-banner">
+										<span id="areaIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="areaIcoTitle"></gw-icon>
+										Areas are locations the player can move between via portals.<br /><br />
+										They each have a number of "Story Text"s, which appear when the player enters the area and persist until they leave.<br />
+										Areas can also hold items and NPCs, and events can trigger when the player visits.<br /><br />
+										Area 0 is the default starting area.
+									</div>
+								</div>
+								<div id="dataCtrl_page_Items" class="page-control-page">
+									<div class="button-header">
+										<h3>Items</h3>
+										<div class="page-center"><gw-icon iconKey="box-open" aria-hidden="true"></gw-icon></div>
+										<button id="newItem" onclick="Pages.DungeonBuilder.newItem()"><u>N</u>ew Item</button>
+									</div>
+									<div id="itemList">
+										<!-- ITEMS -->
+									</div>
+									<div class="inline-banner">
+										<span id="itemIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="itemIcoTitle"></gw-icon>
+										Items are objects the character can interact with. Some can be picked up and added to the character's inventory.<br /><br />
+										Items should usually be unique in the world, but they don't have to be. Each entry here defines properties which will be shared between all items with their ID in the world.<br />
+										If multiple instances of an item exist in the player's inventory or in an area, they will not be meaningfully distinct.<br /><br />
+										Actions are how the player may interact with the item. The "Don" and "Doff" action modes make an item equippable, and an "Attack" mode makes it a weapon.
+									</div>
+								</div>
+								<div id="dataCtrl_page_Events" class="page-control-page">
+									<div class="button-header">
+										<h3>Events</h3>
+										<div class="page-center"><gw-icon iconKey="calendar" aria-hidden="true"></gw-icon></div>
+										<button id="newEvent" onclick="Pages.DungeonBuilder.newEvent()"><u>N</u>ew Event</button>
+									</div>
+									<div id="eventList">
+										<!-- EVENTS -->
+									</div>
+									<div class="inline-banner">
+										<span id="eventIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="eventIcoTitle"></gw-icon>
+										Events can be triggered by all kinds of player action, and can drive all sorts of game behavior. Their occurrances are recorded, and can later be used for game logic.<br /><br />
+										If an event has occurred and has been flagged as a singleton, it will silently not recur. If an event's corequisite criteria are not met, the event will also not occur.
+									</div>
+								</div>
+								<div id="dataCtrl_page_NPCs" class="page-control-page">
+									<div class="button-header">
+										<h3>NPCs</h3>
+										<div class="page-center"><gw-icon iconKey="people-group" aria-hidden="true"></gw-icon></div>
+										<button id="newNPC" onclick="Pages.DungeonBuilder.newNPC()"><u>N</u>ew NPC</button>
+									</div>
+									<div id="npcList">
+										<!-- NPCs -->
+									</div>
+									<div class="inline-banner">
+										<span id="npcIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="npcIcoTitle"></gw-icon>
+										A Non-Player Character, or NPC, is an player-entity in the world who can be interacted with, fought, or recruited to the player's party.<br /><br />
+										Hostile NPCs will not talk to the player, but attack as soon as they share an area with the player.<br /><br />
+										Salutations are how dialog with this NPC will begin. From there, the player may choose from linked dialog trees to continue conversation.
+									</div>
+								</div>
+								<div id="dataCtrl_page_Dialogs" class="page-control-page">
+									<div class="button-header">
+										<h3>Dialogs</h3>
+										<div class="page-center"><gw-icon iconKey="comments" aria-hidden="true"></gw-icon></div>
+										<button id="newDialog" onclick="Pages.DungeonBuilder.newDialog()"><u>N</u>ew Dialog</button>
+									</div>
+									<div id="dialogList">
+										<!-- Dialogs -->
+									</div>
+									<div class="inline-banner">
+										<span id="dialogIcoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="dialogIcoTitle"></gw-icon>
+										A dialog record is a node in a conversation between the player and a NPC which is mainly comprised of text to display and a series of available player response options.<br />
+										The response options can either direct to another dialog node, or not link to a node to represent the termination of dialog.
+									</div>
+								</div>
+								<div id="dataCtrl_page_Criteria" class="page-control-page">
+									<div class="button-header">
+										<h3>Criteria</h3>
+										<div class="page-center"><gw-icon iconKey="clipboard-check" aria-hidden="true"></gw-icon></div>
+										<button id="newCriteria" onclick="Pages.DungeonBuilder.newCriteria()"><u>N</u>ew Criteria</button>
+									</div>
+									<div id="criteriaList">
+										<!-- CRITERIA -->
+									</div>
+									<div class="inline-banner">
+										<span id="criteriaInfoTitle">Info</span>
+										<gw-icon iconKey="circle-info" titleId="criteriaInfoTitle"></gw-icon>
+										Criteria records drive game logic. Each can only return true or false, and determine the appearance of story texts, the availability of player options, the success of events, and other things.<br /><br />
+										Criteria records can be linked to each other to form complex logic. If any "And" criteria are listed, they must all be satisfied for a true result. If any "Or" criteria are listed, any of them evaluating true will lead to a true result unless there are failing "And" criteria.<br /><br />
+										Skill checks never short-circuit and will always roll (and display to the player).
+										All top-level properties in each record are evaluated with logical and.
+									</div>
+								</div>
+								<div id="dataCtrl_page_Character" class="page-control-page">
+									<div class="button-header">
+										<h3>Character</h3>
+										<div class="page-center"><gw-icon iconKey="user" aria-hidden="true"></gw-icon></div>
+										<div></div>
+									</div>
+								</div>
+								<div id="dataCtrl_page_Settings" class="page-control-page">
+									<div class="button-header">
+										<h3>Settings</h3>
+										<div class="page-center"><gw-icon iconKey="screwdriver-wrench" aria-hidden="true"></gw-icon></div>
+										<div></div>
+									</div>
+									<div class="settings-content">
+										<div class="card-line">
+											<div class="input-vertical-line">
+												<label for="moneyLabel">Money Label</label>
+												<input id="txtCreator"
+													   data-saveloc="World"
+													   data-prop="MoneyLabel"
+													   type="text"
+													   data-helptext="How currency is displayed to the player"
+												/>
+											</div>
+											<div class="input-vertical-line">
+												<label for="showChecksResult">Show whether checks pass?</label>
+												<input id="showChecksResult"
+													   data-saveloc="World"
+													   data-prop="ShowChecksResult"
+													   type="checkbox"
+													   data-helptext="Whether to display the result of skill checks"
+												/>
+											</div>
+										</div>
+										<div class="card-line">
+											<div class="inline-banner">
+												<div class="inline-banner-header">
+													<span id="dtKeywordsInfoTitle">Info</span>
+													<gw-icon iconKey="circle-info" titleId="dtKeywordsInfoTitle"></gw-icon>
+													<h4>Display Text Keywords</h4>
+												</div>
+												<dl>
+													<dt>@Money-Label@</dt>
+													<dd>Text to be replaced with the Money Label</dd>
+													<dt>&lt;mark&gt;keyword&lt;/mark&gt;</dt>
+													<dd>Marks command keywords to the player, as in items which can be interacted with, portals, NPCs, etc.</dd>
+													<dt>@Character-Name@</dt>
+													<dt>@NPCID-Name@</dt>
+													<dd>Text to be replaced with the character or NPC's' name</dd>
+													<dt>@Character-Subjective@</dt>
+													<dt>@NPCID-Subjective@</dt>
+													<dd>Text to be replaced with the character or NPC's subjective pronoun (<em>She</em> bought a donut)</dd>
+													<dt>@Character-Objective@</dt>
+													<dt>@NPCID-Objective@</dt>
+													<dd>Text to be replaced with the character or NPC's objective pronoun (That's <em>her</em>!)</dd>
+													<dt>@Character-Possessive@</dt>
+													<dt>@NPCID-Possessive@</dt>
+													<dd>Text to be replaced with the character or NPC's possessive pronoun (The donut is <em>hers</em>)</dd>
+													<dt>@Character-Reflexive@</dt>
+													<dt>@NPCID-Reflexive@</dt>
+													<dd>Text to be replaced with the character or NPC's reflexive pronoun (Vera at it <em>herself</em>)</dd>
+													<dt>@Character-PossessiveAdjective@</dt>
+													<dt>@NPCID-PossessiveAdjective@</dt>
+													<dd>Text to be replaced with the character or NPC's possessive adjective (That's <em>her</em> donut!)</dd>
+													<dt>@Character-UsePlural:plural:singular@</dt>
+													<dt>@NPCID-UsePlural:plural:singular@</dt>
+													<dd>Alternative versions of a word to use based on whether the character or NPC's pronouns are grammatically plural or singular.</dd>
+												</dl>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section id="pinsSection" aria-labelledby="pinsHeader">
+					<div id="pinsSectionContent" class="lowerSectionContent">
+						<div class="button-header">
+							<h2 id="pinsHeader">Pins</h2>
+							<gw-icon iconKey="thumbtack" aria-hidden="true"></gw-icon>
+							<div></div>
+						</div>
+						<div id="pinList">
+							<!-- PINS -->
+						</div>
+					</div>
+				</section>
+			</div>
+		</main>
+		<div class="banner-buffer"></div>
+		<footer class="banner fixed-footer">
+			<span></span>
+			<div class="banner-center">
+				<button id="newButton"
+						onclick="Pages.DungeonBuilder.newDungeon()">
+					New (Alt+1)
+				</button>
+				<button id="loadButton"
+						onclick="Pages.DungeonBuilder.loadDungeon()">
+					Load (Alt+2)
+				</button>
+				<button id="saveButton"
+						onclick="Pages.DungeonBuilder.saveDungeon()">
+					Save (Alt+3)
+				</button>
+			</div>
+		</footer>
+		<div id="dialogRegion" role="region" aria-label="dialogs"></div>
+	</div>
+</body>
+</html>

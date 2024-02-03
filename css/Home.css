@@ -1,0 +1,167 @@
+﻿header {
+	word-wrap: break-word;
+	background-color: var(--accent-color-2);
+	border-bottom: 1px solid var(--accent-color-2);
+}
+
+h1 {
+	background-color: var(--accent-color);
+}
+
+#subtitle {
+	text-align: center;
+	margin-bottom: 0px;
+	margin-top: 5px;
+}
+
+#content {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	padding-bottom: 5px;
+	gap: 5px;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	max-width: 1000px;
+}
+
+nav > ul {
+	padding-left: 0px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.z {
+}
+
+nav > ul > li {
+	display: block;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-color: var(--accent-color);
+	border-radius: 25px;
+	width: 100%;
+	text-align: center;
+	min-height: 44px;
+	line-height: 22px;
+}
+
+nav a {
+	display: inline-block;
+	width: 100%;
+	color: var(--heading-color);
+	padding-top: 10px;
+}
+
+h2, h3, h4, h5, h6 {
+	font-weight: initial;
+	margin-top: 2px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 5px;
+}
+
+h1 {
+	text-align: center;
+}
+
+h2 {
+	font-size: 1.25rem;
+	font-weight: initial;
+}
+
+h1, h2 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+button {
+	min-width: 40px;
+}
+
+#updates {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	align-items: stretch;
+}
+
+#updatesCard {
+	background-color: var(--content-color);
+}
+
+.z {
+}
+
+#updatesCard h2 {
+	text-align: center;
+}
+
+#updatesCard:not(.more) .update:not(.curUpdate) {
+	display: none;
+}
+
+#updatesCard button {
+	font-size: 1em;
+	min-height: 40px;
+	align-self: center;
+}
+
+#leftContent {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+#rightContent {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	max-width: 400px;
+}
+
+table {
+	border: none;
+}
+
+td, th {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	padding-top: 5px;
+	width: auto;
+}
+
+th {
+	text-align: left;
+	padding-right: 5px;
+}
+
+.centered-article {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+@media (max-width: 1700px) {
+	#rightContent {
+		max-width: none;
+	}
+}
+
+/* Pages.Home.MINI_THRESHOLD */
+@media (max-width: 1400px) {
+	#leftContent {
+		flex-direction: row;
+	}
+}

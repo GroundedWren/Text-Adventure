@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="theme-ocean">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Your interface to a DUNGEON">
+	<title>Dungeoneer Interface</title>
+
+	<!-- Styles -->
+	<link rel="stylesheet" href="../common/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="../common/css/Controls.css" type="text/css" />
+
+	<link rel="stylesheet" href="../css/DungeoneerInterface.css" type="text/css" />
+
+	<!-- ../scripts -->
+	<script src="../common/scripts/main.js"></script>
+
+	<script src="../common/scripts/Common.js"></script>
+	<script src="../common/scripts/DOMLib.js"></script>
+	<script src="../common/scripts/FileLib.js"></script>
+	<script src="../common/scripts/SVGLib.js"></script>
+	<script src="../common/scripts/Components/Shortcuts.js"></script>
+	<script src="../common/scripts/Components/ElementDragger.js"></script>
+	<script src="../common/scripts/Components/VisibilityToggle.js"></script>
+	<script src="../common/scripts/Controls/Dialog.js"></script>
+	<script src="../common/scripts/Controls/Modal.js"></script>
+	<script src="../common/scripts/Controls/PageControl.js"></script>
+	<script src="../common/scripts/Controls/ZeroState.js"></script>
+
+	<script src="../scripts/Mechanics.js"></script>
+	<script src="../scripts/Console.js"></script>
+	<script src="../scripts/Character.js"></script>
+	<script src="../scripts/CharacterBuilder.js"></script>
+	<script src="../scripts/DungeoneerInterface.js"></script>
+	<script src="../scripts/Logic.js"></script>
+</head>
+<body>
+	<div id="subveil">
+		<header>
+			<div class="banner fixed-header">
+				<div class="banner-left">
+					<a class="banner-link hide-until-focus"
+					   role="link"
+					   href="#mainContent">
+						Skip to content
+					</a>
+					<a id="homeLink"
+					   class="banner-link"
+					   role="link"
+					   href="./Home.html">
+						<u>H</u>ome
+					</a>
+					<button id="shortcutsButton"
+							onclick="Common.Components.displayShortcuts('shortcutsButton')">
+						<u>S</u>hortcuts
+					</button>
+				</div>
+				<span role="heading" aria-level="1">Dungeoneer</span>
+			</div>
+		</header>
+		<div id="BannerBuffer" class="banner-buffer"></div>
+		<main id="mainContent">
+			<section id="metaPane" class="page-control">
+				<div id="metaPane_pgc" class="page-container" aria-live="off">
+					<div id="metaPane_page_Player" class="page-control-page" tabindex="-1">
+						<table id="BasicInfo">
+							<caption aria-labelledby="hBasicInfo">
+								<div class="caption-content">
+									<span id="hBasicInfo" role="heading" aria-level="2">Basic Information</span>
+									<button class="icon-button"
+											aria-controls="basicInfoTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<tbody id="basicInfoTBody">
+								<tr><th scope="row">Name</th><td id="tdName">-</td></tr>
+								<tr><th scope="row">Pronouns (S/O/P)</th><td id="tdPronouns">-/-/-</td></tr>
+								<tr><th scope="row">Pronouns (R/PA)</th><td id="tdPronouns2">-/-</td></tr>
+								<tr><th scope="row">Pronoun Plurality</th><td id="tdGramNum">-</td></tr>
+								<tr><th scope="row">Level</th><td id="tdLevel">-</td></tr>
+							</tbody>
+						</table>
+						<table id="VitalInfo">
+							<caption aria-labelledby="hVitals">
+								<div class="caption-content">
+									<span id="hVitals" role="heading" aria-level="2">Vitals</span>
+									<button class="icon-button"
+											aria-controls="vitalsTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<tbody id="vitalsTBody">
+								<tr>
+									<th scope="row">Health</th>
+									<td><span id="sHealth">-</span>/<span id="sMaxHealth">-</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Armor</th>
+									<td><span id="sArmor">-</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Evasion</th>
+									<td><span id="sEvasion">-</span>/<span id="sMaxEvasion">-</span></td>
+								</tr>
+							</tbody>
+						</table>
+						<table id="Abilities">
+							<caption aria-labelledby="hAbilities">
+								<div class="caption-content">
+									<span id="hAbilities" role="heading" aria-level="2">Abilities</span>
+									<button class="icon-button"
+											aria-controls="abilitiesTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<thead>
+								<tr><th>Ability</th><th>Value</th><th>Modifier</th></tr>
+							</thead>
+							<tbody id="abilitiesTBody">
+								<tr><th scope="row">STR</th><td id="tdStr">-</td><td id="tdStrMod">-</td></tr>
+								<tr><th scope="row">DEX</th><td id="tdDex">-</td><td id="tdDexMod">-</td></tr>
+								<tr><th scope="row">CON</th><td id="tdCon">-</td><td id="tdConMod">-</td></tr>
+								<tr><th scope="row">INT</th><td id="tdInt">-</td><td id="tdIntMod">-</td></tr>
+								<tr><th scope="row">WIS</th><td id="tdWis">-</td><td id="tdWisMod">-</td></tr>
+								<tr><th scope="row">CHA</th><td id="tdCha">-</td><td id="tdChaMod">-</td></tr>
+							</tbody>
+						</table>
+						<table id="Skills">
+							<caption aria-labelledby="hSkills">
+								<div class="caption-content">
+									<span id="hSkills" role="heading" aria-level="2">Skills</span>
+									<button class="icon-button"
+											aria-controls="skillsTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<thead>
+								<tr><th>Skill</th><th>Bonus</th></tr>
+							</thead>
+							<tbody id="skillsTBody">
+								<tr><th scope="row">Acrobatics</th><td id="tdAcrobatics">-</td></tr>
+								<tr><th scope="row">Athletics</th><td id="tdAthletics">-</td></tr>
+								<tr><th scope="row">Deception</th><td id="tdDeception">-</td></tr>
+								<tr><th scope="row">History</th><td id="tdHistory">-</td></tr>
+								<tr><th scope="row">Insight</th><td id="tdInsight">-</td></tr>
+								<tr><th scope="row">Intimidation</th><td id="tdIntimidation">-</td></tr>
+								<tr><th scope="row">Investigation</th><td id="tdInvestigation">-</td></tr>
+								<tr><th scope="row">Magic</th><td id="tdMagic">-</td></tr>
+								<tr><th scope="row">Medicine</th><td id="tdMedicine">-</td></tr>
+								<tr><th scope="row">Nature</th><td id="tdNature">-</td></tr>
+								<tr><th scope="row">Perception</th><td id="tdPerception">-</td></tr>
+								<tr><th scope="row">Performance</th><td id="tdPerformance">-</td></tr>
+								<tr><th scope="row">Persuasion</th><td id="tdPersuasion">-</td></tr>
+								<tr><th scope="row">Stealth</th><td id="tdStealth">-</td></tr>
+								<tr><th scope="row">Survival</th><td id="tdSurvival">-</td></tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="metaPane_page_Inventory" class="page-control-page">
+						<table id="Body">
+							<caption aria-labelledby="hBody">
+								<div class="caption-content">
+									<span id="hBody" role="heading" aria-level="2">Body</span>
+									<button class="icon-button"
+											aria-controls="BodyTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<thead>
+								<tr><th>Location</th><th>Item</th><th>Armor</th><th>Evasion</th></tr>
+							</thead>
+							<tbody id="BodyTBody">
+								<tr id="HeadRow">
+									<th scope="row">Head</th>
+									<td><button id="HeadItemBtn"></button></td>
+									<td id="HeadArmor"></td>
+									<td id="HeadEvasion"></td>
+								</tr>
+								<tr id="NeckRow">
+									<th scope="row">Neck</th>
+									<td><button id="NeckItemBtn"></button></td>
+									<td id="NeckArmor"></td>
+									<td id="NeckEvasion"></td>
+								</tr>
+								<tr id="TorsoRow">
+									<th scope="row">Torso</th>
+									<td><button id="TorsoItemBtn"></button></td>
+									<td id="TorsoArmor"></td>
+									<td id="TorsoEvasion"></td>
+								</tr>
+								<tr id="BeltRow">
+									<th scope="row">Belt</th>
+									<td><button id="BeltItemBtn"></button></td>
+									<td id="BeltArmor"></td>
+									<td id="BeltEvasion"></td>
+								</tr>
+								<tr id="LegsRow">
+									<th scope="row">Legs</th>
+									<td><button id="LegsItemBtn"></button></td>
+									<td id="LegsArmor"></td>
+									<td id="LegsEvasion"></td>
+								</tr>
+								<tr id="FeetRow">
+									<th scope="row">Feet</th>
+									<td><button id="FeetItemBtn"></button></td>
+									<td id="FeetArmor"></td>
+									<td id="FeetEvasion"></td>
+								</tr>
+								<tr id="Left_WristRow">
+									<th scope="row">Left Wrist</th>
+									<td><button id="Left_WristItemBtn"></button></td>
+									<td id="Left_WristArmor"></td>
+									<td id="Left_WristEvasion"></td>
+								</tr>
+								<tr id="Right_WristRow">
+									<th scope="row">Right Wrist</th>
+									<td><button id="Right_WristItemBtn"></button></td>
+									<td id="Right_WristArmor"></td>
+									<td id="Right_WristEvasion"></td>
+								</tr>
+								<tr id="Left_HandRow">
+									<th scope="row">Left Hand</th>
+									<td><button id="Left_HandItemBtn"></button></td>
+									<td id="Left_HandArmor"></td>
+									<td id="Left_HandEvasion"></td>
+								</tr>
+								<tr id="Right_HandRow">
+									<th scope="row">Right Hand</th>
+									<td><button id="Right_HandItemBtn"></button></td>
+									<td id="Right_HandArmor"></td>
+									<td id="Right_HandEvasion"></td>
+								</tr>
+								<tr id="FingerRow">
+									<th scope="row">Finger</th>
+									<td><button id="FingerItemBtn"></button></td>
+									<td id="FingerArmor"></td>
+									<td id="FingerEvasion"></td>
+								</tr>
+							</tbody>
+						</table>
+						<table id="Weapons">
+							<caption aria-labelledby="hWeapons">
+								<div class="caption-content">
+									<span id="hWeapons" role="heading" aria-level="2">Weapons</span>
+									<button class="icon-button"
+											aria-controls="WeaponsTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<thead>
+								<tr><th>Name</th><th>Location</th></tr>
+							</thead>
+							<tbody id="WeaponsTBody">
+								<!-- Weapons -->
+							</tbody>
+						</table>
+						<table id="SkillBonuses">
+							<caption aria-labelledby="hSkillBonuses">
+								<div class="caption-content">
+									<span id="hSkillBonuses" role="heading" aria-level="2">Skill Bonuses</span>
+									<button class="icon-button"
+											aria-controls="SkillBonusesTBody"
+											aria-expanded="true"
+											onclick="Pages.DungeoneerInterface.onExpandCollapseTable(event)">
+										<gw-icon iconKey="chevron-up" title="Collapse"></gw-icon>
+									</button>
+								</div>
+							</caption>
+							<thead>
+								<tr><th>Item</th><th>Skill</th><th>Bonus</th></tr>
+							</thead>
+							<tbody id="SkillBonusesTBody">
+								<!-- Skill bonuses -->
+							</tbody>
+						</table>
+						<h2 id="hBag">Bag</h2>
+						<div>Money: <span id="sMoney">0</span></div>
+						<ul id="bagList" aria-labelledby="hBag">
+							<!-- Bag items -->
+						</ul>
+					</div>
+					<div id="metaPane_page_World" class="page-control-page">
+						<div class="card">
+							<div class="card-header" role="heading" aria-level="2">Load</div>
+							<div class="card-line">
+								<h3 id="hUploadSave">Upload Save</h3>
+								<input id="saveUpload"
+									   type="file"
+									   accept=".json"
+									   style="width: 100%;"
+									   aria-labelledby="hUploadSave" />
+							</div>
+							<div class="card-line">
+								<h3 id="hPrebuiltGames">Prebuilt Games</h3>
+								<ul id="prebuiltGamesList" aria-labelledby="hPrebuiltGames">
+									<li>
+										<button onclick="Pages.DungeoneerInterface.importFreshSave('Character Build Test','./saves/CharacterBuildTest.json')">
+											Character Build Test
+										</button>
+									</li>
+									<li>
+										<button onclick="Pages.DungeoneerInterface.importFreshSave('The Construct','./saves/TheConstruct.json')">
+											The Construct
+										</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header" role="heading" aria-level="2">Save</div>
+							<div class="input-grid">
+								<input id="saveToFile"
+									   type="button"
+									   class="full-line"
+									   value="Save to File"
+									   onclick="Pages.DungeoneerInterface.saveToFile()" />
+							</div>
+						</div>
+						<div id="currentGameMetaCard" class="card hidden">
+							<div class="card-header" role="heading" aria-level="2">Current Game</div>
+							<table>
+								<tbody id="currentGameTableBody">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="metaPane_ts" class="tab-strip">
+					<div id="metaPane_tab_Player" class="tab-strip-tab button-like"><span><u>P</u>layer</span></div>
+					<div id="metaPane_tab_Inventory" class="tab-strip-tab button-like"><span><u>I</u>nventory</span></div>
+					<div id="metaPane_tab_World" class="tab-strip-tab button-like"><span>W<u>o</u>rld</span></div>
+					<button id="metaPane_tab_Story"
+							class="tab-strip-tab button-like"
+							tabindex="0"
+							onclick="Pages.DungeoneerInterface.showStory()">
+						<span>Story</span>
+					</button>
+					<div class="tab-gutter"></div>
+				</div>
+			</section>
+			<section id="storyPane" aria-label="Story">
+				<div id="storyContent" tabindex="-1">
+					<div class="story-info">
+						<div class="inline-banner">
+							<span id="welcomeInfoTitle">Info</span>
+							<gw-icon iconKey="circle-info" titleId="welcomeInfoTitle"></gw-icon>
+							<span>
+								The Dungeoneer Interface is a tool to play <a href="https://en.wikipedia.org/wiki/Text-based_game" target="_blank">text games</a> out of a structured <a href="https://en.wikipedia.org/wiki/JSON" target="_blank">JSON</a> save file.<br />
+								Such save files may be created with the <a href="https://textadventure.groundedwren.com/pages/DungeonBuilder.html" target="_blank">Dungeon Builder</a> page. There are also pre-built saves available in the <a href="#" onclick="Pages.DungeoneerInterface.MetaControl.setActiveTab('metaPane_tab_World');">World</a> tab of the Meta Control on this page.<br /><br />
+								Games are played by typing commands into the input console below (Alt+C). You may always type "help" to review all available commands.<br /><br />
+								Story text will appear here (Alt+R) to describe the world as you move through it. More granular interaction will appear in the console output (Alt+U).<br /><br />
+								The Meta Control may be used to review information about your player character (Alt+P), their inventory (Alt+I), and to load and save games (Alt+O).<br /><br />
+								Good luck and have fun!
+							</span>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section id="consolePane" aria-label="Console">
+				<div id="consoleOutput" aria-label="Console output" tabindex="-1">
+				</div>
+				<form id="consoleForm" aria-label="Console input" class="transparent-form" autocomplete="off">
+					<fieldset class="input-flex transparent-fieldset">
+						<div class="input-flex-line">
+							<label id="consoleInputLabel" for="consoleInput">></label>
+							<input id="consoleInput" type="text" />
+							<input id="consoleSubmit" type="submit" value="Submit" />
+						</div>
+					</fieldset>
+				</form>
+			</section>
+		</main>
+		<div id="dialogRegion" role="region" aria-label="dialogs"></div>
+	</div>
+</body>
+</html>

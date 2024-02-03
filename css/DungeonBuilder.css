@@ -1,0 +1,343 @@
+﻿#mainContent {
+	padding-left: 10px;
+	padding-right: 10px;
+	min-height: calc(100vh - 50px);
+	display: grid;
+	grid-template-rows: min-content minmax(0, 1fr);
+	grid-gap: 5px;
+}
+
+h2, h3 {
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+
+h4, h5, h6 {
+	margin: 0px;
+	font-size: unset;
+}
+
+.hidden {
+	display: none !important;
+}
+
+#metaForm {
+	width: auto;
+}
+
+#lowerSections {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+	#lowerSections input {
+		max-width: 125px;
+	}
+
+#dataSection {
+	flex-basis: 60%;
+	min-width: 320px;
+	flex-grow: 1;
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
+#pinsSection {
+	background-color: var(--content-color);
+	flex-basis: 40%;
+	min-width: 320px;
+	flex-grow: 1;
+	display: grid;
+	grid-template-columns: 1fr
+}
+
+.lowerSectionContent {
+	padding: 7px;
+	display: grid;
+	grid-template-rows: auto 1fr;
+}
+
+.page-control-page, .page-container {
+	background-color: var(--content-color);
+}
+
+.page-center {
+	display: flex;
+	flex-direction: column;
+}
+
+legend {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	align-items: center;
+}
+
+.button-header {
+	margin-top: 5px;
+	display: grid;
+	grid-template-columns: minmax(100px, auto) 1fr minmax(auto, 100px);
+	gap: 5px;
+	min-height: 40px;
+	align-items: center;
+}
+
+.z {
+}
+
+.button-header > .inline-banner {
+	margin: 2px;
+	padding: 4px;
+	max-width: fit-content;
+}
+
+.button-header > button {
+	align-self: stretch;
+}
+
+#areaList {
+	display: flex;
+	flex-direction: column;
+}
+
+.card-header-btns {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	width: 175px;
+}
+
+.z {
+}
+
+.card-header-btns button {
+	flex-basis: 25px;
+	max-width: 100px;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+#dataCtrl_pgc {
+	min-height: 200px;
+	margin-top: -35px;
+}
+
+.page-control-page > .button-header {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+legend {
+	padding-left: 5px;
+	padding-right: 5px;
+	background-color: var(--content-color);
+}
+
+hr {
+	margin-top: 15px;
+}
+
+#pinList {
+	overflow: auto;
+}
+
+.widget-grid-input {
+	margin: 5px;
+	align-items: end;
+}
+
+.widget-align-start {
+	align-self: flex-start;
+}
+
+.widget-grid-input > input[type="checkbox"] {
+	align-self: center;
+}
+
+.card-line {
+	margin-top: 5px;
+	margin-bottom: 2px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.z {
+}
+
+.card-line.center-align {
+	align-items: center;
+}
+
+.card-line.end-align {
+	align-items: flex-end;
+}
+
+.z {
+}
+
+.card-line > div {
+	flex-grow: 1;
+}
+
+.card-line > .input-grid, .card-line > .placeholder, .card-line > .static-size {
+	flex-grow: 0;
+}
+
+.card-line > .input-vertical-line, .card-line gw-db-skill-select, .card-line gw-db-ability-select {
+	width: auto;
+	margin: 5px;
+}
+
+.card-line:not(.centered) > .input-vertical-line {
+	align-self: flex-start;
+}
+
+.input-grid > label, .input-flex-line > label, .string-array-line > label {
+	border-bottom: 1px solid var(--accent-color);
+}
+
+.card-line textarea {
+	resize: vertical;
+	align-self: stretch;
+}
+
+textarea.full-width {
+	resize: vertical;
+	align-self: stretch;
+}
+
+.centered {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.input-block {
+	display: contents;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.centered .input-block label {
+	align-self: flex-start;
+}
+
+.obj-el-header {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: -10px;
+	margin-bottom: -5px;
+}
+
+.background-color-content {
+	background-color: var(--content-color);
+}
+
+.string-array .input-grid, .id-single.input-grid {
+	align-items: center;
+	grid-row-gap: 5px;
+	grid-template-columns: minmax(75px, 1fr) minmax(75px, auto) 30px;
+}
+
+.id-array .input-grid {
+	align-items: center;
+	grid-row-gap: 5px;
+	grid-template-columns: minmax(50px, 1fr) minmax(75px, auto) 30px 30px;
+}
+
+.string-array-line {
+	display: contents;
+}
+
+.string-array-line-btn, .link-btn, .rm-obj-btn {
+	display: flex;
+	align-items: center;
+}
+
+.attack-fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.attack-fieldset-line {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 20px;
+	justify-content: center;
+}
+
+.z {
+}
+
+.attack-fieldset-line > .input-vertical-line {
+	width: auto;
+}
+
+.attack-fieldset-line input {
+	max-width: 40px;
+}
+
+.vitals-fieldset {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	flex-wrap: wrap;
+}
+
+.input-flex-line output {
+	padding: 2px;
+}
+
+.abilities-fieldset input, .skills-fieldset input, .vitals-fieldset input {
+	width: 40px;
+}
+
+#dataCtrl_page_Character, #dataCtrl_page_Settings {
+	background-color: var(--content-color-2);
+}
+
+.character-content, .settings-content {
+	padding: 10px;
+}
+
+#dataCtrl .inline-banner {
+	flex-direction: column;
+}
+
+#dataCtrl .inline-banner-header {
+	display: flex;
+	gap: 5px
+}
+
+.neg-op-container {
+	display: contents;
+}
+
+.z {
+}
+
+.neg-op-container > label {
+	grid-column: 1 / span 2;
+}
+
+.neg-op-container > input, .neg-op-container > select {
+	grid-column: 3 / span 2;
+}
+
+dd {
+	margin-bottom: 5px
+}
+
+dt {
+	font-weight: bold;
+}
