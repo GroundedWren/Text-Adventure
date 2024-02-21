@@ -5,6 +5,39 @@
 		return `<gw-icon iconKey="${key}" aria-hidden="true"></gw-icon>`;
 	};
 
+	ns.getDataDisplayVal = function getDataDisplayVal(dataVal)
+	{
+		if (Common.isNullUndefinedOrEmpty(dataVal)) { return ""; }
+
+		let dataDisplayVal = dataVal;
+		switch (Object.prototype.toString.call(dataVal))
+		{
+			case "[object Object]":
+				dataDisplayVal = `Object`;
+				break;
+			case "[object Array]":
+				dataDisplayVal = `<span class="sr-only">Array: </span>`;
+
+				const subtype = Object.prototype.toString.call(dataVal);
+				if (dataVal.length > 0 && subtype === "[object Object]" || subtype === "[object Array]")
+				{
+					dataDisplayVal += `[<span class="sr-only">Count: </span><span aria-hidden="true">#</span>${dataVal.length}]`;
+				}
+				else
+				{
+					dataDisplayVal += `[${dataVal.map(subVal => ns.getDataDisplayVal(subVal)).join(", ")}]`;
+				}
+				break;
+			case "[object String]":
+				if (dataVal.length > 30)
+				{
+					dataDisplayVal = dataVal.substring(0, 30) + "...";
+				}
+				break;
+		}
+		return dataDisplayVal;
+	};
+
 	ns.SaveableWidget = class SaveableWidget extends HTMLElement
 	{
 		//#region staticProperties
@@ -373,7 +406,15 @@
 
 		renderContentClosed()
 		{
-			throw new Error("renderContentClosed is not implemented");
+			//Markup
+			this.innerHTML = `
+			<div class="card">
+				${this.getClosedHeaderHTML()}
+				${this.getClosedBasicContent()}
+			</div>
+			`;
+
+			//element properties
 		}
 
 		getClosedHeaderHTML()
@@ -407,6 +448,41 @@
 		getTitleHTML()
 		{
 			return `${this.widgetIcon} ${this.widgetName} ${this.logicalId}`;
+		}
+
+		getClosedBasicContent()
+		{
+			const displayList = Object.keys(this.data).map(dataKey =>
+			{
+				const dataVal = this.data[dataKey];
+				if (Common.isNullUndefinedOrEmpty(dataVal)
+					|| dataVal === false
+					|| dataKey === "Attack" && !this.data.HasAttack
+				)
+				{
+					return "";
+				}
+
+				if (dataKey.length >= 2 && dataKey.substring(dataKey.length - 2, dataKey.length) === "Op")
+				{
+					const baseKey = dataKey.substring(0, dataKey.length - 2);
+					if (Object.hasOwn(this.data, baseKey)
+						&& Common.isNullUndefinedOrEmpty(this.data[baseKey])
+					)
+					{
+						return "";
+					}
+				}
+
+				if (dataKey === "SkillChecksOperator" && Common.isNullUndefinedOrEmpty(this.data["SkillChecks"]))
+				{
+					return "";
+				}
+
+				let dataDisplayVal = ns.getDataDisplayVal(dataVal);
+				return `<li>${dataKey}: ${dataDisplayVal}</li>`
+			});
+			return `<ul class="horizontal-list">${displayList.join("")}</ul>`;
 		}
 
 		renderContentOpen()
@@ -624,18 +700,6 @@
 		//#endregion
 
 		//#region Render
-		renderContentClosed()
-		{
-			//Markup
-			this.innerHTML = `
-			<div class="card">
-				${this.getClosedHeaderHTML()}
-			</div>
-			`;
-
-			//element properties
-		}
-
 		renderContentOpen()
 		{
 			//Markup
@@ -808,18 +872,6 @@
 		//#endregion
 
 		//#region Render
-		renderContentClosed()
-		{
-			//Markup
-			this.innerHTML = `
-			<div class="card">
-				${this.getClosedHeaderHTML()}
-			</div>
-			`;
-
-			//element properties
-		}
-
 		renderContentOpen()
 		{
 			//Markup
@@ -1009,18 +1061,6 @@
 		//#endregion
 
 		//#region Render
-		renderContentClosed()
-		{
-			//Markup
-			this.innerHTML = `
-			<div class="card">
-				${this.getClosedHeaderHTML()}
-			</div>
-			`;
-
-			//element properties
-		}
-
 		renderContentOpen()
 		{
 			//Markup
@@ -1332,18 +1372,6 @@
 		//#endregion
 
 		//#region Render
-		renderContentClosed()
-		{
-			//Markup
-			this.innerHTML = `
-			<div class="card">
-				${this.getClosedHeaderHTML()}
-			</div>
-			`;
-
-			//element properties
-		}
-
 		renderContentOpen()
 		{
 			//Markup
@@ -1563,18 +1591,6 @@
 		//#endregion
 
 		//#region Render
-		renderContentClosed()
-		{
-			//Markup
-			this.innerHTML = `
-			<div class="card">
-				${this.getClosedHeaderHTML()}
-			</div>
-			`;
-
-			//element properties
-		}
-
 		renderContentOpen()
 		{
 			//Markup
@@ -1708,18 +1724,6 @@
 		//#endregion
 
 		//#region Render
-		renderContentClosed()
-		{
-			//Markup
-			this.innerHTML = `
-			<div class="card">
-				${this.getClosedHeaderHTML()}
-			</div>
-			`;
-
-			//element properties
-		}
-
 		renderContentOpen()
 		{
 			//Markup

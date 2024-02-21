@@ -257,7 +257,7 @@ textarea.full-width {
 	display: contents;
 }
 
-.string-array-line-btn, .link-btn, .rm-obj-btn {
+.string-array-line-btn, .link-btn, .rm-obj-btn, .ex-obj-btn {
 	display: flex;
 	align-items: center;
 }
@@ -340,4 +340,17 @@ dd {
 
 dt {
 	font-weight: bold;
+}
+
+ul.horizontal-list {
+	display: flex;
+	list-style: none;
+	gap: 5px;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	margin: 0px;
+}
+
+ul.horizontal-list li::after {
+	content: ";";
 }

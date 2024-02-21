@@ -1317,7 +1317,7 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			return `
 			<legend id=${this.idKey}-legend>${this.displayName} ${this.listIdx}</legend>
 			<div class="obj-el-header">
-				<button id="${this.idKey}-btnExpand">
+				<button id="${this.idKey}-btnExpand" class="ex-obj-btn">
 					<gw-icon iconKey="chevron-down" title="expand"></gw-icon>
 				</button>
 				<button id="${this.idKey}-btnRemove" class="rm-obj-btn">
@@ -1340,6 +1340,18 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 		get standardLegend()
 		{
 			return document.getElementById(`${this.idKey}-legend`);
+		}
+
+		setupStandardHeaderElements()
+		{
+			this.rmBtnEl = this.standardRemoveBtn;
+			this.expandBtnEl = this.standardExpandBtn;
+			this.legendEl = this.standardLegend;
+		}
+
+		setupStandardExpandElements()
+		{
+			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
 		}
 	};
 
@@ -1417,10 +1429,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-story-text-object", ns.StoryTextObjEl);
@@ -1553,10 +1563,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-portal-object", ns.PortalObjEl);
@@ -1700,10 +1708,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 			this.modeSelectEl = document.getElementById(`${this.idKey}-mode`);
 			this.attackEl = document.getElementById(`${this.idKey}-attack`);
 			this.bodyLocEl = document.getElementById(`${this.idKey}-bodyLocSelect`);
@@ -1815,10 +1821,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-skill-bonus-object", ns.SkillBonusObjEl);
@@ -1903,10 +1907,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-place-items-object", ns.PlaceItmsObj);
@@ -2003,10 +2005,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 			this.toAreaEl = document.getElementById(`${this.idKey}-toArea`);
 			this.toAreaLinkEl = document.getElementById(`${this.idKey}-area-linkBtn`);
 			this.toPartyEl = document.getElementById(`${this.idKey}-toParty`);
@@ -2101,10 +2101,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-salutation-object", ns.SalutationObjEl);
@@ -2204,10 +2202,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-dialog-tree-object", ns.DialogTreeObjEl);
@@ -2373,10 +2369,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-dialog-response-object", ns.DialogResponseObjEl);
@@ -2460,13 +2454,10 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 			this.skillEl = document.getElementById(`${this.idKey}-skill`);
 			this.skillEl.selectEl.insertAdjacentHTML("afterbegin", `<option>None</option>`);
-
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
 		}
 	};
 	customElements.define("gw-db-skill-check-object", ns.SkillCheckObjEl);
@@ -2539,10 +2530,8 @@ registerNamespace("Pages.DungeonBuilder.Controls", function (ns)
 			`;
 
 			//element properties
-			this.rmBtnEl = this.standardRemoveBtn;
-			this.expandBtnEl = this.standardExpandBtn;
-			this.expandableEl = document.getElementById(`${this.idKey}-expandable`);
-			this.legendEl = this.standardLegend;
+			this.setupStandardHeaderElements();
+			this.setupStandardExpandElements();
 		}
 	};
 	customElements.define("gw-db-player-inven-object", ns.PlayerInvenObjEl);
